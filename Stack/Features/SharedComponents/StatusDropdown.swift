@@ -14,7 +14,7 @@ struct StatusDropdown: View {
         } label: {
             Text(status.displayName)
                 .font(Typography.body)
-                .foregroundColor(ColorPalette.textPrimary)
+                .foregroundColor(status.textColor)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
                 .background(ColorPalette.pillBackground)

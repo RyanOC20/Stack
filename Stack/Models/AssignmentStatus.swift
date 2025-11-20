@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum AssignmentStatus: String, CaseIterable, Identifiable, Codable {
     case notStarted = "Not Started"
@@ -11,5 +12,16 @@ enum AssignmentStatus: String, CaseIterable, Identifiable, Codable {
 
     var isCompleted: Bool {
         self == .completed
+    }
+
+    var textColor: Color {
+        switch self {
+        case .notStarted:
+            return ColorPalette.textPrimary
+        case .inProgress:
+            return ColorPalette.statusInProgress
+        case .completed:
+            return ColorPalette.statusCompleted
+        }
     }
 }
