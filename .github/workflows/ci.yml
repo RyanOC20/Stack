@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 15
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app
+
+      - name: Resolve Swift Packages
+        run: xcodebuild -project Stack.xcodeproj -scheme Stack -resolvePackageDependencies
+
+      - name: Build
+        run: xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' build
+
+      - name: Run Tests
+        run: xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' test

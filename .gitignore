@@ -1,0 +1,20 @@
+# Xcode
+DerivedData/
+build/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# SwiftPM
+.swiftpm/
+.build/
+
+# macOS
+.DS_Store
+
+# Supabase
+supabase/.temp/
+.env
+
+# Scripts
+scripts/*.log

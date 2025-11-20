@@ -1,0 +1,7 @@
+project_id = "stack-local"
+
+[api]
+port = 54321
+schemas = ["public"]
+
+db_version = "15"

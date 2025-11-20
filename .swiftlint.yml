@@ -1,0 +1,15 @@
+opt_in_rules:
+  - empty_count
+  - closure_spacing
+  - discouraged_optional_boolean
+  - explicit_acl
+  - force_cast
+  - force_unwrapping
+
+line_length:
+  warning: 140
+  error: 180
+
+excluded:
+  - supabase
+  - scripts
