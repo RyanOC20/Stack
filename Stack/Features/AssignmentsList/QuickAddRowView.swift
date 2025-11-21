@@ -9,7 +9,7 @@ struct QuickAddRowView: View {
     @State private var name: String = ""
     @State private var course: String = ""
     @State private var type: AssignmentType = .homework
-    @State private var dueDateText: String = DateInputField.editFormatter.string(from: Date().addingTimeInterval(86400))
+    @State private var dueDateText: String = QuickAddRowView.formattedDefaultDueDate()
     @State private var dueDateHasError = false
     @FocusState private var focusedField: Field?
 
@@ -106,7 +106,20 @@ struct QuickAddRowView: View {
         name = ""
         course = ""
         type = .homework
-        dueDateText = DateInputField.editFormatter.string(from: Date().addingTimeInterval(86400))
+        dueDateText = Self.formattedDefaultDueDate()
         focusedField = .name
+    }
+
+    private static func formattedDefaultDueDate() -> String {
+        DateInputField.editFormatter.string(from: defaultDueDate())
+    }
+
+    private static func defaultDueDate() -> Date {
+        let calendar = Calendar.current
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        var components = calendar.dateComponents([.year, .month, .day], from: tomorrow)
+        components.hour = 23
+        components.minute = 59
+        return calendar.date(from: components) ?? tomorrow
     }
 }

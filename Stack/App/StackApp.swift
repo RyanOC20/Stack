@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct StackApp: App {
+    @AppStorage("hasCompletedAuth") private var hasCompletedAuth = false
     @StateObject private var appState = AppState()
 
     init() {
@@ -10,23 +11,29 @@ struct StackApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AssignmentsListView(viewModel: appState.assignmentsListViewModel)
-                .frame(minWidth: 720, minHeight: 480)
+            if hasCompletedAuth {
+                AssignmentsListView(viewModel: appState.assignmentsListViewModel)
+                    .frame(minWidth: 720, minHeight: 480)
+            } else {
+                AuthFlowView(isAuthenticated: $hasCompletedAuth)
+            }
         }
         .commands {
-            CommandGroup(replacing: .newItem) {
-                Button("New Assignment") {
-                    appState.assignmentsListViewModel.focusQuickAddRow()
+            if hasCompletedAuth {
+                CommandGroup(replacing: .newItem) {
+                    Button("New Assignment") {
+                        appState.assignmentsListViewModel.focusQuickAddRow()
+                    }
+                    .keyboardShortcut("n", modifiers: .command)
                 }
-                .keyboardShortcut("n", modifiers: .command)
-            }
 
-            CommandGroup(after: .undoRedo) {
-                Button("Undo Delete") {
-                    appState.assignmentsListViewModel.undoDelete()
+                CommandGroup(after: .undoRedo) {
+                    Button("Undo Delete") {
+                        appState.assignmentsListViewModel.undoDelete()
+                    }
+                    .keyboardShortcut("z", modifiers: .command)
+                    .disabled(!appState.assignmentsListViewModel.canUndoDelete)
                 }
-                .keyboardShortcut("z", modifiers: .command)
-                .disabled(!appState.assignmentsListViewModel.canUndoDelete)
             }
         }
     }

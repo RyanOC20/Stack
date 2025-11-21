@@ -64,6 +64,11 @@ final class AssignmentsListViewModel: ObservableObject {
         selectedAssignmentID = assignmentID
     }
 
+    func deselect() {
+        selectedAssignmentID = nil
+        editingContext = nil
+    }
+
     func moveSelection(_ direction: MoveCommandDirection) {
         guard !assignments.isEmpty else { return }
         let offset: Int
@@ -211,6 +216,7 @@ final class AssignmentsListViewModel: ObservableObject {
     private func persist(_ assignment: Assignment) {
         if let index = assignments.firstIndex(where: { $0.id == assignment.id }) {
             assignments[index] = assignment
+            resortAssignments()
         }
 
         Task {
@@ -224,12 +230,16 @@ final class AssignmentsListViewModel: ObservableObject {
 
     private func insertAssignment(_ assignment: Assignment) {
         assignments.append(assignment)
+        resortAssignments()
+        selectedAssignmentID = assignment.id
+    }
+
+    private func resortAssignments() {
         assignments.sort { lhs, rhs in
             if lhs.dueAt == rhs.dueAt {
                 return lhs.name < rhs.name
             }
             return lhs.dueAt < rhs.dueAt
         }
-        selectedAssignmentID = assignment.id
     }
 }
