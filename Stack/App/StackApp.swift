@@ -4,6 +4,10 @@ import SwiftUI
 struct StackApp: App {
     @StateObject private var appState = AppState()
 
+    init() {
+        FontRegistrar.registerFonts()
+    }
+
     var body: some Scene {
         WindowGroup {
             AssignmentsListView(viewModel: appState.assignmentsListViewModel)

@@ -38,9 +38,12 @@
 	4EB5E30C3233C4053486949A /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EE3CB492C8E6519503E833 /* Typography.swift */; };
 	D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */; };
 	57F661C6F3DF1306999D20E2 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1283A116A1AB73E3E49ED982 /* Spacing.swift */; };
+	A43A0FACEC1AB7C4D0EDFD6E /* FontRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D85A77C2EAB42E2A13352F5 /* FontRegistrar.swift */; };
 	662F24E38AE7FC3539553DCC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E60DEC22F4936A94D96B54E /* Localizable.strings */; };
 	B8EBC951628168C51E0F48FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379F2C39108BDA1ADDE64CDB /* Assets.xcassets */; };
 	7742B2D88AFD74E740E9F892 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74EE02E7587243BB30028A65 /* Colors.xcassets */; };
+	3E6AFBDF6B8E4E4E8F832482 /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */; };
+	F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */; };
 	AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */; };
 	9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */; };
 	D9251D924951686B634FE62B /* StackUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* StackUITests.swift */; };
@@ -95,7 +98,10 @@
 	70EE3CB492C8E6519503E833 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 	764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 	1283A116A1AB73E3E49ED982 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
+	7D85A77C2EAB42E2A13352F5 /* FontRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontRegistrar.swift; sourceTree = "<group>"; };
 	9E60DEC22F4936A94D96B54E /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+	BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSans-Regular.ttf"; sourceTree = "<group>"; };
+	189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSans-SemiBold.ttf"; sourceTree = "<group>"; };
 	379F2C39108BDA1ADDE64CDB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 	74EE02E7587243BB30028A65 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 	018C729ECD723876779C6D8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -281,6 +287,7 @@
 	FF443576919C131BB18D46C0 /* Resources */ = {
 		isa = PBXGroup;
 		children = (
+			E4BA13CBEAFB5F9BF02F49A7 /* Fonts */,
 			379F2C39108BDA1ADDE64CDB /* Assets.xcassets */,
 			74EE02E7587243BB30028A65 /* Colors.xcassets */,
 			9E60DEC22F4936A94D96B54E /* Localizable.strings */
@@ -288,10 +295,20 @@
 		path = Resources;
 		sourceTree = "<group>";
 	};
+	E4BA13CBEAFB5F9BF02F49A7 /* Fonts */ = {
+		isa = PBXGroup;
+		children = (
+			BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */,
+			189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */
+		);
+		path = Fonts;
+		sourceTree = "<group>";
+	};
 	345CF4CD764C3483B024F8B8 /* Styling */ = {
 		isa = PBXGroup;
 		children = (
 			70EE3CB492C8E6519503E833 /* Typography.swift */,
+			7D85A77C2EAB42E2A13352F5 /* FontRegistrar.swift */,
 			764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */,
 			1283A116A1AB73E3E49ED982 /* Spacing.swift */
 		);
@@ -438,7 +455,9 @@
 		files = (
 			B8EBC951628168C51E0F48FC /* Assets.xcassets in Resources */,
 			7742B2D88AFD74E740E9F892 /* Colors.xcassets in Resources */,
-			662F24E38AE7FC3539553DCC /* Localizable.strings in Resources */
+			662F24E38AE7FC3539553DCC /* Localizable.strings in Resources */,
+			3E6AFBDF6B8E4E4E8F832482 /* NotoSans-Regular.ttf in Resources */,
+			F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */
 		);
 		runOnlyForDeploymentPostprocessing = 0;
 	};
@@ -492,6 +511,7 @@
 			2A461DB0EAA3A35EAAAD3D28 /* UserDefaultsStore.swift in Sources */,
 			81FCA144DC1B5F3F86E5B1A3 /* Logger.swift in Sources */,
 			4EB5E30C3233C4053486949A /* Typography.swift in Sources */,
+			A43A0FACEC1AB7C4D0EDFD6E /* FontRegistrar.swift in Sources */,
 			D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */,
 			57F661C6F3DF1306999D20E2 /* Spacing.swift in Sources */
 		);
