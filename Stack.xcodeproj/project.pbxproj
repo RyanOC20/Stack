@@ -45,6 +45,9 @@
 	7742B2D88AFD74E740E9F892 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74EE02E7587243BB30028A65 /* Colors.xcassets */; };
 	3E6AFBDF6B8E4E4E8F832482 /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */; };
 	F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */; };
+	8B6CFD8F1A6F4F74A8B4E3B5 /* Satoshi-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */; };
+	EDC0E194F22B423E98B40056 /* Satoshi-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */; };
+	A9E8B0F5F0DE46D596A0D78F /* Satoshi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */; };
 	AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */; };
 	9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */; };
 	D9251D924951686B634FE62B /* StackUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* StackUITests.swift */; };
@@ -101,6 +104,9 @@
 	1283A116A1AB73E3E49ED982 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 	7D85A77C2EAB42E2A13352F5 /* FontRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontRegistrar.swift; sourceTree = "<group>"; };
 	E0B4393B29C04F479E2C4EC3 /* AuthFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowView.swift; sourceTree = "<group>"; };
+	9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Regular.ttf"; sourceTree = "<group>"; };
+	A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Medium.ttf"; sourceTree = "<group>"; };
+	C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Bold.ttf"; sourceTree = "<group>"; };
 	9E60DEC22F4936A94D96B54E /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 	BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSans-Regular.ttf"; sourceTree = "<group>"; };
 	189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSans-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -310,7 +316,10 @@
 		isa = PBXGroup;
 		children = (
 			BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */,
-			189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */
+			189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */,
+			9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */,
+			A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */,
+			C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */
 		);
 		path = Fonts;
 		sourceTree = "<group>";
@@ -468,7 +477,10 @@
 			7742B2D88AFD74E740E9F892 /* Colors.xcassets in Resources */,
 			662F24E38AE7FC3539553DCC /* Localizable.strings in Resources */,
 			3E6AFBDF6B8E4E4E8F832482 /* NotoSans-Regular.ttf in Resources */,
-			F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */
+			F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */,
+			8B6CFD8F1A6F4F74A8B4E3B5 /* Satoshi-Regular.ttf in Resources */,
+			EDC0E194F22B423E98B40056 /* Satoshi-Medium.ttf in Resources */,
+			A9E8B0F5F0DE46D596A0D78F /* Satoshi-Bold.ttf in Resources */
 		);
 		runOnlyForDeploymentPostprocessing = 0;
 	};

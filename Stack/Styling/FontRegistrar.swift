@@ -4,8 +4,9 @@ import Foundation
 enum FontRegistrar {
     static func registerFonts() {
         let fontFiles = [
-            "NotoSans-Regular",
-            "NotoSans-SemiBold"
+            "Satoshi-Regular",
+            "Satoshi-Medium",
+            "Satoshi-Bold"
         ]
 
         for fontFile in fontFiles {

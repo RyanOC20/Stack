@@ -1,17 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "stack-nobg-256.png",
+      "filename" : "stack-nobg-16.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "stack-nobg-512.png",
+      "filename" : "stack-nobg-32.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "stack-nobg-768.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

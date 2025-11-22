@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AssignmentsListView: View {
     @ObservedObject var viewModel: AssignmentsListViewModel
+    var onLogout: () -> Void = {}
     @State private var isQuickAddVisible = false
 
     var body: some View {
@@ -11,6 +12,7 @@ struct AssignmentsListView: View {
 
             VStack(spacing: 0) {
                 HStack {
+                    logoMenu
                     Spacer()
                     addButton
                 }
@@ -116,10 +118,33 @@ struct AssignmentsListView: View {
         .accessibilityLabel("Add assignment")
     }
 
+    private var logoMenu: some View {
+        Menu {
+            Button("Log Out") {
+                onLogout()
+            }
+        } label: {
+            appIcon
+                .resizable()
+                .environment(\.displayScale, 1)
+                .scaledToFit()
+                .frame(width: 48, height: 48)
+                .padding(10)
+        }
+        .menuStyle(.borderlessButton)
+        .frame(minWidth: 44, minHeight: 44, alignment: .leading)
+        .contentShape(Rectangle())
+        .accessibilityLabel("Account menu")
+    }
+
     private func showQuickAddRow() {
         withAnimation {
             isQuickAddVisible = true
         }
         viewModel.focusQuickAddRow()
+    }
+
+    private var appIcon: Image {
+        Image("Small")
     }
 }

@@ -42,9 +42,9 @@ struct AuthFlowView: View {
             Spacer()
 
             VStack(spacing: 16) {
-                Image("Logo")
+                appIcon
                     .resizable()
-                    .environment(\.displayScale, 3)
+                    .environment(\.displayScale, 2)
                     .scaledToFit()
                     .frame(width: 400, height: 400)
             }
@@ -66,7 +66,7 @@ struct AuthFlowView: View {
     }
 
     private var createAccountView: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .center, spacing: 20) {
             Text("Create Account")
                 .font(Typography.assignmentName)
                 .foregroundColor(ColorPalette.textPrimary)
@@ -95,7 +95,7 @@ struct AuthFlowView: View {
     }
 
     private var logInView: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .center, spacing: 20) {
             Text("Log In")
                 .font(Typography.assignmentName)
                 .foregroundColor(ColorPalette.textPrimary)
@@ -129,6 +129,7 @@ struct AuthFlowView: View {
             .foregroundColor(ColorPalette.textPrimary)
             .padding(.vertical, 10)
             .padding(.horizontal, 12)
+            .frame(maxWidth: 320)
             .background(ColorPalette.rowHover)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
@@ -140,6 +141,7 @@ struct AuthFlowView: View {
             .foregroundColor(ColorPalette.textPrimary)
             .padding(.vertical, 10)
             .padding(.horizontal, 12)
+            .frame(maxWidth: 320)
             .background(ColorPalette.rowHover)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
@@ -150,11 +152,14 @@ struct AuthFlowView: View {
                 .font(Typography.assignmentName)
                 .foregroundColor(ColorPalette.background)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
+                .frame(height: 44)
                 .background(ColorPalette.textPrimary)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .frame(width: 260)
+        .contentShape(Rectangle())
     }
 
     private func secondaryButton(title: String, action: @escaping () -> Void) -> some View {
@@ -163,13 +168,16 @@ struct AuthFlowView: View {
                 .font(Typography.assignmentName)
                 .foregroundColor(ColorPalette.textPrimary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
+                .frame(height: 44)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .stroke(ColorPalette.textPrimary.opacity(0.4), lineWidth: 1)
                 )
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .frame(width: 260)
+        .contentShape(Rectangle())
     }
 
     private func submitCreateAccount() {
@@ -206,5 +214,9 @@ struct AuthFlowView: View {
 
     private func resetErrors() {
         errorMessage = nil
+    }
+
+    private var appIcon: Image {
+        Image("Large")
     }
 }
