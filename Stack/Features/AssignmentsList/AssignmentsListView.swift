@@ -126,11 +126,11 @@ struct AssignmentsListView: View {
         } label: {
             appIcon
                 .resizable()
-                .environment(\.displayScale, 1)
                 .scaledToFit()
-                .frame(width: 48, height: 48)
+                .frame(width: 96, height: 96)
                 .padding(10)
         }
+        .menuIndicator(.hidden)
         .menuStyle(.borderlessButton)
         .frame(minWidth: 44, minHeight: 44, alignment: .leading)
         .contentShape(Rectangle())
@@ -145,6 +145,6 @@ struct AssignmentsListView: View {
     }
 
     private var appIcon: Image {
-        Image("Small")
+        Image("Medium")
     }
 }
