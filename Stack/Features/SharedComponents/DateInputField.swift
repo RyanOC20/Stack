@@ -17,7 +17,7 @@ struct DateInputField: View {
                 TextField(placeholder, text: $text)
                     .font(Typography.body)
                     .textFieldStyle(.plain)
-                    .foregroundColor(ColorPalette.textPrimary)
+                    .foregroundColor(.white)
                     .focused($isFocused)
                     .onAppear {
                         text = Self.editFormatter.string(from: date)
@@ -30,13 +30,14 @@ struct DateInputField: View {
                     .padding(.vertical, 4)
                     .padding(.horizontal, 4)
                     .background(
-                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        Rectangle()
                             .stroke(hasError ? Color.red : Color.clear, lineWidth: 1)
                     )
             } else {
                 Text(Self.displayFormatter.string(from: date))
                     .font(Typography.body)
-                    .foregroundColor(ColorPalette.textSecondary)
+                    .foregroundColor(.white)
+                    .lineLimit(1)
             }
         }
         .onChange(of: date) { newValue in

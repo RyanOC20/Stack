@@ -8,6 +8,8 @@ final class AssignmentsListViewModel: ObservableObject {
             case name
             case course
             case dueDate
+            case status
+            case type
         }
 
         let assignmentID: UUID
@@ -64,9 +66,17 @@ final class AssignmentsListViewModel: ObservableObject {
         selectedAssignmentID = assignmentID
     }
 
+    func selectFirstAssignment() {
+        selectedAssignmentID = assignments.first?.id
+    }
+
     func deselect() {
         selectedAssignmentID = nil
         editingContext = nil
+    }
+
+    func cancelAllSelectionsAndEditing() {
+        deselect()
     }
 
     func moveSelection(_ direction: MoveCommandDirection) {
@@ -95,6 +105,59 @@ final class AssignmentsListViewModel: ObservableObject {
     func beginEditingSelectedAssignmentName() {
         guard let selectedAssignmentID else { return }
         editingContext = EditingContext(assignmentID: selectedAssignmentID, field: .name)
+    }
+
+    func beginEditingSelectedAssignmentStatus() {
+        guard let selectedAssignmentID else { return }
+        editingContext = EditingContext(assignmentID: selectedAssignmentID, field: .status)
+    }
+
+    func beginEditingSelectedAssignmentType() {
+        guard let selectedAssignmentID else { return }
+        editingContext = EditingContext(assignmentID: selectedAssignmentID, field: .type)
+    }
+
+    func beginEditingNextField() {
+        guard let context = editingContext else { return }
+        let id = context.assignmentID
+        guard assignments.contains(where: { $0.id == id }) else {
+            editingContext = nil
+            return
+        }
+        switch context.field {
+        case .status:
+            editingContext = EditingContext(assignmentID: id, field: .name)
+        case .name:
+            editingContext = EditingContext(assignmentID: id, field: .course)
+        case .course:
+            editingContext = EditingContext(assignmentID: id, field: .type)
+        case .type:
+            editingContext = EditingContext(assignmentID: id, field: .dueDate)
+        case .dueDate:
+            editingContext = nil
+        }
+    }
+
+    func beginEditingPreviousField() {
+        guard let context = editingContext else { return }
+        let id = context.assignmentID
+        guard assignments.contains(where: { $0.id == id }) else {
+            editingContext = nil
+            return
+        }
+
+        switch context.field {
+        case .status:
+            editingContext = EditingContext(assignmentID: id, field: .status)
+        case .name:
+            editingContext = EditingContext(assignmentID: id, field: .status)
+        case .course:
+            editingContext = EditingContext(assignmentID: id, field: .name)
+        case .type:
+            editingContext = EditingContext(assignmentID: id, field: .course)
+        case .dueDate:
+            editingContext = EditingContext(assignmentID: id, field: .type)
+        }
     }
 
     func requestEditing(for assignment: Assignment, field: EditingContext.Field) {

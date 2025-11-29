@@ -10,25 +10,35 @@ struct RowBackgroundModifier: ViewModifier {
         content
             .padding(.vertical, 6)
             .padding(.horizontal, 8)
-            .background(background)
+            .background(fullWidthBackground)
             .opacity(isDimmed ? 0.55 : 1)
             .onHover { hovering in
                 isHovering = hovering
             }
     }
 
-    private var background: some View {
-        let color: Color
-        if isSelected {
-            color = ColorPalette.rowSelection
-        } else if isHovering {
-            color = ColorPalette.rowHover
-        } else {
-            color = .clear
+    // Extend the highlight beyond the list's horizontal padding so it reaches the screen edges.
+    private var fullWidthBackground: some View {
+        GeometryReader { proxy in
+            Rectangle()
+                .fill(backgroundColor)
+                .frame(
+                    width: proxy.size.width + (Spacing.contentPadding * 2),
+                    height: proxy.size.height
+                )
+                .offset(x: -Spacing.contentPadding)
         }
+        .allowsHitTesting(false)
+    }
 
-        return RoundedRectangle(cornerRadius: Spacing.rowCornerRadius, style: .continuous)
-            .fill(color)
+    private var backgroundColor: Color {
+        if isSelected {
+            return ColorPalette.rowSelection
+        } else if isHovering {
+            return ColorPalette.rowHover
+        } else {
+            return .clear
+        }
     }
 }
 

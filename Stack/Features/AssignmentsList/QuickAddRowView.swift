@@ -6,9 +6,11 @@ struct QuickAddRowView: View {
     let onAdd: (AssignmentStatus, String, String, AssignmentType, Date) -> Void
 
     @State private var status: AssignmentStatus = .notStarted
+    @State private var statusText: String = AssignmentStatus.notStarted.displayName
     @State private var name: String = ""
     @State private var course: String = ""
     @State private var type: AssignmentType = .homework
+    @State private var typeText: String = AssignmentType.homework.displayName
     @State private var dueDateText: String = QuickAddRowView.formattedDefaultDueDate()
     @State private var dueDateHasError = false
     @FocusState private var focusedField: Field?
@@ -21,15 +23,27 @@ struct QuickAddRowView: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: Spacing.columnSpacing) {
-            StatusDropdown(status: status) { value in
-                status = value
-            }
+            OptionDropdownTextField(
+                text: $statusText,
+                options: AssignmentStatus.allCases.map { $0.displayName },
+                placeholder: "Status…",
+                shouldFocus: false,
+                onCommit: { value in
+                    if let resolved = AssignmentStatus.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
+                        status = resolved
+                        statusText = resolved.displayName
+                    }
+                },
+                onCancel: {
+                    statusText = status.displayName
+                }
+            )
             .frame(width: AssignmentsListLayout.statusColumnWidth, alignment: .leading)
 
             TextField("New assignment…", text: $name)
                 .font(Typography.assignmentName)
                 .textFieldStyle(.plain)
-                .foregroundColor(ColorPalette.textPrimary)
+                .foregroundColor(.white)
                 .focused($focusedField, equals: .name)
                 .onSubmit { commit() }
                 .frame(minWidth: AssignmentsListLayout.nameMinWidth,
@@ -54,20 +68,32 @@ struct QuickAddRowView: View {
             }
             .frame(width: AssignmentsListLayout.courseColumnWidth, alignment: .leading)
 
-            TypeDropdown(type: type) { value in
-                type = value
-            }
+            OptionDropdownTextField(
+                text: $typeText,
+                options: AssignmentType.allCases.map { $0.displayName },
+                placeholder: "Type…",
+                shouldFocus: false,
+                onCommit: { value in
+                    if let resolved = AssignmentType.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
+                        type = resolved
+                        typeText = resolved.displayName
+                    }
+                },
+                onCancel: {
+                    typeText = type.displayName
+                }
+            )
             .frame(width: AssignmentsListLayout.typeColumnWidth, alignment: .leading)
 
             TextField("MM/DD/YYYY-HH:MM", text: $dueDateText)
                 .font(Typography.body)
                 .textFieldStyle(.plain)
                 .focused($focusedField, equals: .dueDate)
-                .foregroundColor(ColorPalette.textSecondary)
+                .foregroundColor(.white)
                 .padding(.vertical, 4)
                 .padding(.horizontal, 4)
                 .background(
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    Rectangle()
                         .stroke(dueDateHasError ? Color.red : Color.clear, lineWidth: 1)
                 )
                 .onSubmit { commit() }
@@ -103,9 +129,11 @@ struct QuickAddRowView: View {
 
     private func reset() {
         status = .notStarted
+        statusText = AssignmentStatus.notStarted.displayName
         name = ""
         course = ""
         type = .homework
+        typeText = AssignmentType.homework.displayName
         dueDateText = Self.formattedDefaultDueDate()
         focusedField = .name
     }

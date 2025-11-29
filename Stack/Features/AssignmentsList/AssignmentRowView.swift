@@ -17,12 +17,16 @@ struct AssignmentRowView: View {
 
     @State private var nameDraft: String = ""
     @State private var courseDraft: String = ""
+    @State private var statusDraft: String = ""
+    @State private var typeDraft: String = ""
     @FocusState private var focusedField: FocusField?
 
     private enum FocusField: Hashable {
         case name
         case course
         case dueDate
+        case status
+        case type
     }
 
     private var isEditingName: Bool {
@@ -37,13 +41,18 @@ struct AssignmentRowView: View {
         editingContext?.assignmentID == assignment.id && editingContext?.field == .dueDate
     }
 
+    private var isEditingStatus: Bool {
+        editingContext?.assignmentID == assignment.id && editingContext?.field == .status
+    }
+
+    private var isEditingType: Bool {
+        editingContext?.assignmentID == assignment.id && editingContext?.field == .type
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: Spacing.columnSpacing) {
-            StatusDropdown(status: assignment.status) { status in
-                onSelect()
-                onStatusChange(status)
-            }
-            .frame(width: AssignmentsListLayout.statusColumnWidth, alignment: .leading)
+            statusField
+                .frame(width: AssignmentsListLayout.statusColumnWidth, alignment: .leading)
 
             nameField
                 .frame(minWidth: AssignmentsListLayout.nameMinWidth,
@@ -53,11 +62,8 @@ struct AssignmentRowView: View {
             courseField
                 .frame(width: AssignmentsListLayout.courseColumnWidth, alignment: .leading)
 
-            TypeDropdown(type: assignment.type) { type in
-                onSelect()
-                onTypeChange(type)
-            }
-            .frame(width: AssignmentsListLayout.typeColumnWidth, alignment: .leading)
+            typeField
+                .frame(width: AssignmentsListLayout.typeColumnWidth, alignment: .leading)
 
             dueDateField
                 .frame(width: AssignmentsListLayout.dueDateColumnWidth, alignment: .leading)
@@ -72,24 +78,42 @@ struct AssignmentRowView: View {
         .onAppear {
             nameDraft = assignment.name
             courseDraft = assignment.course
+            statusDraft = assignment.status.displayName
+            typeDraft = assignment.type.displayName
         }
         .onChange(of: assignment.id) { _ in
             nameDraft = assignment.name
             courseDraft = assignment.course
+            statusDraft = assignment.status.displayName
+            typeDraft = assignment.type.displayName
         }
         .onChange(of: isEditingName) { editing in
             if editing {
+                nameDraft = assignment.name
                 focusedField = .name
             }
         }
         .onChange(of: isEditingCourse) { editing in
             if editing {
+                courseDraft = assignment.course
                 focusedField = .course
             }
         }
         .onChange(of: isEditingDate) { editing in
             if editing {
                 focusedField = .dueDate
+            }
+        }
+        .onChange(of: isEditingStatus) { editing in
+            if editing {
+                statusDraft = assignment.status.displayName
+                focusedField = .status
+            }
+        }
+        .onChange(of: isEditingType) { editing in
+            if editing {
+                typeDraft = assignment.type.displayName
+                focusedField = .type
             }
         }
     }
@@ -100,7 +124,7 @@ struct AssignmentRowView: View {
                 TextField("Assignment name", text: $nameDraft)
                     .font(Typography.assignmentName)
                     .textFieldStyle(.plain)
-                    .foregroundColor(ColorPalette.textPrimary)
+                    .foregroundColor(.white)
                     .focused($focusedField, equals: .name)
                     .onSubmit {
                         onNameCommit(nameDraft)
@@ -114,7 +138,7 @@ struct AssignmentRowView: View {
             } else {
                 Text(assignment.name)
                     .font(Typography.assignmentName)
-                    .foregroundColor(ColorPalette.textPrimary)
+                    .foregroundColor(.white)
                     .onTapGesture {
                         onSelect()
                         onBeginEditing(.name)
@@ -145,7 +169,7 @@ struct AssignmentRowView: View {
             } else {
                 Text(assignment.course.isEmpty ? "Course…" : assignment.course)
                     .font(Typography.body)
-                    .foregroundColor(assignment.course.isEmpty ? ColorPalette.textSecondary.opacity(0.7) : ColorPalette.textSecondary)
+                    .foregroundColor(assignment.course.isEmpty ? Color.white.opacity(0.7) : .white)
                     .onTapGesture {
                         onSelect()
                         onBeginEditing(.course)
@@ -172,6 +196,72 @@ struct AssignmentRowView: View {
         .onTapGesture {
             onSelect()
             onBeginEditing(.dueDate)
+        }
+    }
+
+    private var statusField: some View {
+        Group {
+            if isEditingStatus {
+                OptionDropdownTextField(
+                    text: $statusDraft,
+                    options: AssignmentStatus.allCases.map { $0.displayName },
+                    placeholder: "Status…",
+                    shouldFocus: isEditingStatus,
+                    onCommit: { value in
+                        if let status = AssignmentStatus.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
+                            onStatusChange(status)
+                            focusedField = nil
+                        }
+                    },
+                    onCancel: {
+                        statusDraft = assignment.status.displayName
+                        focusedField = nil
+                        onCancelEditing()
+                    }
+                )
+                .focused($focusedField, equals: .status)
+            } else {
+                Text(assignment.status.displayName)
+                    .font(Typography.body)
+                    .foregroundColor(.white)
+                    .onTapGesture {
+                        onSelect()
+                        onBeginEditing(.status)
+                    }
+            }
+        }
+    }
+
+    private var typeField: some View {
+        Group {
+            if isEditingType {
+                OptionDropdownTextField(
+                    text: $typeDraft,
+                    options: AssignmentType.allCases.map { $0.displayName },
+                    placeholder: "Type…",
+                    shouldFocus: isEditingType,
+                    onCommit: { value in
+                        if let type = AssignmentType.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
+                            onTypeChange(type)
+                            focusedField = nil
+                        }
+                    },
+                    onCancel: {
+                        typeDraft = assignment.type.displayName
+                        focusedField = nil
+                        onCancelEditing()
+                    }
+                )
+                .focused($focusedField, equals: .type)
+            } else {
+                Text(assignment.type.displayName)
+                    .font(Typography.body)
+                    .foregroundColor(.white)
+                    .onTapGesture {
+                        onSelect()
+                        onBeginEditing(.type)
+                    }
+            }
         }
     }
 }

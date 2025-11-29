@@ -69,7 +69,7 @@ struct AuthFlowView: View {
         VStack(alignment: .center, spacing: 20) {
             Text("Create Account")
                 .font(Typography.assignmentName)
-                .foregroundColor(ColorPalette.textPrimary)
+                .foregroundColor(.white)
 
             VStack(spacing: 12) {
                 authTextField("Email or phone number", text: $emailOrPhone)
@@ -80,7 +80,7 @@ struct AuthFlowView: View {
             if let errorMessage {
                 Text(errorMessage)
                     .font(Typography.secondary)
-                    .foregroundColor(.red)
+                    .foregroundColor(.white)
             }
 
             primaryButton(title: "Create Account") {
@@ -98,7 +98,7 @@ struct AuthFlowView: View {
         VStack(alignment: .center, spacing: 20) {
             Text("Log In")
                 .font(Typography.assignmentName)
-                .foregroundColor(ColorPalette.textPrimary)
+                .foregroundColor(.white)
 
             VStack(spacing: 12) {
                 authTextField("Email or phone number", text: $emailOrPhone)
@@ -108,7 +108,7 @@ struct AuthFlowView: View {
             if let errorMessage {
                 Text(errorMessage)
                     .font(Typography.secondary)
-                    .foregroundColor(.red)
+                    .foregroundColor(.white)
             }
 
             primaryButton(title: "Log In") {
@@ -126,35 +126,32 @@ struct AuthFlowView: View {
         TextField(placeholder, text: text)
             .font(Typography.body)
             .textFieldStyle(.plain)
-            .foregroundColor(ColorPalette.textPrimary)
+            .foregroundColor(.white)
             .padding(.vertical, 10)
             .padding(.horizontal, 12)
             .frame(maxWidth: 320)
             .background(ColorPalette.rowHover)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private func authSecureField(_ placeholder: String, text: Binding<String>) -> some View {
         SecureField(placeholder, text: text)
             .font(Typography.body)
             .textFieldStyle(.plain)
-            .foregroundColor(ColorPalette.textPrimary)
+            .foregroundColor(.white)
             .padding(.vertical, 10)
             .padding(.horizontal, 12)
             .frame(maxWidth: 320)
             .background(ColorPalette.rowHover)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private func primaryButton(title: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
                 .font(Typography.assignmentName)
-                .foregroundColor(ColorPalette.background)
+                .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .frame(height: 44)
-                .background(ColorPalette.textPrimary)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .background(ColorPalette.rowSelection)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -166,12 +163,12 @@ struct AuthFlowView: View {
         Button(action: action) {
             Text(title)
                 .font(Typography.assignmentName)
-                .foregroundColor(ColorPalette.textPrimary)
+                .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .frame(height: 44)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(ColorPalette.textPrimary.opacity(0.4), lineWidth: 1)
+                    Rectangle()
+                        .stroke(Color.white.opacity(0.4), lineWidth: 1)
                 )
                 .contentShape(Rectangle())
         }

@@ -22,6 +22,7 @@
 	F1CE15FD16C54DD3B3D3C986 /* RowBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */; };
 	09E71630585A550233B214C1 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07177A0B94059F2FBB12AC1 /* AppError.swift */; };
 	340508D381BA619981997CBB /* ErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907331F4803526E1C4AAE4FD /* ErrorBannerView.swift */; };
+	6E0EB889B4B8F20C9C9D0B59 /* OptionDropdownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2F7F5CF4B3C6D2BA9F12B5 /* OptionDropdownTextField.swift */; };
 	B997D52942115B55717FA9F0 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40847A01C84A892D4A9700E0 /* Assignment.swift */; };
 	C7CC06DDB6D834DE86AFE813 /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA7C1F1B07A88D9E8F6810B /* Course.swift */; };
 	18367576749388F9565734AB /* AssignmentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11236ED3F36BF6F74088FD53 /* AssignmentStatus.swift */; };
@@ -48,6 +49,7 @@
 	8B6CFD8F1A6F4F74A8B4E3B5 /* Satoshi-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */; };
 	EDC0E194F22B423E98B40056 /* Satoshi-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */; };
 	A9E8B0F5F0DE46D596A0D78F /* Satoshi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */; };
+	F0E1D2C3B4A5968778695A5C /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */; };
 	AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */; };
 	9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */; };
 	D9251D924951686B634FE62B /* StackUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* StackUITests.swift */; };
@@ -86,6 +88,7 @@
 	535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowBackgroundModifier.swift; sourceTree = "<group>"; };
 	B07177A0B94059F2FBB12AC1 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 	907331F4803526E1C4AAE4FD /* ErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorBannerView.swift; sourceTree = "<group>"; };
+	7F2F7F5CF4B3C6D2BA9F12B5 /* OptionDropdownTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionDropdownTextField.swift; sourceTree = "<group>"; };
 	40847A01C84A892D4A9700E0 /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
 	DDA7C1F1B07A88D9E8F6810B /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 	11236ED3F36BF6F74088FD53 /* AssignmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentStatus.swift; sourceTree = "<group>"; };
@@ -107,6 +110,7 @@
 	9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Regular.ttf"; sourceTree = "<group>"; };
 	A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Medium.ttf"; sourceTree = "<group>"; };
 	C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Bold.ttf"; sourceTree = "<group>"; };
+	D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Regular.ttf"; sourceTree = "<group>"; };
 	9E60DEC22F4936A94D96B54E /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 	BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSans-Regular.ttf"; sourceTree = "<group>"; };
 	189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSans-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -228,7 +232,8 @@
 			9E35798F8B262AD86338BBD5 /* CourseTextField.swift */,
 			1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */,
 			560A5D0CF9A424CC8D00BE51 /* DateInputField.swift */,
-			535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */
+			535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */,
+			7F2F7F5CF4B3C6D2BA9F12B5 /* OptionDropdownTextField.swift */
 		);
 		path = SharedComponents;
 		sourceTree = "<group>";
@@ -319,7 +324,8 @@
 			189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */,
 			9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */,
 			A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */,
-			C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */
+			C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */,
+			D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */
 		);
 		path = Fonts;
 		sourceTree = "<group>";
@@ -480,7 +486,8 @@
 			F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */,
 			8B6CFD8F1A6F4F74A8B4E3B5 /* Satoshi-Regular.ttf in Resources */,
 			EDC0E194F22B423E98B40056 /* Satoshi-Medium.ttf in Resources */,
-			A9E8B0F5F0DE46D596A0D78F /* Satoshi-Bold.ttf in Resources */
+			A9E8B0F5F0DE46D596A0D78F /* Satoshi-Bold.ttf in Resources */,
+			F0E1D2C3B4A5968778695A5C /* JetBrainsMono-Regular.ttf in Resources */
 		);
 		runOnlyForDeploymentPostprocessing = 0;
 	};
@@ -518,6 +525,7 @@
 			D25D52A8CC279B1317F712CC /* TypeDropdown.swift in Sources */,
 			3F55418C0EEFD510FC6A73FB /* DateInputField.swift in Sources */,
 			F1CE15FD16C54DD3B3D3C986 /* RowBackgroundModifier.swift in Sources */,
+			6E0EB889B4B8F20C9C9D0B59 /* OptionDropdownTextField.swift in Sources */,
 			09E71630585A550233B214C1 /* AppError.swift in Sources */,
 			340508D381BA619981997CBB /* ErrorBannerView.swift in Sources */,
 			B997D52942115B55717FA9F0 /* Assignment.swift in Sources */,

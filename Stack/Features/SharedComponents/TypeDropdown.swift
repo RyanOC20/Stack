@@ -14,11 +14,10 @@ struct TypeDropdown: View {
         } label: {
             Text(type.displayName)
                 .font(Typography.body)
-                .foregroundColor(ColorPalette.textSecondary)
+                .foregroundColor(.white)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
                 .background(ColorPalette.pillBackground)
-                .clipShape(Capsule())
         }
         .menuStyle(.borderlessButton)
         .fixedSize()

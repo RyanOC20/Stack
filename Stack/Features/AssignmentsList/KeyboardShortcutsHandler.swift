@@ -8,6 +8,8 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
         let onDelete: () -> Void
         let onReturn: () -> Void
         let onMove: (MoveCommandDirection) -> Void
+        let onEscape: (() -> Bool)?
+        let onTab: ((Bool) -> Bool)?
     }
 
     let handlers: Handlers
@@ -93,6 +95,23 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
                 handlers.onReturn()
                 return true
             default:
+                break
+            }
+
+            // Handle keys that aren't exposed via specialKey (or to avoid availability issues).
+            switch event.keyCode {
+            case 53: // Escape
+                if handlers.onEscape?() == true {
+                    return true
+                }
+                return false
+            case 48: // Tab
+                let isShiftHeld = event.modifierFlags.contains(.shift)
+                if handlers.onTab?(isShiftHeld) == true {
+                    return true
+                }
+                return false
+            default:
                 return false
             }
         }
@@ -100,9 +119,21 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
         private func shouldAllowEventToProceed(_ event: NSEvent) -> Bool {
             guard let responder = window?.firstResponder else { return false }
             let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            if responder is NSTextView && flags.isEmpty {
-                return true
+
+            if responder is NSTextView {
+                if event.keyCode == 53 { // Escape
+                    return false
+                }
+                if event.keyCode == 48 { // Tab / Shift+Tab
+                    return false
+                }
+
+                // Let normal typing proceed.
+                if flags.isEmpty || flags == .shift {
+                    return true
+                }
             }
+
             return false
         }
     }

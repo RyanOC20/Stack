@@ -15,13 +15,6 @@ enum AssignmentStatus: String, CaseIterable, Identifiable, Codable {
     }
 
     var textColor: Color {
-        switch self {
-        case .notStarted:
-            return ColorPalette.textPrimary
-        case .inProgress:
-            return ColorPalette.statusInProgress
-        case .completed:
-            return ColorPalette.statusCompleted
-        }
+        Color.white
     }
 }

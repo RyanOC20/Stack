@@ -11,15 +11,19 @@ struct StackApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if hasCompletedAuth {
-                AssignmentsListView(
-                    viewModel: appState.assignmentsListViewModel,
-                    onLogout: { hasCompletedAuth = false }
-                )
-                    .frame(minWidth: 720, minHeight: 480)
-            } else {
-                AuthFlowView(isAuthenticated: $hasCompletedAuth)
+            Group {
+                if hasCompletedAuth {
+                    AssignmentsListView(
+                        viewModel: appState.assignmentsListViewModel,
+                        onLogout: { hasCompletedAuth = false }
+                    )
+                        .frame(minWidth: 720, minHeight: 480)
+                } else {
+                    AuthFlowView(isAuthenticated: $hasCompletedAuth)
+                }
             }
+            .font(Typography.body)
+            .foregroundColor(.white)
         }
         .commands {
             if hasCompletedAuth {

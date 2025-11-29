@@ -51,10 +51,11 @@ struct AssignmentsListView: View {
                                     viewModel.requestEditing(for: assignment, field: field)
                                 },
                                 onCancelEditing: {
-                                    viewModel.deselect()
+                                    viewModel.clearEditingContext()
                                 },
                                 onStatusChange: { status in
                                     viewModel.updateStatus(status, for: assignment)
+                                    viewModel.clearEditingContext()
                                 },
                                 onNameCommit: { newName in
                                     viewModel.updateName(newName, for: assignment)
@@ -66,6 +67,7 @@ struct AssignmentsListView: View {
                                 },
                                 onTypeChange: { type in
                                     viewModel.updateType(type, for: assignment)
+                                    viewModel.clearEditingContext()
                                 },
                                 onDueDateCommit: { date in
                                     viewModel.updateDueDate(date, for: assignment)
@@ -94,23 +96,24 @@ struct AssignmentsListView: View {
                     onNew: { showQuickAddRow() },
                     onUndo: { viewModel.undoDelete() },
                     onDelete: { viewModel.deleteSelectedAssignment() },
-                    onReturn: { viewModel.beginEditingSelectedAssignmentName() },
-                    onMove: { direction in viewModel.moveSelection(direction) }
+                    onReturn: { handleReturnKey() },
+                    onMove: { direction in viewModel.moveSelection(direction) },
+                    onEscape: { handleEscapeKey() },
+                    onTab: { isShiftHeld in handleTabKey(isShiftHeld: isShiftHeld) }
                 )
             )
             .allowsHitTesting(false)
         )
         .onExitCommand {
-            guard viewModel.selectedAssignmentID != nil || viewModel.editingContext != nil else { return }
-            viewModel.deselect()
+            handleEscapeKey()
         }
     }
 
     private var addButton: some View {
         Button(action: { showQuickAddRow() }) {
             Image(systemName: "plus.circle.fill")
-                .font(.system(size: 28, weight: .semibold))
-                .foregroundColor(ColorPalette.textPrimary)
+                .font(Typography.assignmentName)
+                .foregroundColor(.white)
                 .padding(10)
         }
         .buttonStyle(.plain)
@@ -146,5 +149,42 @@ struct AssignmentsListView: View {
 
     private var appIcon: Image {
         Image("Medium")
+    }
+
+    private func handleEscapeKey() -> Bool {
+        viewModel.cancelAllSelectionsAndEditing()
+        return false
+    }
+
+    private func handleReturnKey() {
+        if let editingField = viewModel.editingContext?.field {
+            if editingField == .status || editingField == .type {
+                viewModel.clearEditingContext()
+            }
+            return
+        }
+
+        if viewModel.selectedAssignmentID == nil {
+            viewModel.selectFirstAssignment()
+        } else {
+            viewModel.beginEditingSelectedAssignmentStatus()
+        }
+    }
+
+    private func handleTabKey(isShiftHeld: Bool) -> Bool {
+        if viewModel.editingContext != nil {
+            if isShiftHeld {
+                viewModel.beginEditingPreviousField()
+            } else {
+                viewModel.beginEditingNextField()
+            }
+            return true
+        }
+
+        if viewModel.selectedAssignmentID != nil {
+            return true
+        }
+
+        return false
     }
 }
