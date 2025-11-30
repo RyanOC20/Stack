@@ -5,51 +5,18 @@ struct OptionDropdownTextField: View {
     let options: [String]
     let placeholder: String
     let shouldFocus: Bool
+    let isReadOnly: Bool
     let onCommit: (String) -> Void
     let onCancel: () -> Void
 
     @State private var isDropdownVisible = false
     @State private var hasError = false
+    @State private var highlightedIndex: Int?
     @FocusState private var hasFocus: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            TextField(placeholder, text: $text)
-                .font(Typography.body)
-                .textFieldStyle(.plain)
-                .foregroundColor(.white)
-                .focused($hasFocus)
-                .onAppear {
-                    if shouldFocus {
-                        DispatchQueue.main.async {
-                            hasFocus = true
-                        }
-                    }
-                }
-                .onSubmit { attemptCommit() }
-                .onChange(of: hasFocus) { newValue in
-                    withAnimation(.easeOut(duration: 0.15)) {
-                        isDropdownVisible = newValue
-                    }
-                }
-                .onExitCommand {
-                    onCancel()
-                    hasFocus = false
-                    isDropdownVisible = false
-                }
-                .onChange(of: shouldFocus) { value in
-                    if value {
-                        DispatchQueue.main.async {
-                            hasFocus = true
-                        }
-                    } else {
-                        hasFocus = false
-                        isDropdownVisible = false
-                    }
-                }
-                .onChange(of: text) { _ in
-                    hasError = false
-                }
+            fieldView
                 .padding(.vertical, 4)
                 .padding(.horizontal, 4)
                 .background(
@@ -66,6 +33,7 @@ struct OptionDropdownTextField: View {
     private var dropdown: some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(filteredOptions, id: \.self) { option in
+                let isHighlighted = highlightedOption == option
                 Button {
                     commit(option)
                 } label: {
@@ -75,6 +43,7 @@ struct OptionDropdownTextField: View {
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(isHighlighted ? ColorPalette.rowSelection : Color.clear)
                 }
                 .buttonStyle(.plain)
             }
@@ -84,8 +53,122 @@ struct OptionDropdownTextField: View {
         .shadow(radius: 4, y: 2)
     }
 
+    @ViewBuilder
+    private var fieldView: some View {
+        if isReadOnly {
+            readOnlyField
+        } else {
+            editableField
+        }
+    }
+
+    private var editableField: some View {
+        TextField(placeholder, text: $text)
+            .font(Typography.body)
+            .textFieldStyle(.plain)
+            .foregroundColor(.white)
+            .focused($hasFocus)
+            .onAppear {
+                if shouldFocus {
+                    DispatchQueue.main.async {
+                        hasFocus = true
+                    }
+                }
+            }
+            .onSubmit { attemptCommit() }
+            .onChange(of: hasFocus) { newValue in
+                withAnimation(.easeOut(duration: 0.15)) {
+                    isDropdownVisible = newValue
+                }
+                if newValue {
+                    setInitialHighlight()
+                } else {
+                    highlightedIndex = nil
+                }
+            }
+            .onExitCommand {
+                onCancel()
+                hasFocus = false
+                isDropdownVisible = false
+            }
+            .onChange(of: shouldFocus) { value in
+                if value {
+                    DispatchQueue.main.async {
+                        hasFocus = true
+                    }
+                } else {
+                    hasFocus = false
+                    isDropdownVisible = false
+                }
+            }
+            .onChange(of: text) { _ in
+                hasError = false
+                resetHighlightIfNeeded()
+            }
+            .onMoveCommand { direction in
+                guard isDropdownVisible, !filteredOptions.isEmpty else { return }
+                switch direction {
+                case .up:
+                    moveHighlight(by: -1)
+                case .down:
+                    moveHighlight(by: 1)
+                default:
+                    break
+                }
+            }
+    }
+
+    private var readOnlyField: some View {
+        Text(displayText)
+            .font(Typography.body)
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .focusable(true)
+            .focused($hasFocus)
+            .onAppear {
+                if shouldFocus {
+                    DispatchQueue.main.async {
+                        hasFocus = true
+                        openDropdown()
+                    }
+                }
+            }
+            .onTapGesture {
+                hasFocus = true
+                openDropdown()
+            }
+            .onMoveCommand { direction in
+                guard isDropdownVisible, !filteredOptions.isEmpty else { return }
+                switch direction {
+                case .up:
+                    moveHighlight(by: -1)
+                case .down:
+                    moveHighlight(by: 1)
+                default:
+                    break
+                }
+            }
+            .onSubmit {
+                attemptCommit()
+            }
+            .onExitCommand {
+                onCancel()
+                hasFocus = false
+                isDropdownVisible = false
+            }
+    }
+
+    private var displayText: String {
+        text.isEmpty ? placeholder : text
+    }
+
     private func attemptCommit() {
-        commit(text)
+        if let highlighted = highlightedOption {
+            commit(highlighted)
+        } else {
+            commit(text)
+        }
     }
 
     private func commit(_ value: String) {
@@ -114,5 +197,41 @@ struct OptionDropdownTextField: View {
     private var filteredOptions: [String] {
         guard !text.isEmpty else { return options }
         return options.filter { $0.localizedCaseInsensitiveContains(text) }
+    }
+
+    private var highlightedOption: String? {
+        guard let index = highlightedIndex, filteredOptions.indices.contains(index) else { return nil }
+        return filteredOptions[index]
+    }
+
+    private func setInitialHighlight() {
+        highlightedIndex = filteredOptions.isEmpty ? nil : 0
+    }
+
+    private func resetHighlightIfNeeded() {
+        if let index = highlightedIndex, !filteredOptions.indices.contains(index) {
+            highlightedIndex = filteredOptions.isEmpty ? nil : 0
+        }
+    }
+
+    private func moveHighlight(by delta: Int) {
+        guard !filteredOptions.isEmpty else {
+            highlightedIndex = nil
+            return
+        }
+        let newIndex: Int
+        if let current = highlightedIndex {
+            newIndex = max(0, min(filteredOptions.count - 1, current + delta))
+        } else {
+            newIndex = delta > 0 ? 0 : filteredOptions.count - 1
+        }
+        highlightedIndex = newIndex
+    }
+
+    private func openDropdown() {
+        withAnimation(.easeOut(duration: 0.15)) {
+            isDropdownVisible = true
+        }
+        setInitialHighlight()
     }
 }

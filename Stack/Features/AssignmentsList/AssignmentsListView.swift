@@ -4,6 +4,7 @@ struct AssignmentsListView: View {
     @ObservedObject var viewModel: AssignmentsListViewModel
     var onLogout: () -> Void = {}
     @State private var isQuickAddVisible = false
+    @State private var isAccountMenuVisible = false
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -12,7 +13,6 @@ struct AssignmentsListView: View {
 
             VStack(spacing: 0) {
                 HStack {
-                    logoMenu
                     Spacer()
                     addButton
                 }
@@ -88,18 +88,23 @@ struct AssignmentsListView: View {
                         viewModel.dismissError()
                     }
             }
+
+            if isAccountMenuVisible {
+                accountMenuOverlay
+            }
         }
         .background(ColorPalette.background)
         .overlay(
             KeyboardShortcutsHandler(
                 handlers: .init(
-                    onNew: { showQuickAddRow() },
+                    onNew: { toggleAccountMenu() },
                     onUndo: { viewModel.undoDelete() },
                     onDelete: { viewModel.deleteSelectedAssignment() },
                     onReturn: { handleReturnKey() },
                     onMove: { direction in viewModel.moveSelection(direction) },
                     onEscape: { handleEscapeKey() },
-                    onTab: { isShiftHeld in handleTabKey(isShiftHeld: isShiftHeld) }
+                    onTab: { isShiftHeld in handleTabKey(isShiftHeld: isShiftHeld) },
+                    shouldCaptureArrows: { shouldCaptureArrowKeys() }
                 )
             )
             .allowsHitTesting(false)
@@ -121,25 +126,6 @@ struct AssignmentsListView: View {
         .accessibilityLabel("Add assignment")
     }
 
-    private var logoMenu: some View {
-        Menu {
-            Button("Log Out") {
-                onLogout()
-            }
-        } label: {
-            appIcon
-                .resizable()
-                .scaledToFit()
-                .frame(width: 96, height: 96)
-                .padding(10)
-        }
-        .menuIndicator(.hidden)
-        .menuStyle(.borderlessButton)
-        .frame(minWidth: 44, minHeight: 44, alignment: .leading)
-        .contentShape(Rectangle())
-        .accessibilityLabel("Account menu")
-    }
-
     private func showQuickAddRow() {
         withAnimation {
             isQuickAddVisible = true
@@ -147,13 +133,48 @@ struct AssignmentsListView: View {
         viewModel.focusQuickAddRow()
     }
 
-    private var appIcon: Image {
-        Image("Medium")
+    private var accountMenuOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    isAccountMenuVisible = false
+                }
+
+            VStack(spacing: 0) {
+                Button {
+                    isAccountMenuVisible = false
+                    onLogout()
+                } label: {
+                    Text("Log Out")
+                        .font(Typography.body)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.plain)
+            }
+            .frame(width: 220)
+            .padding(12)
+            .background(ColorPalette.rowHover)
+            .shadow(radius: 6, y: 3)
+        }
+        .transition(.opacity)
+    }
+
+    private func toggleAccountMenu() {
+        withAnimation {
+            isAccountMenuVisible.toggle()
+        }
     }
 
     private func handleEscapeKey() -> Bool {
+        if isAccountMenuVisible {
+            isAccountMenuVisible = false
+        }
         viewModel.cancelAllSelectionsAndEditing()
-        return false
+        return true
     }
 
     private func handleReturnKey() {
@@ -186,5 +207,15 @@ struct AssignmentsListView: View {
         }
 
         return false
+    }
+
+    private func shouldCaptureArrowKeys() -> Bool {
+        guard let field = viewModel.editingContext?.field else { return true }
+        switch field {
+        case .course, .status, .type:
+            return false
+        default:
+            return true
+        }
     }
 }

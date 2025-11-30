@@ -10,6 +10,7 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
         let onMove: (MoveCommandDirection) -> Void
         let onEscape: (() -> Bool)?
         let onTab: ((Bool) -> Bool)?
+        let shouldCaptureArrows: () -> Bool
     }
 
     let handlers: Handlers
@@ -86,9 +87,11 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
                 handlers.onDelete()
                 return true
             case .upArrow:
+                guard handlers.shouldCaptureArrows() else { return false }
                 handlers.onMove(.up)
                 return true
             case .downArrow:
+                guard handlers.shouldCaptureArrows() else { return false }
                 handlers.onMove(.down)
                 return true
             case .carriageReturn, .enter:

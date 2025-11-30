@@ -207,6 +207,7 @@ struct AssignmentRowView: View {
                     options: AssignmentStatus.allCases.map { $0.displayName },
                     placeholder: "Status…",
                     shouldFocus: isEditingStatus,
+                    isReadOnly: true,
                     onCommit: { value in
                         if let status = AssignmentStatus.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
                             onStatusChange(status)
@@ -240,6 +241,7 @@ struct AssignmentRowView: View {
                     options: AssignmentType.allCases.map { $0.displayName },
                     placeholder: "Type…",
                     shouldFocus: isEditingType,
+                    isReadOnly: true,
                     onCommit: { value in
                         if let type = AssignmentType.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
                             onTypeChange(type)
