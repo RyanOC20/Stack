@@ -16,6 +16,7 @@ struct DateInputField: View {
             if isEditing {
                 TextField(placeholder, text: $text)
                     .font(Typography.body)
+                    .monospacedDigit()
                     .textFieldStyle(.plain)
                     .foregroundColor(.white)
                     .focused($isFocused)
@@ -34,8 +35,9 @@ struct DateInputField: View {
                             .stroke(hasError ? Color.red : Color.clear, lineWidth: 1)
                     )
             } else {
-                Text(Self.displayFormatter.string(from: date))
+                Text(Self.displayString(from: date))
                     .font(Typography.body)
+                    .monospacedDigit()
                     .foregroundColor(.white)
                     .lineLimit(1)
             }
@@ -62,17 +64,33 @@ struct DateInputField: View {
         onCancel()
     }
 
-    private static let displayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "EEE, MMM d    h:mm a"
-        return formatter
-    }()
+    private static func displayString(from date: Date) -> String {
+        let day = Calendar.current.component(.day, from: date)
+        let datePart = displayDateFormatter.string(from: date)
+        let timePart = displayTimeFormatter.string(from: date)
+        let spacerCount = day < 10 ? 4 : 3
+        let spacer = String(repeating: " ", count: spacerCount)
+        return datePart + spacer + timePart
+    }
 
     static let editFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "MM/dd/yyyy-HH:mm"
+        return formatter
+    }()
+
+    private static let displayDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "EEE, MMM d"
+        return formatter
+    }()
+
+    private static let displayTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "h:mm a"
         return formatter
     }()
 }

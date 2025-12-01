@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct OptionDropdownTextField: View {
     @Binding var text: String
@@ -7,6 +8,7 @@ struct OptionDropdownTextField: View {
     let shouldFocus: Bool
     let isReadOnly: Bool
     let showAllOptions: Bool
+    var allowsFreeText: Bool = false
     let onCommit: (String) -> Void
     let onCancel: () -> Void
 
@@ -111,17 +113,17 @@ struct OptionDropdownTextField: View {
                 hasError = false
                 resetHighlightIfNeeded()
             }
-            .onMoveCommand { direction in
-                guard isDropdownVisible, !filteredOptions.isEmpty else { return }
-                switch direction {
-                case .up:
-                    moveHighlight(by: -1)
-                case .down:
-                    moveHighlight(by: 1)
-                default:
-                    break
-                }
-            }
+            .background(
+                ArrowKeyCaptureView(
+                    isActive: Binding(
+                        get: { hasFocus },
+                        set: { _ in }
+                    ),
+                    onMove: { direction in
+                        handleArrowKey(direction)
+                    }
+                )
+            )
     }
 
     private var readOnlyField: some View {
@@ -178,22 +180,34 @@ struct OptionDropdownTextField: View {
     }
 
     private func commit(_ value: String) {
-        guard let normalized = normalizedOption(for: value) else {
-            withAnimation {
-                hasError = true
-                isDropdownVisible = true
+        if allowsFreeText {
+            let normalized = normalizedOption(for: value)
+            hasError = false
+            let finalValue = normalized ?? value
+            text = finalValue
+            onCommit(finalValue)
+            withAnimation(.easeOut(duration: 0.1)) {
+                isDropdownVisible = false
             }
-            hasFocus = true
-            return
-        }
+            hasFocus = false
+        } else {
+            guard let normalized = normalizedOption(for: value) else {
+                withAnimation {
+                    hasError = true
+                    isDropdownVisible = true
+                }
+                hasFocus = true
+                return
+            }
 
-        hasError = false
-        text = normalized
-        onCommit(normalized)
-        withAnimation(.easeOut(duration: 0.1)) {
-            isDropdownVisible = false
+            hasError = false
+            text = normalized
+            onCommit(normalized)
+            withAnimation(.easeOut(duration: 0.1)) {
+                isDropdownVisible = false
+            }
+            hasFocus = false
         }
-        hasFocus = false
     }
 
     private func normalizedOption(for value: String) -> String? {
@@ -242,5 +256,98 @@ struct OptionDropdownTextField: View {
             isDropdownVisible = true
         }
         setInitialHighlight()
+    }
+
+    private func handleArrowKey(_ direction: MoveCommandDirection) {
+        guard hasFocus else { return }
+
+        if !isDropdownVisible {
+            withAnimation(.easeOut(duration: 0.15)) {
+                isDropdownVisible = true
+            }
+        }
+
+        if highlightedIndex == nil {
+            setInitialHighlight()
+        }
+
+        switch direction {
+        case .up:
+            moveHighlight(by: -1)
+        case .down:
+            moveHighlight(by: 1)
+        default:
+            break
+        }
+    }
+}
+
+private struct ArrowKeyCaptureView: NSViewRepresentable {
+    @Binding var isActive: Bool
+    let onMove: (MoveCommandDirection) -> Void
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        context.coordinator.update(isActive: isActive)
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onMove: onMove)
+    }
+
+    final class Coordinator {
+        private let onMove: (MoveCommandDirection) -> Void
+        private var monitor: Any?
+        private var isActive = false
+
+        init(onMove: @escaping (MoveCommandDirection) -> Void) {
+            self.onMove = onMove
+        }
+
+        func attach() {
+            update(isActive: isActive)
+        }
+
+        func update(isActive: Bool) {
+            guard self.isActive != isActive else { return }
+            self.isActive = isActive
+            if isActive {
+                startMonitoring()
+            } else {
+                stopMonitoring()
+            }
+        }
+
+        private func startMonitoring() {
+            guard monitor == nil else { return }
+            monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+                guard let self else { return event }
+                switch event.specialKey {
+                case .upArrow:
+                    onMove(.up)
+                    return nil
+                case .downArrow:
+                    onMove(.down)
+                    return nil
+                default:
+                    return event
+                }
+            }
+        }
+
+        private func stopMonitoring() {
+            if let monitor {
+                NSEvent.removeMonitor(monitor)
+                self.monitor = nil
+            }
+        }
+
+        deinit {
+            stopMonitoring()
+        }
     }
 }

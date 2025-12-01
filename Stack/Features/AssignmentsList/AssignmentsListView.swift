@@ -37,7 +37,6 @@ struct AssignmentsListView: View {
                                 )
                                 isQuickAddVisible = false
                             }
-                            .transition(.move(edge: .top).combined(with: .opacity))
                         }
 
                         ForEach(viewModel.assignments) { assignment in
@@ -123,9 +122,7 @@ struct AssignmentsListView: View {
     }
 
     private func showQuickAddRow() {
-        withAnimation {
-            isQuickAddVisible = true
-        }
+        isQuickAddVisible = true
         viewModel.focusQuickAddRow()
     }
 
@@ -189,6 +186,9 @@ struct AssignmentsListView: View {
     }
 
     private func handleEscapeKey() -> Bool {
+        if isQuickAddVisible {
+            isQuickAddVisible = false
+        }
         if isAccountMenuVisible {
             isAccountMenuVisible = false
         }
