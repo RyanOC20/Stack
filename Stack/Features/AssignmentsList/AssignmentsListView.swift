@@ -5,6 +5,9 @@ struct AssignmentsListView: View {
     var onLogout: () -> Void = {}
     @State private var isQuickAddVisible = false
     @State private var isAccountMenuVisible = false
+    @State private var accountMenuHighlightedIndex: Int = 0
+    private let accountMenuOptions: [String] = ["Log Out"]
+    private let dropdownCommitNotification = Notification.Name("StackDropdownCommit")
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -14,7 +17,6 @@ struct AssignmentsListView: View {
             VStack(spacing: 0) {
                 HStack {
                     Spacer()
-                    addButton
                 }
                 .padding(.horizontal, Spacing.contentPadding)
                 .padding(.top, Spacing.contentPadding)
@@ -51,7 +53,11 @@ struct AssignmentsListView: View {
                                     viewModel.requestEditing(for: assignment, field: field)
                                 },
                                 onCancelEditing: {
-                                    viewModel.clearEditingContext()
+                                    if viewModel.isNavigatingViaTab {
+                                        viewModel.isNavigatingViaTab = false
+                                    } else {
+                                        viewModel.clearEditingContext()
+                                    }
                                 },
                                 onStatusChange: { status in
                                     viewModel.updateStatus(status, for: assignment)
@@ -97,14 +103,16 @@ struct AssignmentsListView: View {
         .overlay(
             KeyboardShortcutsHandler(
                 handlers: .init(
-                    onNew: { toggleAccountMenu() },
+                    onNew: { showQuickAddRow() },
                     onUndo: { viewModel.undoDelete() },
                     onDelete: { viewModel.deleteSelectedAssignment() },
                     onReturn: { handleReturnKey() },
                     onMove: { direction in viewModel.moveSelection(direction) },
                     onEscape: { handleEscapeKey() },
                     onTab: { isShiftHeld in handleTabKey(isShiftHeld: isShiftHeld) },
-                    shouldCaptureArrows: { shouldCaptureArrowKeys() }
+                    shouldCaptureArrows: { shouldCaptureArrowKeys() },
+                    onAccountMenu: { toggleAccountMenu() },
+                    onArrowNavigation: { direction in handleArrowNavigation(direction) }
                 )
             )
             .allowsHitTesting(false)
@@ -112,18 +120,6 @@ struct AssignmentsListView: View {
         .onExitCommand {
             handleEscapeKey()
         }
-    }
-
-    private var addButton: some View {
-        Button(action: { showQuickAddRow() }) {
-            Image(systemName: "plus.circle.fill")
-                .font(Typography.assignmentName)
-                .foregroundColor(.white)
-                .padding(10)
-        }
-        .buttonStyle(.plain)
-        .frame(minWidth: 44, minHeight: 44)
-        .accessibilityLabel("Add assignment")
     }
 
     private func showQuickAddRow() {
@@ -142,18 +138,20 @@ struct AssignmentsListView: View {
                 }
 
             VStack(spacing: 0) {
-                Button {
-                    isAccountMenuVisible = false
-                    onLogout()
-                } label: {
-                    Text("Log Out")
-                        .font(Typography.body)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                ForEach(Array(accountMenuOptions.enumerated()), id: \.offset) { index, option in
+                    Button {
+                        selectAccountMenuOption(at: index)
+                    } label: {
+                        Text(option)
+                            .font(Typography.body)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(accountMenuHighlightedIndex == index ? ColorPalette.rowSelection : Color.clear)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
             .frame(width: 220)
             .padding(12)
@@ -165,7 +163,28 @@ struct AssignmentsListView: View {
 
     private func toggleAccountMenu() {
         withAnimation {
+            if !isAccountMenuVisible {
+                accountMenuHighlightedIndex = 0
+            }
             isAccountMenuVisible.toggle()
+        }
+    }
+
+    private func moveAccountMenuHighlight(by delta: Int) {
+        guard !accountMenuOptions.isEmpty else { return }
+        let newIndex = max(0, min(accountMenuOptions.count - 1, accountMenuHighlightedIndex + delta))
+        accountMenuHighlightedIndex = newIndex
+    }
+
+    private func selectAccountMenuOption(at index: Int) {
+        guard accountMenuOptions.indices.contains(index) else { return }
+        let option = accountMenuOptions[index]
+        switch option {
+        case "Log Out":
+            isAccountMenuVisible = false
+            onLogout()
+        default:
+            break
         }
     }
 
@@ -177,24 +196,35 @@ struct AssignmentsListView: View {
         return true
     }
 
-    private func handleReturnKey() {
+    private func handleReturnKey() -> Bool {
+        if isAccountMenuVisible {
+            selectAccountMenuOption(at: accountMenuHighlightedIndex)
+            return true
+        }
+
         if let editingField = viewModel.editingContext?.field {
-            if editingField == .status || editingField == .type {
-                viewModel.clearEditingContext()
+            switch editingField {
+            case .status, .type, .course:
+                NotificationCenter.default.post(name: dropdownCommitNotification, object: nil)
+                return true
+            default:
+                return false
             }
-            return
         }
 
         if viewModel.selectedAssignmentID == nil {
             viewModel.selectFirstAssignment()
-        } else {
-            viewModel.beginEditingSelectedAssignmentStatus()
+            return true
         }
+
+        viewModel.beginEditingSelectedAssignmentStatus()
+        return true
     }
 
     private func handleTabKey(isShiftHeld: Bool) -> Bool {
         if viewModel.editingContext != nil {
             if isShiftHeld {
+                viewModel.isNavigatingViaTab = true
                 viewModel.beginEditingPreviousField()
             } else {
                 viewModel.beginEditingNextField()
@@ -210,6 +240,9 @@ struct AssignmentsListView: View {
     }
 
     private func shouldCaptureArrowKeys() -> Bool {
+        if isAccountMenuVisible {
+            return false
+        }
         guard let field = viewModel.editingContext?.field else { return true }
         switch field {
         case .course, .status, .type:
@@ -217,5 +250,20 @@ struct AssignmentsListView: View {
         default:
             return true
         }
+    }
+
+    private func handleArrowNavigation(_ direction: MoveCommandDirection) -> Bool {
+        if isAccountMenuVisible {
+            switch direction {
+            case .up:
+                moveAccountMenuHighlight(by: -1)
+            case .down:
+                moveAccountMenuHighlight(by: 1)
+            default:
+                break
+            }
+            return true
+        }
+        return false
     }
 }

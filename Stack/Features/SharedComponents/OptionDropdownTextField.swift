@@ -6,6 +6,7 @@ struct OptionDropdownTextField: View {
     let placeholder: String
     let shouldFocus: Bool
     let isReadOnly: Bool
+    let showAllOptions: Bool
     let onCommit: (String) -> Void
     let onCancel: () -> Void
 
@@ -26,6 +27,11 @@ struct OptionDropdownTextField: View {
 
             if isDropdownVisible && !filteredOptions.isEmpty {
                 dropdown
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("StackDropdownCommit"))) { _ in
+            if hasFocus {
+                attemptCommit()
             }
         }
     }
@@ -195,6 +201,9 @@ struct OptionDropdownTextField: View {
     }
 
     private var filteredOptions: [String] {
+        if showAllOptions {
+            return options
+        }
         guard !text.isEmpty else { return options }
         return options.filter { $0.localizedCaseInsensitiveContains(text) }
     }

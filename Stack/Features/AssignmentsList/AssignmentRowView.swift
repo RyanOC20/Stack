@@ -90,7 +90,9 @@ struct AssignmentRowView: View {
         .onChange(of: isEditingName) { editing in
             if editing {
                 nameDraft = assignment.name
-                focusedField = .name
+                DispatchQueue.main.async {
+                    focusedField = .name
+                }
             }
         }
         .onChange(of: isEditingCourse) { editing in
@@ -208,6 +210,7 @@ struct AssignmentRowView: View {
                     placeholder: "Status…",
                     shouldFocus: isEditingStatus,
                     isReadOnly: true,
+                    showAllOptions: true,
                     onCommit: { value in
                         if let status = AssignmentStatus.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
                             onStatusChange(status)
@@ -242,6 +245,7 @@ struct AssignmentRowView: View {
                     placeholder: "Type…",
                     shouldFocus: isEditingType,
                     isReadOnly: true,
+                    showAllOptions: true,
                     onCommit: { value in
                         if let type = AssignmentType.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
                             onTypeChange(type)

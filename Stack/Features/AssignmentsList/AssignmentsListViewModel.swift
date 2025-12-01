@@ -21,6 +21,7 @@ final class AssignmentsListViewModel: ObservableObject {
     @Published var editingContext: EditingContext?
     @Published var quickAddFocusTrigger = UUID()
     @Published var errorMessage: String?
+    var isNavigatingViaTab = false
 
     var availableCourses: [String] {
         courseRepository.availableCourses(from: assignments)
@@ -77,6 +78,7 @@ final class AssignmentsListViewModel: ObservableObject {
 
     func cancelAllSelectionsAndEditing() {
         deselect()
+        isNavigatingViaTab = false
     }
 
     func moveSelection(_ direction: MoveCommandDirection) {
