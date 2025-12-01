@@ -57,6 +57,7 @@ final class AssignmentsListViewModel: ObservableObject {
         do {
             assignments = try await assignmentRepository.fetchAssignments()
             selectedAssignmentID = assignments.first?.id
+            errorMessage = nil
         } catch {
             logger.error("Failed to load assignments: \(error.localizedDescription)")
             errorMessage = "Unable to load assignments."

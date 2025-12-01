@@ -15,11 +15,21 @@ struct StackApp: App {
                 if hasCompletedAuth {
                     AssignmentsListView(
                         viewModel: appState.assignmentsListViewModel,
-                        onLogout: { hasCompletedAuth = false }
+                        onLogout: {
+                            appState.handleLogout()
+                            hasCompletedAuth = false
+                        }
                     )
                         .frame(minWidth: 720, minHeight: 480)
                 } else {
-                    AuthFlowView(isAuthenticated: $hasCompletedAuth)
+                    AuthFlowView(
+                        isAuthenticated: $hasCompletedAuth,
+                        authService: appState.authService,
+                        onAuthSuccess: { session in
+                            appState.handleAuthentication(session: session)
+                            hasCompletedAuth = true
+                        }
+                    )
                 }
             }
             .font(Typography.body)

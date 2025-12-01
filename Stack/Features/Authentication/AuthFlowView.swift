@@ -8,11 +8,14 @@ struct AuthFlowView: View {
     }
 
     @Binding var isAuthenticated: Bool
+    let authService: SupabaseAuthService?
+    var onAuthSuccess: ((SupabaseSession?) -> Void)?
     @State private var step: Step = .welcome
     @State private var emailOrPhone: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var errorMessage: String?
+    @State private var isLoading = false
 
     var body: some View {
         ZStack {
@@ -86,6 +89,7 @@ struct AuthFlowView: View {
             primaryButton(title: "Create Account") {
                 submitCreateAccount()
             }
+            .disabled(isLoading)
 
             secondaryButton(title: "Back") {
                 step = .welcome
@@ -114,6 +118,7 @@ struct AuthFlowView: View {
             primaryButton(title: "Log In") {
                 submitLogIn()
             }
+            .disabled(isLoading)
 
             secondaryButton(title: "Back") {
                 step = .welcome
@@ -189,7 +194,29 @@ struct AuthFlowView: View {
             return
         }
 
-        isAuthenticated = true
+        guard let authService else {
+            isAuthenticated = true
+            onAuthSuccess?(nil)
+            return
+        }
+
+        isLoading = true
+        Task {
+            do {
+                let session = try await authService.signUp(email: emailOrPhone, password: password)
+                await MainActor.run {
+                    isAuthenticated = true
+                    onAuthSuccess?(session)
+                }
+            } catch {
+                await MainActor.run {
+                    errorMessage = SupabaseErrorMapper.map(error).message
+                }
+            }
+            await MainActor.run {
+                isLoading = false
+            }
+        }
     }
 
     private func submitLogIn() {
@@ -199,7 +226,29 @@ struct AuthFlowView: View {
             return
         }
 
-        isAuthenticated = true
+        guard let authService else {
+            isAuthenticated = true
+            onAuthSuccess?(nil)
+            return
+        }
+
+        isLoading = true
+        Task {
+            do {
+                let session = try await authService.signIn(email: emailOrPhone, password: password)
+                await MainActor.run {
+                    isAuthenticated = true
+                    onAuthSuccess?(session)
+                }
+            } catch {
+                await MainActor.run {
+                    errorMessage = SupabaseErrorMapper.map(error).message
+                }
+            }
+            await MainActor.run {
+                isLoading = false
+            }
+        }
     }
 
     private func resetForm() {
