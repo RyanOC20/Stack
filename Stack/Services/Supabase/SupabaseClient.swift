@@ -62,11 +62,18 @@ final class SupabaseClient {
 
     let configuration: Configuration
     private let urlSession: URLSession
+    private let sessionStore: SupabaseSessionStore
     private var session: SupabaseSession?
 
-    init(configuration: Configuration, urlSession: URLSession = .shared) {
+    init(configuration: Configuration,
+         urlSession: URLSession = .shared,
+         sessionStore: SupabaseSessionStore? = nil) {
         self.configuration = configuration
         self.urlSession = urlSession
+        self.sessionStore = sessionStore ?? UserDefaultsSupabaseSessionStore(
+            storageKey: Self.makeSessionStorageKey(for: configuration.url.absoluteString)
+        )
+        self.session = self.sessionStore.loadSession()
     }
 
     var currentUserID: UUID? {
@@ -75,10 +82,12 @@ final class SupabaseClient {
 
     func setSession(_ session: SupabaseSession) {
         self.session = session
+        sessionStore.save(session)
     }
 
     func clearSession() {
         session = nil
+        sessionStore.clear()
     }
 
     func makeRequest(path: String,
@@ -160,5 +169,46 @@ final class SupabaseClient {
             }
             throw ClientError.invalidResponse
         }
+    }
+
+    private static func makeSessionStorageKey(for urlString: String) -> String {
+        "SupabaseSession-\(urlString)"
+    }
+}
+
+protocol SupabaseSessionStore {
+    func loadSession() -> SupabaseSession?
+    func save(_ session: SupabaseSession)
+    func clear()
+}
+
+struct UserDefaultsSupabaseSessionStore: SupabaseSessionStore {
+    private let defaults: UserDefaults
+    private let storageKey: String
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
+
+    init(defaults: UserDefaults = .standard,
+         storageKey: String,
+         encoder: JSONEncoder = JSONEncoder(),
+         decoder: JSONDecoder = JSONDecoder()) {
+        self.defaults = defaults
+        self.storageKey = storageKey
+        self.encoder = encoder
+        self.decoder = decoder
+    }
+
+    func loadSession() -> SupabaseSession? {
+        guard let data = defaults.data(forKey: storageKey) else { return nil }
+        return try? decoder.decode(SupabaseSession.self, from: data)
+    }
+
+    func save(_ session: SupabaseSession) {
+        guard let data = try? encoder.encode(session) else { return }
+        defaults.set(data, forKey: storageKey)
+    }
+
+    func clear() {
+        defaults.removeObject(forKey: storageKey)
     }
 }

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,7 +18,6 @@
 		340508D381BA619981997CBB /* ErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907331F4803526E1C4AAE4FD /* ErrorBannerView.swift */; };
 		379170265E719078200226DC /* CourseRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9EE3481DC5242905962930 /* CourseRepository.swift */; };
 		3A4CE121072F77684F65802E /* AssignmentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBB92A831EA479D15A88A99 /* AssignmentType.swift */; };
-		3E6AFBDF6B8E4E4E8F832482 /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */; };
 		3F55418C0EEFD510FC6A73FB /* DateInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560A5D0CF9A424CC8D00BE51 /* DateInputField.swift */; };
 		414E86D37E50746B6E0FBA26 /* AssignmentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC026283C2052304FAFFA757 /* AssignmentRepository.swift */; };
 		49169A1C04DB37E05A370979 /* LocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435E2FEBF6747B8D93B01D94 /* LocalCache.swift */; };
@@ -27,20 +26,18 @@
 		4EB5E30C3233C4053486949A /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EE3CB492C8E6519503E833 /* Typography.swift */; };
 		57F661C6F3DF1306999D20E2 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1283A116A1AB73E3E49ED982 /* Spacing.swift */; };
 		5B79B3FFA5CE27461B2E182D /* CourseTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E35798F8B262AD86338BBD5 /* CourseTextField.swift */; };
+		5D8B3EE0BA3D4E3186A2B01C /* Environment.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */; };
 		662F24E38AE7FC3539553DCC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E60DEC22F4936A94D96B54E /* Localizable.strings */; };
 		6E0EB889B4B8F20C9C9D0B59 /* OptionDropdownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2F7F5CF4B3C6D2BA9F12B5 /* OptionDropdownTextField.swift */; };
 		7742B2D88AFD74E740E9F892 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74EE02E7587243BB30028A65 /* Colors.xcassets */; };
 		81FCA144DC1B5F3F86E5B1A3 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE76BBBB101132036979E292 /* Logger.swift */; };
 		862B98E703354D931D6F5A82 /* StatusDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039A5E05053B4791D96300A5 /* StatusDropdown.swift */; };
-		8B6CFD8F1A6F4F74A8B4E3B5 /* Satoshi-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */; };
 		9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */; };
 		9FF6E8CD1E1F6A24D4B58D31 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CFF906E419B04C973F3306 /* SupabaseClient.swift */; };
 		A43A0FACEC1AB7C4D0EDFD6E /* FontRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D85A77C2EAB42E2A13352F5 /* FontRegistrar.swift */; };
-		A9E8B0F5F0DE46D596A0D78F /* Satoshi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */; };
 		AD049CCDF7EAE27B99BB8A2B /* AssignmentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B856224F5435B7EF83D26B3 /* AssignmentRowView.swift */; };
 		AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */; };
 		AE16403C91651AAAB5E556BD /* KeyboardShortcutsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */; };
-		5D8B3EE0BA3D4E3186A2B01C /* Environment.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */; };
 		B5CD62DC2FA22698CBEFE1F7 /* QuickAddRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6714B7930291EBD5AB1D0D21 /* QuickAddRowView.swift */; };
 		B89E1289E0655343B5494714 /* StackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1540AC8B701538FA15DACEC8 /* StackApp.swift */; };
 		B8EBC951628168C51E0F48FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379F2C39108BDA1ADDE64CDB /* Assets.xcassets */; };
@@ -52,10 +49,8 @@
 		D25D52A8CC279B1317F712CC /* TypeDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */; };
 		D9251D924951686B634FE62B /* StackUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* StackUITests.swift */; };
 		D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */; };
-		EDC0E194F22B423E98B40056 /* Satoshi-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */; };
 		F0E1D2C3B4A5968778695A5C /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */; };
 		F1CE15FD16C54DD3B3D3C986 /* RowBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */; };
-		F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,7 +77,6 @@
 		11236ED3F36BF6F74088FD53 /* AssignmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentStatus.swift; sourceTree = "<group>"; };
 		1283A116A1AB73E3E49ED982 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		1540AC8B701538FA15DACEC8 /* StackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackApp.swift; sourceTree = "<group>"; };
-		189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = text; path = "NotoSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeDropdown.swift; sourceTree = "<group>"; };
 		264A6DC1D0C358840544F960 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		34C6447BBC2A2AA97AF94CE6 /* AssignmentsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentsListViewModel.swift; sourceTree = "<group>"; };
@@ -101,6 +95,7 @@
 		688CCB6BD60FDF5FB2BB773C /* AssignmentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentsListView.swift; sourceTree = "<group>"; };
 		6AFD0D382B3ADF00A7E9CE39 /* StackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B856224F5435B7EF83D26B3 /* AssignmentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRowView.swift; sourceTree = "<group>"; };
+		6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Environment.plist; sourceTree = "<group>"; };
 		6DBB92A831EA479D15A88A99 /* AssignmentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentType.swift; sourceTree = "<group>"; };
 		70EE3CB492C8E6519503E833 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		74EE02E7587243BB30028A65 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
@@ -111,14 +106,10 @@
 		95E7E5EEB248193BDB1C7E2F /* SupabaseErrorMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseErrorMapper.swift; sourceTree = "<group>"; };
 		9E35798F8B262AD86338BBD5 /* CourseTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseTextField.swift; sourceTree = "<group>"; };
 		9E60DEC22F4936A94D96B54E /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Regular.ttf"; sourceTree = "<group>"; };
-		A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Medium.ttf"; sourceTree = "<group>"; };
 		B07177A0B94059F2FBB12AC1 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		BCCF077D719F99BD5335EC30 /* StackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE47E6CE3B5178D9E8ACB30D /* SupabaseAssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAssignmentRepository.swift; sourceTree = "<group>"; };
-		BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = text; path = "NotoSans-Regular.ttf"; sourceTree = "<group>"; };
 		C0CFF906E419B04C973F3306 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
-		C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Bold.ttf"; sourceTree = "<group>"; };
 		CC026283C2052304FAFFA757 /* AssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRepository.swift; sourceTree = "<group>"; };
 		D2FB4F64F4D82732270D8959 /* Stack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Regular.ttf"; sourceTree = "<group>"; };
@@ -129,8 +120,6 @@
 		EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsHandler.swift; sourceTree = "<group>"; };
 		F776DAB2647C4C73B2B53F4D /* EnvironmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentConfiguration.swift; sourceTree = "<group>"; };
 		FE76BBBB101132036979E292 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Environment.plist; sourceTree = "<group>"; };
-		9A2B8F4B7D7F4A51ACBEE301 /* Environment.plist.example */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Environment.plist.example; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +158,14 @@
 				7F2F7F5CF4B3C6D2BA9F12B5 /* OptionDropdownTextField.swift */,
 			);
 			path = SharedComponents;
+			sourceTree = "<group>";
+		};
+		13AF2A0D2EDD73780099143D /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		1D7B6B30E2B20C1F9C4BC6C5 /* Products */ = {
@@ -313,11 +310,6 @@
 		E4BA13CBEAFB5F9BF02F49A7 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				BF6A0F4AE9B475FA7A9291E1 /* NotoSans-Regular.ttf */,
-				189E6A2B2C8C3AA5B64C6B2C /* NotoSans-SemiBold.ttf */,
-				9E7B1C3BCE8F4AA3A0D34C0B /* Satoshi-Regular.ttf */,
-				A5C4E37C693E47DD9F584C2E /* Satoshi-Medium.ttf */,
-				C2B2A2C2B9F44DF1A63D153B /* Satoshi-Bold.ttf */,
 				D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */,
 			);
 			path = Fonts;
@@ -332,15 +324,6 @@
 				1540AC8B701538FA15DACEC8 /* StackApp.swift */,
 			);
 			path = App;
-			sourceTree = "<group>";
-		};
-		13AF2A0D2EDD73780099143D /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */,
-				9A2B8F4B7D7F4A51ACBEE301 /* Environment.plist.example */,
-			);
-			path = Config;
 			sourceTree = "<group>";
 		};
 		F7A5CC97631FB98B7AD57C1F /* Persistence */ = {
@@ -369,7 +352,6 @@
 				4D818A0BF013FCF19D383E03 /* Features */,
 				3BA48A74A1361A869C24927E /* Models */,
 				C2427CF89B35673D9F338328 /* Services */,
-				13AF2A0D2EDD73780099143D /* Config */,
 				FF443576919C131BB18D46C0 /* Resources */,
 				345CF4CD764C3483B024F8B8 /* Styling */,
 				BEDA48776DF6A90D662A2AD3 /* Supporting */,
@@ -510,11 +492,6 @@
 				B8EBC951628168C51E0F48FC /* Assets.xcassets in Resources */,
 				7742B2D88AFD74E740E9F892 /* Colors.xcassets in Resources */,
 				662F24E38AE7FC3539553DCC /* Localizable.strings in Resources */,
-				3E6AFBDF6B8E4E4E8F832482 /* NotoSans-Regular.ttf in Resources */,
-				F47121C4A965B7D0C31B42E3 /* NotoSans-SemiBold.ttf in Resources */,
-				8B6CFD8F1A6F4F74A8B4E3B5 /* Satoshi-Regular.ttf in Resources */,
-				EDC0E194F22B423E98B40056 /* Satoshi-Medium.ttf in Resources */,
-				A9E8B0F5F0DE46D596A0D78F /* Satoshi-Bold.ttf in Resources */,
 				F0E1D2C3B4A5968778695A5C /* JetBrainsMono-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

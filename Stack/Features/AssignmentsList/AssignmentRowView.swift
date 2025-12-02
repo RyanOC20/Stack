@@ -75,6 +75,10 @@ struct AssignmentRowView: View {
         .onTapGesture {
             onSelect()
         }
+        .onDisappear {
+            // Clear focus when the row goes away to prevent cross-window first responder warnings.
+            focusedField = nil
+        }
         .onAppear {
             nameDraft = assignment.name
             courseDraft = assignment.course

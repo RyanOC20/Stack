@@ -112,6 +112,10 @@ struct QuickAddRowView: View {
         .onChange(of: focusTrigger) { _ in
             focusNameField()
         }
+        .onDisappear {
+            // Clear focus to avoid SwiftUI trying to move first responder to a view that's no longer in the hierarchy.
+            focusedField = nil
+        }
     }
 
     private func focusNameField() {

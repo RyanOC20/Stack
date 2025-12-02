@@ -5,6 +5,13 @@ struct StackApp: App {
     @AppStorage("hasCompletedAuth") private var hasCompletedAuth = false
     @StateObject private var appState = AppState()
 
+    private var isAuthenticated: Bool {
+        if appState.authService != nil {
+            return appState.hasSupabaseSession
+        }
+        return hasCompletedAuth
+    }
+
     init() {
         FontRegistrar.registerFonts()
     }
@@ -12,7 +19,7 @@ struct StackApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if hasCompletedAuth {
+                if isAuthenticated {
                     AssignmentsListView(
                         viewModel: appState.assignmentsListViewModel,
                         onLogout: {
@@ -34,14 +41,9 @@ struct StackApp: App {
             }
             .font(Typography.body)
             .foregroundColor(.white)
-            .onAppear {
-                if !appState.hasSupabaseSession {
-                    hasCompletedAuth = false
-                }
-            }
         }
         .commands {
-            if hasCompletedAuth {
+            if isAuthenticated {
                 CommandGroup(replacing: .newItem) {
                     Button("New Assignment") {
                         appState.assignmentsListViewModel.focusQuickAddRow()
