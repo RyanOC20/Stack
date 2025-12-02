@@ -20,7 +20,33 @@ struct SupabaseSession: Codable {
 struct SupabaseErrorResponse: Decodable, Error {
     let message: String?
     let error: String?
+    let errorDescription: String?
     let status: Int?
+    let rawBody: String?
+
+    init(message: String?, error: String?, errorDescription: String? = nil, status: Int?, rawBody: String? = nil) {
+        self.message = message
+        self.error = error
+        self.errorDescription = errorDescription
+        self.status = status
+        self.rawBody = rawBody
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case message
+        case error
+        case errorDescription = "error_description"
+        case status
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let message = try container.decodeIfPresent(String.self, forKey: .message)
+        let error = try container.decodeIfPresent(String.self, forKey: .error)
+        let errorDescription = try container.decodeIfPresent(String.self, forKey: .errorDescription)
+        let status = try container.decodeIfPresent(Int.self, forKey: .status)
+        self.init(message: message, error: error, errorDescription: errorDescription, status: status)
+    }
 }
 
 final class SupabaseClient {
@@ -100,10 +126,23 @@ final class SupabaseClient {
         }
 
         guard (200..<300).contains(httpResponse.statusCode) else {
+            let bodyString = String(data: data, encoding: .utf8)
             if let mappedError = try? decoder.decode(SupabaseErrorResponse.self, from: data) {
-                throw mappedError
+                throw SupabaseErrorResponse(
+                    message: mappedError.message,
+                    error: mappedError.error,
+                    errorDescription: mappedError.errorDescription,
+                    status: mappedError.status ?? httpResponse.statusCode,
+                    rawBody: bodyString
+                )
             }
-            throw ClientError.invalidResponse
+            throw SupabaseErrorResponse(
+                message: nil,
+                error: bodyString,
+                errorDescription: nil,
+                status: httpResponse.statusCode,
+                rawBody: bodyString
+            )
         }
 
         return try decoder.decode(T.self, from: data)

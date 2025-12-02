@@ -34,6 +34,11 @@ struct StackApp: App {
             }
             .font(Typography.body)
             .foregroundColor(.white)
+            .onAppear {
+                if !appState.hasSupabaseSession {
+                    hasCompletedAuth = false
+                }
+            }
         }
         .commands {
             if hasCompletedAuth {

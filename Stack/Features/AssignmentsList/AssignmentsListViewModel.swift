@@ -43,13 +43,16 @@ final class AssignmentsListViewModel: ObservableObject {
 
     init(assignmentRepository: AssignmentRepositoryProtocol,
          courseRepository: CourseRepositoryProviding,
-         logger: Logger) {
+         logger: Logger,
+         autoLoad: Bool = true) {
         self.assignmentRepository = assignmentRepository
         self.courseRepository = courseRepository
         self.logger = logger
 
-        Task {
-            await loadAssignments()
+        if autoLoad {
+            Task {
+                await loadAssignments()
+            }
         }
     }
 

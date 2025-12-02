@@ -5,17 +5,30 @@ final class SupabaseAssignmentRepository: AssignmentRepositoryProtocol {
     private let logger: Logger
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
+    private static let isoWithFractional: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+    private static let isoWithoutFractional: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
+    private static let fallbackRFC3339: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
+        return formatter
+    }()
 
     init(client: SupabaseClient, logger: Logger) {
         self.client = client
         self.logger = logger
 
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .custom { date, encoder in
-            let string = isoFormatter.string(from: date)
+            let string = SupabaseAssignmentRepository.isoWithFractional.string(from: date)
             var container = encoder.singleValueContainer()
             try container.encode(string)
         }
@@ -25,7 +38,9 @@ final class SupabaseAssignmentRepository: AssignmentRepositoryProtocol {
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let string = try container.decode(String.self)
-            if let date = isoFormatter.date(from: string) {
+            if let date = SupabaseAssignmentRepository.isoWithFractional.date(from: string)
+                ?? SupabaseAssignmentRepository.isoWithoutFractional.date(from: string)
+                ?? SupabaseAssignmentRepository.fallbackRFC3339.date(from: string) {
                 return date
             }
             throw DecodingError.dataCorrupted(
