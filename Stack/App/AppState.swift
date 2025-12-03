@@ -28,6 +28,10 @@ final class AppState: ObservableObject {
             logger: environment.logger,
             autoLoad: shouldAutoLoad
         )
+
+        assignmentsListViewModel.onSessionExpired = { [weak self] in
+            self?.handleLogout()
+        }
     }
 
     func handleAuthentication(session: SupabaseSession?) {

@@ -41,6 +41,7 @@ struct StackApp: App {
             }
             .font(Typography.body)
             .foregroundColor(.white)
+            .background(WindowAppearanceConfigurator())
         }
         .commands {
             if isAuthenticated {

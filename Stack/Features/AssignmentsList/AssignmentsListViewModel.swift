@@ -22,6 +22,7 @@ final class AssignmentsListViewModel: ObservableObject {
     @Published var quickAddFocusTrigger = UUID()
     @Published var errorMessage: String?
     var isNavigatingViaTab = false
+    var onSessionExpired: (() -> Void)?
 
     var availableCourses: [String] {
         courseRepository.availableCourses(from: assignments)
@@ -62,8 +63,15 @@ final class AssignmentsListViewModel: ObservableObject {
             selectedAssignmentID = assignments.first?.id
             errorMessage = nil
         } catch {
-            logger.error("Failed to load assignments: \(error.localizedDescription)")
-            errorMessage = "Unable to load assignments."
+            let mappedError = SupabaseErrorMapper.map(error)
+            logger.error("Failed to load assignments: \(mappedError.message)")
+            errorMessage = mappedError.message
+
+            if let supabaseError = error as? SupabaseErrorResponse,
+               let status = supabaseError.status,
+               status == 401 || status == 403 {
+                onSessionExpired?()
+            }
         }
     }
 

@@ -23,7 +23,7 @@ Stack/
 ## Getting Started
 1. Install Xcode 15 or newer plus the Swift toolchain.
 2. Install the Supabase CLI (`brew install supabase/tap/supabase`).
-3. Run `scripts/bootstrap.sh` from the repo root to install dependencies and configure config templates.
+3. Run `scripts/bootstrap.sh` from the repo root to install dependencies and copy config templates (`Config/Environment.plist` and `supabase/config/supabase.env`). Populate those with your Supabase URL/anon key, or export `SUPABASE_URL`/`SUPABASE_ANON_KEY` in your shell instead.
 4. Open `Stack.xcodeproj` in Xcode and select the "Stack" scheme to build and run.
 5. Follow `docs/SUPABASE_SETUP.md` to start a local Supabase instance and run migrations.
 

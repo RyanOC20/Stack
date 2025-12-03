@@ -1,7 +1,7 @@
 # Supabase Setup
 
 ## Configure Environment
-1. Copy `supabase/config/supabase.env.example` to `.env` and fill in your Supabase project reference, anon, and service keys.
+1. Copy `supabase/config/supabase.env.example` to `supabase/config/supabase.env` (or `.env` if you prefer) and fill in your Supabase project reference, anon, and service keys. The bootstrap script will create `supabase/config/supabase.env` for you if it does not exist.
 2. Export the variables in your shell session or let the Supabase CLI load them automatically.
 
 ## Start Local Stack

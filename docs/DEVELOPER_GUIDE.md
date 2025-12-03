@@ -11,7 +11,7 @@
 ```
 ./scripts/bootstrap.sh
 ```
-This script installs Homebrew dependencies (if missing), copies example config files, and reminds you to supply Supabase credentials.
+This script installs Homebrew dependencies (if missing), copies example config files, and reminds you to supply Supabase credentials. It will create `Config/Environment.plist` and `supabase/config/supabase.env` from their `.example` templates if missing—fill them with your Supabase URL/anon key, or export `SUPABASE_URL`/`SUPABASE_ANON_KEY` in your shell instead. The real config files are gitignored; avoid committing secrets.
 
 ## Running the App
 1. Open `Stack.xcodeproj` in Xcode.

@@ -21,4 +21,4 @@ if [ ! -f supabase/config/supabase.env ]; then
   echo "Created supabase/config/supabase.env"
 fi
 
-echo "Bootstrap complete. Update Config/Environment.plist with Supabase credentials."
+echo "Bootstrap complete. Populate Config/Environment.plist or export SUPABASE_URL/SUPABASE_ANON_KEY. Update supabase/config/supabase.env (gitignored) for Supabase CLI."

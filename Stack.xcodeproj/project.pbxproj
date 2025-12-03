@@ -40,6 +40,7 @@
 		AE16403C91651AAAB5E556BD /* KeyboardShortcutsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */; };
 		B5CD62DC2FA22698CBEFE1F7 /* QuickAddRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6714B7930291EBD5AB1D0D21 /* QuickAddRowView.swift */; };
 		B89E1289E0655343B5494714 /* StackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1540AC8B701538FA15DACEC8 /* StackApp.swift */; };
+		B8E0A7CF9AF35B879E1A7B55 /* WindowAppearanceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071890ABCDEF /* WindowAppearanceConfigurator.swift */; };
 		B8EBC951628168C51E0F48FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379F2C39108BDA1ADDE64CDB /* Assets.xcassets */; };
 		B997D52942115B55717FA9F0 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40847A01C84A892D4A9700E0 /* Assignment.swift */; };
 		B9E75CF7936AAF877CEDFC46 /* AssignmentsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688CCB6BD60FDF5FB2BB773C /* AssignmentsListView.swift */; };
@@ -77,6 +78,7 @@
 		11236ED3F36BF6F74088FD53 /* AssignmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentStatus.swift; sourceTree = "<group>"; };
 		1283A116A1AB73E3E49ED982 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		1540AC8B701538FA15DACEC8 /* StackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackApp.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071890ABCDEF /* WindowAppearanceConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAppearanceConfigurator.swift; sourceTree = "<group>"; };
 		1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeDropdown.swift; sourceTree = "<group>"; };
 		264A6DC1D0C358840544F960 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		34C6447BBC2A2AA97AF94CE6 /* AssignmentsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentsListViewModel.swift; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 				479AD0FD0B127476E185D112 /* AppState.swift */,
 				F776DAB2647C4C73B2B53F4D /* EnvironmentConfiguration.swift */,
 				1540AC8B701538FA15DACEC8 /* StackApp.swift */,
+				A1B2C3D4E5F6071890ABCDEF /* WindowAppearanceConfigurator.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -531,6 +534,7 @@
 				4B3E0238EAE22C33D8C2A6AC /* EnvironmentConfiguration.swift in Sources */,
 				CF813F9B4B3104E439A1B94D /* AppState.swift in Sources */,
 				B89E1289E0655343B5494714 /* StackApp.swift in Sources */,
+				B8E0A7CF9AF35B879E1A7B55 /* WindowAppearanceConfigurator.swift in Sources */,
 				B9E75CF7936AAF877CEDFC46 /* AssignmentsListView.swift in Sources */,
 				0AF1C38F1B53A3C6C6D71505 /* AssignmentsListViewModel.swift in Sources */,
 				AD049CCDF7EAE27B99BB8A2B /* AssignmentRowView.swift in Sources */,
