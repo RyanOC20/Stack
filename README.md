@@ -30,5 +30,15 @@ Stack/
 ## Contributing
 Please read the docs in the `docs/` folder for architecture details, coding conventions, and development workflows. Pull requests should include updated documentation and tests where applicable.
 
+## Continuous Integration
+- GitHub Actions runs SwiftFormat in lint mode, SwiftLint (`--strict`), and `xcodebuild test` on macOS runners with code signing disabled.
+- Match CI locally with:
+  ```
+  brew install swiftformat swiftlint
+  swiftformat --lint Stack Tests
+  swiftlint --strict
+  xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" test
+  ```
+
 ## License
 MIT License. See [LICENSE](LICENSE) for details.

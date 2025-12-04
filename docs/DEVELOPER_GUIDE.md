@@ -44,6 +44,16 @@ xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' 
 ```
 Unit tests live under `Tests/StackTests`. UI coverage starts in `Tests/StackUITests`.
 
+## CI
+- GitHub Actions runs SwiftFormat in lint mode, SwiftLint (`--strict`), and `xcodebuild test` with code signing disabled on macOS runners.
+- To mirror CI locally:
+  ```
+  brew install swiftformat swiftlint
+  swiftformat --lint Stack Tests
+  swiftlint --strict
+  xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" test
+  ```
+
 ## Commit Process
 - Run the formatter (`scripts/format.sh`).
 - Ensure unit tests pass.
