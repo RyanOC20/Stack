@@ -9,7 +9,6 @@ struct AssignmentDTO: Codable {
     let dueAt: Date
     let createdAt: Date
     let updatedAt: Date
-    let userId: UUID?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -20,10 +19,9 @@ struct AssignmentDTO: Codable {
         case dueAt = "due_at"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
-        case userId = "user_id"
     }
 
-    init(assignment: Assignment, userId: UUID? = nil) {
+    init(assignment: Assignment) {
         id = assignment.id
         status = assignment.status.rawValue
         name = assignment.name
@@ -32,7 +30,6 @@ struct AssignmentDTO: Codable {
         dueAt = assignment.dueAt
         createdAt = assignment.createdAt
         updatedAt = assignment.updatedAt
-        self.userId = userId
     }
 
     func toModel() -> Assignment {

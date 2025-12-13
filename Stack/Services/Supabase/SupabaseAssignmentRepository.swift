@@ -72,11 +72,11 @@ final class SupabaseAssignmentRepository: AssignmentRepositoryProtocol {
     }
 
     func upsertAssignment(_ assignment: Assignment) async throws {
-        guard let userId = client.currentUserID else {
+        guard client.currentUserID != nil else {
             throw SupabaseClient.ClientError.missingSession
         }
 
-        let dto = AssignmentDTO(assignment: assignment, userId: userId)
+        let dto = AssignmentDTO(assignment: assignment)
         let body = try encoder.encode([dto])
         let request = try client.makeRequest(
             path: "/rest/v1/assignments",

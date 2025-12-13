@@ -33,8 +33,11 @@
 		81FCA144DC1B5F3F86E5B1A3 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE76BBBB101132036979E292 /* Logger.swift */; };
 		862B98E703354D931D6F5A82 /* StatusDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039A5E05053B4791D96300A5 /* StatusDropdown.swift */; };
 		9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */; };
+		9D93F0483FC14829AF263831 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBE506AA3E24373A8A21E2B /* TestHelpers.swift */; };
 		9FF6E8CD1E1F6A24D4B58D31 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CFF906E419B04C973F3306 /* SupabaseClient.swift */; };
+		A486DA8225714E65BA67F5D3 /* Stack.app in Frameworks */ = {isa = PBXBuildFile; fileRef = D2FB4F64F4D82732270D8959 /* Stack.app */; };
 		A43A0FACEC1AB7C4D0EDFD6E /* FontRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D85A77C2EAB42E2A13352F5 /* FontRegistrar.swift */; };
+		A54FF8029BF14428B69818F5 /* AssignmentDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */; };
 		AD049CCDF7EAE27B99BB8A2B /* AssignmentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B856224F5435B7EF83D26B3 /* AssignmentRowView.swift */; };
 		AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */; };
 		AE16403C91651AAAB5E556BD /* KeyboardShortcutsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */; };
@@ -47,11 +50,17 @@
 		C418ACFDD588533B59312A40 /* SupabaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35220800AD0B7F5B684B5F0B /* SupabaseAuthService.swift */; };
 		C7CC06DDB6D834DE86AFE813 /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA7C1F1B07A88D9E8F6810B /* Course.swift */; };
 		CF813F9B4B3104E439A1B94D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479AD0FD0B127476E185D112 /* AppState.swift */; };
+		C3501466C96044458BE39254 /* LocalCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E642FC73B23E47F58559777F /* LocalCacheTests.swift */; };
 		D25D52A8CC279B1317F712CC /* TypeDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */; };
 		D9251D924951686B634FE62B /* StackUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* StackUITests.swift */; };
 		D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */; };
 		F0E1D2C3B4A5968778695A5C /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */; };
 		F1CE15FD16C54DD3B3D3C986 /* RowBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */; };
+		FA0C8FBC33DD49438618623B /* SupabaseErrorMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73ECE7BA995B42CE808BE4DC /* SupabaseErrorMapperTests.swift */; };
+		26A4C5389DF0404389708931 /* CourseRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0033B616B71849CD8CF0F8AA /* CourseRepositoryTests.swift */; };
+		3C2205D570014F65A43CF924 /* SupabaseAssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E33F0C503B4D2F8F1DED00 /* SupabaseAssignmentRepositoryTests.swift */; };
+		500BE9D84B9148B98DB79852 /* SupabaseAuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71D772E68BEF43328F9BE4E9 /* SupabaseAuthServiceTests.swift */; };
+		D6A9A8B0590541D6991F9DE3 /* SupabaseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +84,7 @@
 		018C729ECD723876779C6D8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		039A5E05053B4791D96300A5 /* StatusDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusDropdown.swift; sourceTree = "<group>"; };
 		0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRepositoryTests.swift; sourceTree = "<group>"; };
+		0033B616B71849CD8CF0F8AA /* CourseRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRepositoryTests.swift; sourceTree = "<group>"; };
 		11236ED3F36BF6F74088FD53 /* AssignmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentStatus.swift; sourceTree = "<group>"; };
 		1283A116A1AB73E3E49ED982 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		1540AC8B701538FA15DACEC8 /* StackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackApp.swift; sourceTree = "<group>"; };
@@ -85,8 +95,11 @@
 		35220800AD0B7F5B684B5F0B /* SupabaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAuthService.swift; sourceTree = "<group>"; };
 		379F2C39108BDA1ADDE64CDB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentsListViewModelTests.swift; sourceTree = "<group>"; };
+		71D772E68BEF43328F9BE4E9 /* SupabaseAuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAuthServiceTests.swift; sourceTree = "<group>"; };
 		40847A01C84A892D4A9700E0 /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
 		4196D58DB42F80CD31184E2F /* AssignmentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentDTO.swift; sourceTree = "<group>"; };
+		73ECE7BA995B42CE808BE4DC /* SupabaseErrorMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseErrorMapperTests.swift; sourceTree = "<group>"; };
+		7FBE506AA3E24373A8A21E2B /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		435E2FEBF6747B8D93B01D94 /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
 		479AD0FD0B127476E185D112 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowBackgroundModifier.swift; sourceTree = "<group>"; };
@@ -108,8 +121,11 @@
 		95E7E5EEB248193BDB1C7E2F /* SupabaseErrorMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseErrorMapper.swift; sourceTree = "<group>"; };
 		9E35798F8B262AD86338BBD5 /* CourseTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseTextField.swift; sourceTree = "<group>"; };
 		9E60DEC22F4936A94D96B54E /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientTests.swift; sourceTree = "<group>"; };
 		B07177A0B94059F2FBB12AC1 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
+		A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentDTOTests.swift; sourceTree = "<group>"; };
 		BCCF077D719F99BD5335EC30 /* StackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2E33F0C503B4D2F8F1DED00 /* SupabaseAssignmentRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAssignmentRepositoryTests.swift; sourceTree = "<group>"; };
 		BE47E6CE3B5178D9E8ACB30D /* SupabaseAssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAssignmentRepository.swift; sourceTree = "<group>"; };
 		C0CFF906E419B04C973F3306 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		CC026283C2052304FAFFA757 /* AssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRepository.swift; sourceTree = "<group>"; };
@@ -118,6 +134,7 @@
 		D7512564847D811191FCA966 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		DDA7C1F1B07A88D9E8F6810B /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		E0B4393B29C04F479E2C4EC3 /* AuthFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowView.swift; sourceTree = "<group>"; };
+		E642FC73B23E47F58559777F /* LocalCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCacheTests.swift; sourceTree = "<group>"; };
 		E9D0F4F1F54974280C96DC24 /* UserDefaultsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStore.swift; sourceTree = "<group>"; };
 		EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsHandler.swift; sourceTree = "<group>"; };
 		F776DAB2647C4C73B2B53F4D /* EnvironmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentConfiguration.swift; sourceTree = "<group>"; };
@@ -129,6 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A486DA8225714E65BA67F5D3 /* Stack.app in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,8 +224,16 @@
 		3DAECE55A621F18875E127D4 /* StackTests */ = {
 			isa = PBXGroup;
 			children = (
-				3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */,
+				7FBE506AA3E24373A8A21E2B /* TestHelpers.swift */,
 				0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */,
+				3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */,
+				0033B616B71849CD8CF0F8AA /* CourseRepositoryTests.swift */,
+				E642FC73B23E47F58559777F /* LocalCacheTests.swift */,
+				A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */,
+				73ECE7BA995B42CE808BE4DC /* SupabaseErrorMapperTests.swift */,
+				989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */,
+				C2E33F0C503B4D2F8F1DED00 /* SupabaseAssignmentRepositoryTests.swift */,
+				71D772E68BEF43328F9BE4E9 /* SupabaseAuthServiceTests.swift */,
 			);
 			path = StackTests;
 			sourceTree = "<group>";
@@ -513,6 +539,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D93F0483FC14829AF263831 /* TestHelpers.swift in Sources */,
+				26A4C5389DF0404389708931 /* CourseRepositoryTests.swift in Sources */,
+				C3501466C96044458BE39254 /* LocalCacheTests.swift in Sources */,
+				A54FF8029BF14428B69818F5 /* AssignmentDTOTests.swift in Sources */,
+				FA0C8FBC33DD49438618623B /* SupabaseErrorMapperTests.swift in Sources */,
+				D6A9A8B0590541D6991F9DE3 /* SupabaseClientTests.swift in Sources */,
+				3C2205D570014F65A43CF924 /* SupabaseAssignmentRepositoryTests.swift in Sources */,
+				500BE9D84B9148B98DB79852 /* SupabaseAuthServiceTests.swift in Sources */,
 				AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */,
 				9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */,
 			);
@@ -663,6 +697,8 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stack.app/Contents/MacOS/Stack";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stack.StackTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -765,6 +801,8 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stack.app/Contents/MacOS/Stack";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stack.StackTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;

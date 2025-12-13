@@ -6,6 +6,7 @@ struct AssignmentsListView: View {
     @State private var isQuickAddVisible = false
     @State private var isAccountMenuVisible = false
     @State private var accountMenuHighlightedIndex: Int = 0
+    @State private var headerHeight: CGFloat = 0
     private let accountMenuOptions: [String] = ["Log Out"]
     private let dropdownCommitNotification = Notification.Name("StackDropdownCommit")
 
@@ -18,6 +19,7 @@ struct AssignmentsListView: View {
                 HStack {
                     Spacer()
                 }
+                .frame(height: max(headerHeight - Spacing.contentPadding, 0))
                 .padding(.horizontal, Spacing.contentPadding)
                 .padding(.top, Spacing.contentPadding)
 
@@ -79,10 +81,27 @@ struct AssignmentsListView: View {
                                     viewModel.clearEditingContext()
                                 }
                             )
+                            .background(
+                                Group {
+                                    if assignment.id == viewModel.assignments.first?.id {
+                                        GeometryReader { proxy in
+                                            Color.clear.preference(
+                                                key: AssignmentRowHeightPreferenceKey.self,
+                                                value: proxy.size.height
+                                            )
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
                     .padding(.horizontal, Spacing.contentPadding)
-                    .padding(.vertical, Spacing.contentPadding)
+                    .padding(.bottom, Spacing.contentPadding)
+                    .onPreferenceChange(AssignmentRowHeightPreferenceKey.self) { value in
+                        if value > 0, headerHeight == 0 {
+                            headerHeight = value
+                        }
+                    }
                 }
             }
 
@@ -265,5 +284,17 @@ struct AssignmentsListView: View {
             return true
         }
         return false
+    }
+}
+
+private struct AssignmentRowHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        guard value == 0 else { return }
+        let next = nextValue()
+        if next > 0 {
+            value = next
+        }
     }
 }
