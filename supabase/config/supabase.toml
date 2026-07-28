@@ -1,4 +1,4 @@
-project_id = "stack-local"
+project_id = "cairn-local"
 
 [api]
 port = 54321

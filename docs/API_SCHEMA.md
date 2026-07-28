@@ -28,4 +28,4 @@
 None in MVP. Future releases may add RPCs for summary stats.
 
 ## Data Contracts
-`AssignmentDTO` mirrors the Postgres columns with snake_case mapping (including optional `user_id`), while `Assignment` represents the domain model in camelCase. `AssignmentRepository` converts between them and encapsulates Supabase networking.
+`AssignmentDTO` mirrors the Postgres columns with snake_case mapping, while `Assignment` represents the domain model in camelCase. `user_id` is set server-side via a trigger, so the client does not send it. `AssignmentRepository` converts between them and encapsulates Supabase networking.

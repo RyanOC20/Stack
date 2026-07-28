@@ -1,5 +1,5 @@
 import XCTest
-@testable import Stack
+@testable import Cairn
 
 final class SupabaseClientTests: XCTestCase {
     private var sessionStore: InMemorySessionStore!

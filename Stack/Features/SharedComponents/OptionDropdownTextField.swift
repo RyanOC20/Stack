@@ -31,7 +31,7 @@ struct OptionDropdownTextField: View {
                 dropdown
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("StackDropdownCommit"))) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("CairnDropdownCommit"))) { _ in
             if hasFocus {
                 attemptCommit()
             }

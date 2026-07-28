@@ -4,11 +4,11 @@ struct AssignmentsListView: View {
     @ObservedObject var viewModel: AssignmentsListViewModel
     var onLogout: () -> Void = {}
     @State private var isQuickAddVisible = false
-    @State private var isAccountMenuVisible = false
-    @State private var accountMenuHighlightedIndex: Int = 0
+    @State private var isShortcutHelpVisible = false
     @State private var headerHeight: CGFloat = 0
-    private let accountMenuOptions: [String] = ["Log Out"]
-    private let dropdownCommitNotification = Notification.Name("StackDropdownCommit")
+    private let dropdownCommitNotification = Notification.Name("CairnDropdownCommit")
+    private let showQuickAddNotification = Notification.Name("CairnShowQuickAddRow")
+    private let showShortcutHelpNotification = Notification.Name("CairnShowShortcutHelp")
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -54,11 +54,7 @@ struct AssignmentsListView: View {
                                     viewModel.requestEditing(for: assignment, field: field)
                                 },
                                 onCancelEditing: {
-                                    if viewModel.isNavigatingViaTab {
-                                        viewModel.isNavigatingViaTab = false
-                                    } else {
-                                        viewModel.clearEditingContext()
-                                    }
+                                    viewModel.clearEditingContext()
                                 },
                                 onStatusChange: { status in
                                     viewModel.updateStatus(status, for: assignment)
@@ -113,8 +109,8 @@ struct AssignmentsListView: View {
                     }
             }
 
-            if isAccountMenuVisible {
-                accountMenuOverlay
+            if isShortcutHelpVisible {
+                shortcutHelpOverlay
             }
         }
         .background(ColorPalette.background)
@@ -122,15 +118,15 @@ struct AssignmentsListView: View {
             KeyboardShortcutsHandler(
                 handlers: .init(
                     onNew: { showQuickAddRow() },
-                    onUndo: { viewModel.undoDelete() },
-                    onDelete: { viewModel.deleteSelectedAssignment() },
+                    onUndo: { viewModel.undo() },
+                    onRedo: { viewModel.redo() },
+                    onShowShortcuts: { isShortcutHelpVisible = true },
+                    onDelete: { handleDeleteKey() },
                     onReturn: { handleReturnKey() },
-                    onMove: { direction in viewModel.moveSelection(direction) },
+                    onMoveRow: { direction in viewModel.moveSelection(direction) },
+                    onMoveField: { direction in viewModel.moveFieldSelection(direction) },
                     onEscape: { handleEscapeKey() },
-                    onTab: { isShiftHeld in handleTabKey(isShiftHeld: isShiftHeld) },
-                    shouldCaptureArrows: { shouldCaptureArrowKeys() },
-                    onAccountMenu: { toggleAccountMenu() },
-                    onArrowNavigation: { direction in handleArrowNavigation(direction) }
+                    shouldCaptureArrows: { shouldCaptureArrowKeys() }
                 )
             )
             .allowsHitTesting(false)
@@ -138,87 +134,108 @@ struct AssignmentsListView: View {
         .onExitCommand {
             handleEscapeKey()
         }
+        .onReceive(NotificationCenter.default.publisher(for: showQuickAddNotification)) { _ in
+            showQuickAddRow()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: showShortcutHelpNotification)) { _ in
+            isShortcutHelpVisible = true
+        }
     }
 
     private func showQuickAddRow() {
-        isQuickAddVisible = true
-        viewModel.focusQuickAddRow()
+        isQuickAddVisible = false
+        viewModel.createAssignmentAndBeginEditingName()
     }
 
-    private var accountMenuOverlay: some View {
+    private var shortcutHelpOverlay: some View {
         ZStack {
             Color.black.opacity(0.3)
                 .ignoresSafeArea()
                 .onTapGesture {
-                    isAccountMenuVisible = false
+                    isShortcutHelpVisible = false
                 }
 
-            VStack(spacing: 0) {
-                ForEach(Array(accountMenuOptions.enumerated()), id: \.offset) { index, option in
-                    Button {
-                        selectAccountMenuOption(at: index)
-                    } label: {
-                        Text(option)
-                            .font(Typography.body)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(accountMenuHighlightedIndex == index ? ColorPalette.rowSelection : Color.clear)
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Keyboard Shortcuts")
+                    .font(Typography.body.weight(.semibold))
+                    .foregroundColor(.white)
+
+                shortcutRow("Up / Down", "Move selection between assignments while keeping the current column.")
+                shortcutRow("Left / Right", "Move across fields in the selected row. Wraps at both ends.")
+                shortcutRow("Enter", "Start editing selected field, or save changes and exit edit mode.")
+                shortcutRow("Esc", "Exit edit mode without saving changes.")
+                shortcutRow("Delete", "Delete the selected assignment when not in edit mode.")
+                shortcutRow("Cmd + N", "Create a new assignment.")
+                shortcutRow("Cmd + Z", "Undo the last action.")
+                shortcutRow("Cmd + Y", "Redo the last undone action.")
+                shortcutRow("Cmd + ,", "Open this shortcuts help dialog.")
+
+                HStack {
+                    Spacer()
+                    Button("Close") {
+                        isShortcutHelpVisible = false
                     }
                     .buttonStyle(.plain)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(ColorPalette.rowSelection)
                 }
             }
-            .frame(width: 220)
-            .padding(12)
+            .frame(width: 520)
+            .padding(16)
             .background(ColorPalette.rowHover)
             .shadow(radius: 6, y: 3)
         }
         .transition(.opacity)
     }
 
-    private func toggleAccountMenu() {
-        withAnimation {
-            if !isAccountMenuVisible {
-                accountMenuHighlightedIndex = 0
-            }
-            isAccountMenuVisible.toggle()
+    private func shortcutRow(_ key: String, _ description: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Text(key)
+                .font(Typography.secondary)
+                .foregroundColor(.white)
+                .frame(width: 96, alignment: .leading)
+            Text(description)
+                .font(Typography.secondary)
+                .foregroundColor(.white.opacity(0.9))
         }
     }
 
-    private func moveAccountMenuHighlight(by delta: Int) {
-        guard !accountMenuOptions.isEmpty else { return }
-        let newIndex = max(0, min(accountMenuOptions.count - 1, accountMenuHighlightedIndex + delta))
-        accountMenuHighlightedIndex = newIndex
-    }
-
-    private func selectAccountMenuOption(at index: Int) {
-        guard accountMenuOptions.indices.contains(index) else { return }
-        let option = accountMenuOptions[index]
-        switch option {
-        case "Log Out":
-            isAccountMenuVisible = false
-            onLogout()
-        default:
-            break
-        }
-    }
-
-    private func handleEscapeKey() -> Bool {
-        if isQuickAddVisible {
-            isQuickAddVisible = false
-        }
-        if isAccountMenuVisible {
-            isAccountMenuVisible = false
-        }
-        viewModel.cancelAllSelectionsAndEditing()
+    private func handleDeleteKey() -> Bool {
+        guard viewModel.editingContext == nil else { return false }
+        guard !isQuickAddVisible else { return false }
+        guard viewModel.selectedAssignmentID != nil else { return false }
+        viewModel.deleteSelectedAssignment()
         return true
     }
 
-    private func handleReturnKey() -> Bool {
-        if isAccountMenuVisible {
-            selectAccountMenuOption(at: accountMenuHighlightedIndex)
+    private func handleEscapeKey() -> Bool {
+        if isShortcutHelpVisible {
+            isShortcutHelpVisible = false
             return true
+        }
+
+        if viewModel.editingContext != nil {
+            viewModel.clearEditingContext()
+            return true
+        }
+
+        if isQuickAddVisible {
+            // Keep the quick-add row intact so Esc doesn't discard a new assignment in progress.
+            return true
+        }
+
+        return false
+    }
+
+    private func handleReturnKey() -> Bool {
+        if isShortcutHelpVisible {
+            isShortcutHelpVisible = false
+            return true
+        }
+
+        if isQuickAddVisible {
+            return false
         }
 
         if let editingField = viewModel.editingContext?.field {
@@ -236,54 +253,15 @@ struct AssignmentsListView: View {
             return true
         }
 
-        viewModel.beginEditingSelectedAssignmentStatus()
+        viewModel.beginEditingSelectedField()
         return true
     }
 
-    private func handleTabKey(isShiftHeld: Bool) -> Bool {
-        if viewModel.editingContext != nil {
-            if isShiftHeld {
-                viewModel.isNavigatingViaTab = true
-                viewModel.beginEditingPreviousField()
-            } else {
-                viewModel.beginEditingNextField()
-            }
-            return true
-        }
-
-        if viewModel.selectedAssignmentID != nil {
-            return true
-        }
-
-        return false
-    }
-
     private func shouldCaptureArrowKeys() -> Bool {
-        if isAccountMenuVisible {
+        if isShortcutHelpVisible || isQuickAddVisible {
             return false
         }
-        guard let field = viewModel.editingContext?.field else { return true }
-        switch field {
-        case .course, .status, .type:
-            return false
-        default:
-            return true
-        }
-    }
-
-    private func handleArrowNavigation(_ direction: MoveCommandDirection) -> Bool {
-        if isAccountMenuVisible {
-            switch direction {
-            case .up:
-                moveAccountMenuHighlight(by: -1)
-            case .down:
-                moveAccountMenuHighlight(by: 1)
-            default:
-                break
-            }
-            return true
-        }
-        return false
+        return viewModel.editingContext == nil
     }
 }
 

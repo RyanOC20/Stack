@@ -5,14 +5,14 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
     struct Handlers {
         let onNew: () -> Void
         let onUndo: () -> Void
-        let onDelete: () -> Void
+        let onRedo: () -> Void
+        let onShowShortcuts: () -> Void
+        let onDelete: () -> Bool
         let onReturn: () -> Bool
-        let onMove: (MoveCommandDirection) -> Void
+        let onMoveRow: (MoveCommandDirection) -> Void
+        let onMoveField: (MoveCommandDirection) -> Void
         let onEscape: (() -> Bool)?
-        let onTab: ((Bool) -> Bool)?
         let shouldCaptureArrows: () -> Bool
-        let onAccountMenu: (() -> Void)?
-        let onArrowNavigation: ((MoveCommandDirection) -> Bool)?
     }
 
     let handlers: Handlers
@@ -76,11 +76,14 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
                 case "n":
                     handlers.onNew()
                     return true
-                case "m":
-                    handlers.onAccountMenu?()
-                    return true
                 case "z":
                     handlers.onUndo()
+                    return true
+                case "y":
+                    handlers.onRedo()
+                    return true
+                case ",":
+                    handlers.onShowShortcuts()
                     return true
                 default:
                     break
@@ -89,28 +92,25 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
 
             switch event.specialKey {
             case .delete, .deleteForward:
-                handlers.onDelete()
-                return true
+                return handlers.onDelete()
             case .upArrow:
-                if handlers.onArrowNavigation?(.up) == true {
-                    return true
-                }
                 guard handlers.shouldCaptureArrows() else { return false }
-                handlers.onMove(.up)
+                handlers.onMoveRow(.up)
                 return true
             case .downArrow:
-                if handlers.onArrowNavigation?(.down) == true {
-                    return true
-                }
                 guard handlers.shouldCaptureArrows() else { return false }
-                handlers.onMove(.down)
+                handlers.onMoveRow(.down)
+                return true
+            case .leftArrow:
+                guard handlers.shouldCaptureArrows() else { return false }
+                handlers.onMoveField(.left)
+                return true
+            case .rightArrow:
+                guard handlers.shouldCaptureArrows() else { return false }
+                handlers.onMoveField(.right)
                 return true
             case .carriageReturn, .enter:
-                if handlers.onReturn() {
-                    return true
-                } else {
-                    return false
-                }
+                return handlers.onReturn()
             default:
                 break
             }
@@ -118,16 +118,7 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
             // Handle keys that aren't exposed via specialKey (or to avoid availability issues).
             switch event.keyCode {
             case 53: // Escape
-                if handlers.onEscape?() == true {
-                    return true
-                }
-                return false
-            case 48: // Tab
-                let isShiftHeld = event.modifierFlags.contains(.shift)
-                if handlers.onTab?(isShiftHeld) == true {
-                    return true
-                }
-                return false
+                return handlers.onEscape?() == true
             default:
                 return false
             }
@@ -139,9 +130,6 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
 
             if responder is NSTextView {
                 if event.keyCode == 53 { // Escape
-                    return false
-                }
-                if event.keyCode == 48 { // Tab / Shift+Tab
                     return false
                 }
 

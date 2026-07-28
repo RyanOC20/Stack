@@ -18,29 +18,36 @@ final class AssignmentsListViewModel: ObservableObject {
 
     @Published private(set) var assignments: [Assignment] = []
     @Published var selectedAssignmentID: UUID?
+    @Published var selectedField: EditingContext.Field = .status
     @Published var editingContext: EditingContext?
     @Published var quickAddFocusTrigger = UUID()
     @Published var errorMessage: String?
-    var isNavigatingViaTab = false
     var onSessionExpired: (() -> Void)?
 
     var availableCourses: [String] {
         courseRepository.availableCourses(from: assignments)
     }
 
-    var canUndoDelete: Bool {
+    var canUndo: Bool {
         !undoStack.isEmpty
     }
 
-    private struct DeletedSnapshot {
-        let assignment: Assignment
-        let index: Int
+    var canRedo: Bool {
+        !redoStack.isEmpty
+    }
+
+    private struct HistorySnapshot {
+        let assignments: [Assignment]
+        let selectedAssignmentID: UUID?
+        let selectedField: EditingContext.Field
     }
 
     private let assignmentRepository: AssignmentRepositoryProtocol
     private let courseRepository: CourseRepositoryProviding
     private let logger: Logger
-    private var undoStack: [DeletedSnapshot] = []
+    private var undoStack: [HistorySnapshot] = []
+    private var redoStack: [HistorySnapshot] = []
+    private static let orderedFields: [EditingContext.Field] = [.status, .name, .course, .type, .dueDate]
 
     init(assignmentRepository: AssignmentRepositoryProtocol,
          courseRepository: CourseRepositoryProviding,
@@ -61,6 +68,10 @@ final class AssignmentsListViewModel: ObservableObject {
         do {
             assignments = try await assignmentRepository.fetchAssignments()
             selectedAssignmentID = assignments.first?.id
+            selectedField = .status
+            editingContext = nil
+            undoStack.removeAll()
+            redoStack.removeAll()
             errorMessage = nil
         } catch {
             let mappedError = SupabaseErrorMapper.map(error)
@@ -77,6 +88,9 @@ final class AssignmentsListViewModel: ObservableObject {
 
     func select(_ assignmentID: UUID?) {
         selectedAssignmentID = assignmentID
+        if assignmentID == nil {
+            editingContext = nil
+        }
     }
 
     func selectFirstAssignment() {
@@ -90,7 +104,6 @@ final class AssignmentsListViewModel: ObservableObject {
 
     func cancelAllSelectionsAndEditing() {
         deselect()
-        isNavigatingViaTab = false
     }
 
     func moveSelection(_ direction: MoveCommandDirection) {
@@ -116,66 +129,41 @@ final class AssignmentsListViewModel: ObservableObject {
         selectedAssignmentID = assignments[targetIndex].id
     }
 
-    func beginEditingSelectedAssignmentName() {
-        guard let selectedAssignmentID else { return }
-        editingContext = EditingContext(assignmentID: selectedAssignmentID, field: .name)
-    }
-
-    func beginEditingSelectedAssignmentStatus() {
-        guard let selectedAssignmentID else { return }
-        editingContext = EditingContext(assignmentID: selectedAssignmentID, field: .status)
-    }
-
-    func beginEditingSelectedAssignmentType() {
-        guard let selectedAssignmentID else { return }
-        editingContext = EditingContext(assignmentID: selectedAssignmentID, field: .type)
-    }
-
-    func beginEditingNextField() {
-        guard let context = editingContext else { return }
-        let id = context.assignmentID
-        guard assignments.contains(where: { $0.id == id }) else {
-            editingContext = nil
-            return
-        }
-        switch context.field {
-        case .status:
-            editingContext = EditingContext(assignmentID: id, field: .name)
-        case .name:
-            editingContext = EditingContext(assignmentID: id, field: .course)
-        case .course:
-            editingContext = EditingContext(assignmentID: id, field: .type)
-        case .type:
-            editingContext = EditingContext(assignmentID: id, field: .dueDate)
-        case .dueDate:
-            editingContext = nil
-        }
-    }
-
-    func beginEditingPreviousField() {
-        guard let context = editingContext else { return }
-        let id = context.assignmentID
-        guard assignments.contains(where: { $0.id == id }) else {
-            editingContext = nil
+    func moveFieldSelection(_ direction: MoveCommandDirection) {
+        guard editingContext == nil else { return }
+        guard let currentIndex = Self.orderedFields.firstIndex(of: selectedField) else {
+            selectedField = .status
             return
         }
 
-        switch context.field {
-        case .status:
-            editingContext = EditingContext(assignmentID: id, field: .status)
-        case .name:
-            editingContext = EditingContext(assignmentID: id, field: .status)
-        case .course:
-            editingContext = EditingContext(assignmentID: id, field: .name)
-        case .type:
-            editingContext = EditingContext(assignmentID: id, field: .course)
-        case .dueDate:
-            editingContext = EditingContext(assignmentID: id, field: .type)
+        let offset: Int
+        switch direction {
+        case .left:
+            offset = -1
+        case .right:
+            offset = 1
+        default:
+            return
         }
+
+        let count = Self.orderedFields.count
+        let targetIndex = (currentIndex + offset + count) % count
+        selectedField = Self.orderedFields[targetIndex]
+    }
+
+    func beginEditingSelectedField() {
+        guard let selectedAssignmentID else { return }
+        editingContext = EditingContext(assignmentID: selectedAssignmentID, field: selectedField)
     }
 
     func requestEditing(for assignment: Assignment, field: EditingContext.Field) {
+        selectedAssignmentID = assignment.id
+        selectedField = field
         editingContext = EditingContext(assignmentID: assignment.id, field: field)
+    }
+
+    func selectField(_ field: EditingContext.Field) {
+        selectedField = field
     }
 
     func clearEditingContext() {
@@ -217,8 +205,10 @@ final class AssignmentsListViewModel: ObservableObject {
               let index = assignments.firstIndex(where: { $0.id == currentID })
         else { return }
 
+        let previous = currentSnapshot()
+        recordUndoSnapshot()
         let removed = assignments.remove(at: index)
-        undoStack.append(DeletedSnapshot(assignment: removed, index: index))
+        editingContext = nil
         let nextIndex = min(index, assignments.count - 1)
         if nextIndex >= 0, assignments.indices.contains(nextIndex) {
             selectedAssignmentID = assignments[nextIndex].id
@@ -231,30 +221,56 @@ final class AssignmentsListViewModel: ObservableObject {
                 try await assignmentRepository.deleteAssignment(id: removed.id)
             } catch {
                 _ = undoStack.popLast()
-                assignments.insert(removed, at: index)
-                selectedAssignmentID = removed.id
+                applySnapshot(previous)
                 errorMessage = "Delete failed."
             }
         }
     }
 
-    func undoDelete() {
+    func undo() {
         guard let snapshot = undoStack.popLast() else { return }
-        assignments.insert(snapshot.assignment, at: min(snapshot.index, assignments.count))
-        selectedAssignmentID = snapshot.assignment.id
-        Task {
-            do {
-                try await assignmentRepository.upsertAssignment(snapshot.assignment)
-            } catch {
-                errorMessage = "Undo failed."
-            }
-        }
+        let previousAssignments = assignments
+        redoStack.append(currentSnapshot())
+        applySnapshot(snapshot)
+        syncRepository(from: previousAssignments, to: snapshot.assignments, failureMessage: "Undo failed.")
+    }
+
+    func redo() {
+        guard let snapshot = redoStack.popLast() else { return }
+        let previousAssignments = assignments
+        undoStack.append(currentSnapshot())
+        applySnapshot(snapshot)
+        syncRepository(from: previousAssignments, to: snapshot.assignments, failureMessage: "Redo failed.")
     }
 
     func focusQuickAddRow() {
         editingContext = nil
         selectedAssignmentID = nil
         quickAddFocusTrigger = UUID()
+    }
+
+    func createAssignmentAndBeginEditingName() {
+        let newAssignment = Assignment(
+            status: .notStarted,
+            name: "New assignment…",
+            course: "",
+            type: .homework,
+            dueAt: Self.defaultDueDate()
+        )
+
+        recordUndoSnapshot()
+        assignments.insert(newAssignment, at: 0)
+        selectedAssignmentID = newAssignment.id
+        selectedField = .name
+        editingContext = EditingContext(assignmentID: newAssignment.id, field: .name)
+
+        Task {
+            do {
+                try await assignmentRepository.upsertAssignment(newAssignment)
+            } catch {
+                errorMessage = "Saving assignment failed."
+            }
+        }
     }
 
     func addAssignment(name: String,
@@ -275,6 +291,7 @@ final class AssignmentsListViewModel: ObservableObject {
             dueAt: dueAt
         )
 
+        recordUndoSnapshot()
         insertAssignment(newAssignment)
 
         Task {
@@ -291,10 +308,13 @@ final class AssignmentsListViewModel: ObservableObject {
     }
 
     private func persist(_ assignment: Assignment) {
-        if let index = assignments.firstIndex(where: { $0.id == assignment.id }) {
-            assignments[index] = assignment
-            resortAssignments()
-        }
+        guard let index = assignments.firstIndex(where: { $0.id == assignment.id }) else { return }
+        guard assignments[index] != assignment else { return }
+
+        recordUndoSnapshot()
+        assignments[index] = assignment
+        selectedAssignmentID = assignment.id
+        resortAssignments()
 
         Task {
             do {
@@ -309,6 +329,8 @@ final class AssignmentsListViewModel: ObservableObject {
         assignments.append(assignment)
         resortAssignments()
         selectedAssignmentID = assignment.id
+        selectedField = .name
+        editingContext = nil
     }
 
     private func resortAssignments() {
@@ -318,5 +340,58 @@ final class AssignmentsListViewModel: ObservableObject {
             }
             return lhs.dueAt < rhs.dueAt
         }
+    }
+
+    private func recordUndoSnapshot() {
+        undoStack.append(currentSnapshot())
+        redoStack.removeAll()
+    }
+
+    private func currentSnapshot() -> HistorySnapshot {
+        HistorySnapshot(
+            assignments: assignments,
+            selectedAssignmentID: selectedAssignmentID,
+            selectedField: selectedField
+        )
+    }
+
+    private func applySnapshot(_ snapshot: HistorySnapshot) {
+        assignments = snapshot.assignments
+        if let selectedID = snapshot.selectedAssignmentID,
+           assignments.contains(where: { $0.id == selectedID }) {
+            selectedAssignmentID = selectedID
+        } else {
+            selectedAssignmentID = assignments.first?.id
+        }
+        selectedField = snapshot.selectedField
+        editingContext = nil
+    }
+
+    private func syncRepository(from previous: [Assignment], to next: [Assignment], failureMessage: String) {
+        let previousByID = Dictionary(uniqueKeysWithValues: previous.map { ($0.id, $0) })
+        let nextByID = Dictionary(uniqueKeysWithValues: next.map { ($0.id, $0) })
+
+        Task {
+            do {
+                for assignment in next where previousByID[assignment.id] != assignment {
+                    try await assignmentRepository.upsertAssignment(assignment)
+                }
+
+                for assignment in previous where nextByID[assignment.id] == nil {
+                    try await assignmentRepository.deleteAssignment(id: assignment.id)
+                }
+            } catch {
+                errorMessage = failureMessage
+            }
+        }
+    }
+
+    private static func defaultDueDate() -> Date {
+        let calendar = Calendar.current
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        var components = calendar.dateComponents([.year, .month, .day], from: tomorrow)
+        components.hour = 23
+        components.minute = 59
+        return calendar.date(from: components) ?? tomorrow
     }
 }

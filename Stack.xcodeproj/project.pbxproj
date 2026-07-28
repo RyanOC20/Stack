@@ -61,6 +61,10 @@
 		3C2205D570014F65A43CF924 /* SupabaseAssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E33F0C503B4D2F8F1DED00 /* SupabaseAssignmentRepositoryTests.swift */; };
 		500BE9D84B9148B98DB79852 /* SupabaseAuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71D772E68BEF43328F9BE4E9 /* SupabaseAuthServiceTests.swift */; };
 		D6A9A8B0590541D6991F9DE3 /* SupabaseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */; };
+		A11200000000000000000001 /* ImportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11100000000000000000001 /* ImportModels.swift */; };
+		A11200000000000000000002 /* ImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11100000000000000000002 /* ImportService.swift */; };
+		A11200000000000000000003 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11100000000000000000003 /* ImportView.swift */; };
+		A11200000000000000000010 /* ImportModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11100000000000000000010 /* ImportModelsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,14 +73,14 @@
 			containerPortal = 7AEB1DAE8657FB4204A9B0BF /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 4F5D5E82D574A1B8AF545671;
-			remoteInfo = Stack;
+			remoteInfo = Cairn;
 		};
 		FB8F57164D6D62DE66F83091 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7AEB1DAE8657FB4204A9B0BF /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 4F5D5E82D574A1B8AF545671;
-			remoteInfo = Stack;
+			remoteInfo = Cairn;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -87,7 +91,7 @@
 		0033B616B71849CD8CF0F8AA /* CourseRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRepositoryTests.swift; sourceTree = "<group>"; };
 		11236ED3F36BF6F74088FD53 /* AssignmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentStatus.swift; sourceTree = "<group>"; };
 		1283A116A1AB73E3E49ED982 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
-		1540AC8B701538FA15DACEC8 /* StackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackApp.swift; sourceTree = "<group>"; };
+		1540AC8B701538FA15DACEC8 /* StackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CairnApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071890ABCDEF /* WindowAppearanceConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAppearanceConfigurator.swift; sourceTree = "<group>"; };
 		1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeDropdown.swift; sourceTree = "<group>"; };
 		264A6DC1D0C358840544F960 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
@@ -105,10 +109,10 @@
 		535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowBackgroundModifier.swift; sourceTree = "<group>"; };
 		560A5D0CF9A424CC8D00BE51 /* DateInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateInputField.swift; sourceTree = "<group>"; };
 		5E9EE3481DC5242905962930 /* CourseRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRepository.swift; sourceTree = "<group>"; };
-		66DB2F6967F2814C2D4EE588 /* StackUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackUITests.swift; sourceTree = "<group>"; };
+		66DB2F6967F2814C2D4EE588 /* StackUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CairnUITests.swift; sourceTree = "<group>"; };
 		6714B7930291EBD5AB1D0D21 /* QuickAddRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddRowView.swift; sourceTree = "<group>"; };
 		688CCB6BD60FDF5FB2BB773C /* AssignmentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentsListView.swift; sourceTree = "<group>"; };
-		6AFD0D382B3ADF00A7E9CE39 /* StackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AFD0D382B3ADF00A7E9CE39 /* StackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CairnTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B856224F5435B7EF83D26B3 /* AssignmentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRowView.swift; sourceTree = "<group>"; };
 		6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Environment.plist; sourceTree = "<group>"; };
 		6DBB92A831EA479D15A88A99 /* AssignmentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentType.swift; sourceTree = "<group>"; };
@@ -124,12 +128,12 @@
 		989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientTests.swift; sourceTree = "<group>"; };
 		B07177A0B94059F2FBB12AC1 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentDTOTests.swift; sourceTree = "<group>"; };
-		BCCF077D719F99BD5335EC30 /* StackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCCF077D719F99BD5335EC30 /* StackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CairnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E33F0C503B4D2F8F1DED00 /* SupabaseAssignmentRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAssignmentRepositoryTests.swift; sourceTree = "<group>"; };
 		BE47E6CE3B5178D9E8ACB30D /* SupabaseAssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAssignmentRepository.swift; sourceTree = "<group>"; };
 		C0CFF906E419B04C973F3306 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		CC026283C2052304FAFFA757 /* AssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRepository.swift; sourceTree = "<group>"; };
-		D2FB4F64F4D82732270D8959 /* Stack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2FB4F64F4D82732270D8959 /* Stack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cairn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Regular.ttf"; sourceTree = "<group>"; };
 		D7512564847D811191FCA966 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		DDA7C1F1B07A88D9E8F6810B /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
@@ -139,6 +143,10 @@
 		EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsHandler.swift; sourceTree = "<group>"; };
 		F776DAB2647C4C73B2B53F4D /* EnvironmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentConfiguration.swift; sourceTree = "<group>"; };
 		FE76BBBB101132036979E292 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		A11100000000000000000001 /* ImportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportModels.swift; sourceTree = "<group>"; };
+		A11100000000000000000002 /* ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportService.swift; sourceTree = "<group>"; };
+		A11100000000000000000003 /* ImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportView.swift; sourceTree = "<group>"; };
+		A11100000000000000000010 /* ImportModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportModelsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,6 +242,7 @@
 				989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */,
 				C2E33F0C503B4D2F8F1DED00 /* SupabaseAssignmentRepositoryTests.swift */,
 				71D772E68BEF43328F9BE4E9 /* SupabaseAuthServiceTests.swift */,
+				A11100000000000000000010 /* ImportModelsTests.swift */,
 			);
 			path = StackTests;
 			sourceTree = "<group>";
@@ -256,10 +265,21 @@
 			children = (
 				9AB89173E353A3251AE74077 /* AssignmentsList */,
 				BEF6C5D9276C4E3D944817D3 /* Authentication */,
+				A11300000000000000000001 /* Import */,
 				0B93B35F8B6ED32DE5B9EEBC /* SharedComponents */,
 				921AD4B8AB32569995019D61 /* ErrorHandling */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		A11300000000000000000001 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				A11100000000000000000001 /* ImportModels.swift */,
+				A11100000000000000000002 /* ImportService.swift */,
+				A11100000000000000000003 /* ImportView.swift */,
+			);
+			path = Import;
 			sourceTree = "<group>";
 		};
 		6BA0875C304FB448396B7C4F /* Tests */ = {
@@ -423,8 +443,8 @@
 			dependencies = (
 				DC02C95EA24941D7854836C7 /* PBXTargetDependency */,
 			);
-			name = StackUITests;
-			productName = StackUITests;
+			name = CairnUITests;
+			productName = CairnUITests;
 			productReference = BCCF077D719F99BD5335EC30 /* StackUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
@@ -440,8 +460,8 @@
 			);
 			dependencies = (
 			);
-			name = Stack;
-			productName = Stack;
+			name = Cairn;
+			productName = Cairn;
 			productReference = D2FB4F64F4D82732270D8959 /* Stack.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -458,8 +478,8 @@
 			dependencies = (
 				F0879E41EC8FE7C2F8DEBB9E /* PBXTargetDependency */,
 			);
-			name = StackTests;
-			productName = StackTests;
+			name = CairnTests;
+			productName = CairnTests;
 			productReference = 6AFD0D382B3ADF00A7E9CE39 /* StackTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -471,7 +491,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
-				ORGANIZATIONNAME = Stack;
+				ORGANIZATIONNAME = Cairn;
 				TargetAttributes = {
 					4525E01243DA02F795CE209F = {
 						CreatedOnToolsVersion = 15.0;
@@ -549,6 +569,7 @@
 				500BE9D84B9148B98DB79852 /* SupabaseAuthServiceTests.swift in Sources */,
 				AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */,
 				9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */,
+				A11200000000000000000010 /* ImportModelsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,6 +622,9 @@
 				A43A0FACEC1AB7C4D0EDFD6E /* FontRegistrar.swift in Sources */,
 				D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */,
 				57F661C6F3DF1306999D20E2 /* Spacing.swift in Sources */,
+				A11200000000000000000001 /* ImportModels.swift in Sources */,
+				A11200000000000000000002 /* ImportService.swift in Sources */,
+				A11200000000000000000003 /* ImportView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -633,11 +657,11 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.StackUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cairn.CairnUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.9;
-				TEST_TARGET_NAME = Stack;
+				TEST_TARGET_NAME = Cairn;
 			};
 			name = Debug;
 		};
@@ -654,11 +678,11 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.StackUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cairn.CairnUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.9;
-				TEST_TARGET_NAME = Stack;
+				TEST_TARGET_NAME = Cairn;
 			};
 			name = Release;
 		};
@@ -676,7 +700,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cairn.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.9;
@@ -698,8 +722,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stack.app/Contents/MacOS/Stack";
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.StackTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cairn.app/Contents/MacOS/Cairn";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cairn.CairnTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.9;
@@ -780,7 +804,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cairn.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.9;
@@ -802,8 +826,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stack.app/Contents/MacOS/Stack";
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.StackTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cairn.app/Contents/MacOS/Cairn";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cairn.CairnTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.9;

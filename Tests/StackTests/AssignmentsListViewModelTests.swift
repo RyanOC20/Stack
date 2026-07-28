@@ -1,5 +1,5 @@
 import XCTest
-@testable import Stack
+@testable import Cairn
 
 @MainActor
 final class AssignmentsListViewModelTests: XCTestCase {
@@ -45,9 +45,12 @@ final class AssignmentsListViewModelTests: XCTestCase {
 
         XCTAssertEqual(viewModel.assignments.count, 0)
 
-        viewModel.undoDelete()
+        viewModel.undo()
         XCTAssertEqual(viewModel.assignments.count, 1)
         XCTAssertEqual(viewModel.assignments.first?.id, assignment.id)
+
+        viewModel.redo()
+        XCTAssertEqual(viewModel.assignments.count, 0)
     }
 
     func testMoveSelectionRespectsBounds() async {
@@ -75,7 +78,7 @@ final class AssignmentsListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedAssignmentID, first.id)
     }
 
-    func testEditingContextProgression() async {
+    func testMoveFieldSelectionWraps() async {
         let assignment = Assignment(status: .inProgress, name: "Edit", course: "BIO", type: .exam, dueAt: Date())
         let repository = MockAssignmentRepository(assignments: [assignment])
         let viewModel = AssignmentsListViewModel(
@@ -86,22 +89,111 @@ final class AssignmentsListViewModelTests: XCTestCase {
         )
 
         await viewModel.loadAssignments()
-        viewModel.requestEditing(for: assignment, field: .status)
+        XCTAssertEqual(viewModel.selectedField, .status)
 
-        viewModel.beginEditingNextField()
-        XCTAssertEqual(viewModel.editingContext, .init(assignmentID: assignment.id, field: .name))
+        viewModel.moveFieldSelection(.left)
+        XCTAssertEqual(viewModel.selectedField, .dueDate)
 
-        viewModel.beginEditingNextField()
+        viewModel.moveFieldSelection(.right)
+        XCTAssertEqual(viewModel.selectedField, .status)
+
+        viewModel.moveFieldSelection(.right)
+        XCTAssertEqual(viewModel.selectedField, .name)
+
+        viewModel.moveFieldSelection(.right)
+        XCTAssertEqual(viewModel.selectedField, .course)
+    }
+
+    func testBeginEditingUsesSelectedField() async {
+        let assignment = Assignment(status: .inProgress, name: "Edit", course: "BIO", type: .exam, dueAt: Date())
+        let repository = MockAssignmentRepository(assignments: [assignment])
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
+
+        await viewModel.loadAssignments()
+        viewModel.select(assignment.id)
+        viewModel.selectField(.course)
+        viewModel.beginEditingSelectedField()
+
         XCTAssertEqual(viewModel.editingContext, .init(assignmentID: assignment.id, field: .course))
+    }
 
-        viewModel.beginEditingNextField()
-        XCTAssertEqual(viewModel.editingContext, .init(assignmentID: assignment.id, field: .type))
+    func testUndoRedoUpdate() async {
+        let assignment = Assignment(status: .inProgress, name: "Original", course: "BIO", type: .exam, dueAt: Date())
+        let repository = MockAssignmentRepository(assignments: [assignment])
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
 
-        viewModel.beginEditingNextField()
-        XCTAssertEqual(viewModel.editingContext, .init(assignmentID: assignment.id, field: .dueDate))
+        await viewModel.loadAssignments()
+        viewModel.updateName("Updated", for: assignment)
+        XCTAssertEqual(viewModel.assignments.first?.name, "Updated")
 
-        viewModel.beginEditingNextField()
-        XCTAssertNil(viewModel.editingContext)
+        viewModel.undo()
+        XCTAssertEqual(viewModel.assignments.first?.name, "Original")
+
+        viewModel.redo()
+        XCTAssertEqual(viewModel.assignments.first?.name, "Updated")
+    }
+
+    func testUndoRedoAdd() async {
+        let repository = MockAssignmentRepository(assignments: [])
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
+
+        await viewModel.loadAssignments()
+        viewModel.addAssignment(
+            name: "New",
+            course: "MATH",
+            type: .homework,
+            dueAt: Date()
+        )
+        XCTAssertEqual(viewModel.assignments.count, 1)
+
+        viewModel.undo()
+        XCTAssertEqual(viewModel.assignments.count, 0)
+
+        viewModel.redo()
+        XCTAssertEqual(viewModel.assignments.count, 1)
+    }
+
+    func testCreateAssignmentAndBeginEditingNameInsertsAtTop() async {
+        let now = Date()
+        let existing = Assignment(status: .notStarted, name: "Existing", course: "BIO", type: .quiz, dueAt: now)
+        let repository = MockAssignmentRepository(assignments: [existing])
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
+
+        await viewModel.loadAssignments()
+        viewModel.createAssignmentAndBeginEditingName()
+
+        XCTAssertEqual(viewModel.assignments.count, 2)
+        XCTAssertEqual(viewModel.assignments.first?.name, "New assignment…")
+        XCTAssertEqual(viewModel.selectedAssignmentID, viewModel.assignments.first?.id)
+        XCTAssertEqual(viewModel.selectedField, .name)
+        if let firstID = viewModel.assignments.first?.id {
+            XCTAssertEqual(
+                viewModel.editingContext,
+                .init(assignmentID: firstID, field: .name)
+            )
+        } else {
+            XCTFail("Expected a newly created assignment at the top of the list.")
+        }
     }
 }
 

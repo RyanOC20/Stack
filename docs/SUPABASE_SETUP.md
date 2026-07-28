@@ -25,6 +25,7 @@ For local testing, you can also run:
 ```
 supabase db reset --seed supabase/seed/sample_data.sql
 ```
+The seed script inserts assignments for the first auth user it finds. Create a user via the app or Supabase dashboard if you want sample data populated.
 
 ## Generate Client Types
 Use the helper script to generate Swift DTOs from Supabase if you decide to rely on the codegen pipeline:

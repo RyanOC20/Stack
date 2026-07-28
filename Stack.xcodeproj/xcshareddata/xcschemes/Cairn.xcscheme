@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
-               BuildableName = "Stack.app"
-               BlueprintName = "Stack"
+               BuildableName = "Cairn.app"
+               BlueprintName = "Cairn"
                ReferencedContainer = "container:Stack.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B06689AF5E1FCD4B8F62CCD4"
-               BuildableName = "StackTests.xctest"
-               BlueprintName = "StackTests"
+               BuildableName = "CairnTests.xctest"
+               BlueprintName = "CairnTests"
                ReferencedContainer = "container:Stack.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -43,8 +43,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4525E01243DA02F795CE209F"
-               BuildableName = "StackUITests.xctest"
-               BlueprintName = "StackUITests"
+               BuildableName = "CairnUITests.xctest"
+               BlueprintName = "CairnUITests"
                ReferencedContainer = "container:Stack.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -53,8 +53,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
-            BuildableName = "Stack.app"
-            BlueprintName = "Stack"
+            BuildableName = "Cairn.app"
+            BlueprintName = "Cairn"
             ReferencedContainer = "container:Stack.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -74,8 +74,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
-            BuildableName = "Stack.app"
-            BlueprintName = "Stack"
+            BuildableName = "Cairn.app"
+            BlueprintName = "Cairn"
             ReferencedContainer = "container:Stack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -91,8 +91,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
-            BuildableName = "Stack.app"
-            BlueprintName = "Stack"
+            BuildableName = "Cairn.app"
+            BlueprintName = "Cairn"
             ReferencedContainer = "container:Stack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

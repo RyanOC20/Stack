@@ -5,6 +5,7 @@ import Foundation
 final class AppState: ObservableObject {
     private let environment: AppEnvironment
     let assignmentsListViewModel: AssignmentsListViewModel
+    let importViewModel: ImportViewModel?
     @Published private(set) var hasSupabaseSession: Bool
 
     var authService: SupabaseAuthService? {
@@ -28,6 +29,22 @@ final class AppState: ObservableObject {
             logger: environment.logger,
             autoLoad: shouldAutoLoad
         )
+
+        if let supabaseClient = environment.supabaseClient {
+            let service = ImportService(client: supabaseClient, logger: environment.logger)
+            let listViewModel = assignmentsListViewModel
+            importViewModel = ImportViewModel(service: service) { candidate in
+                listViewModel.addAssignment(
+                    name: candidate.name,
+                    course: candidate.course,
+                    type: candidate.type,
+                    dueAt: candidate.dueAt,
+                    status: candidate.status
+                )
+            }
+        } else {
+            importViewModel = nil
+        }
 
         assignmentsListViewModel.onSessionExpired = { [weak self] in
             self?.handleLogout()

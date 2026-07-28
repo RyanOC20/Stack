@@ -1,7 +1,7 @@
 import os.log
 
 struct Logger {
-    private let logger = os.Logger(subsystem: "com.stack.app", category: "default")
+    private let logger = os.Logger(subsystem: "com.cairn.app", category: "default")
 
     func info(_ message: String) {
         logger.info("\(message, privacy: .public)")

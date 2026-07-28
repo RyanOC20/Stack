@@ -1,6 +1,6 @@
 import XCTest
 
-final class StackUITests: XCTestCase {
+final class CairnUITests: XCTestCase {
     func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()
