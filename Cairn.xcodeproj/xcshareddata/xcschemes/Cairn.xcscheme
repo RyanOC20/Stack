@@ -17,7 +17,7 @@
                BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
                BuildableName = "Cairn.app"
                BlueprintName = "Cairn"
-               ReferencedContainer = "container:Stack.xcodeproj">
+               ReferencedContainer = "container:Cairn.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "B06689AF5E1FCD4B8F62CCD4"
                BuildableName = "CairnTests.xctest"
                BlueprintName = "CairnTests"
-               ReferencedContainer = "container:Stack.xcodeproj">
+               ReferencedContainer = "container:Cairn.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -45,7 +45,7 @@
                BlueprintIdentifier = "4525E01243DA02F795CE209F"
                BuildableName = "CairnUITests.xctest"
                BlueprintName = "CairnUITests"
-               ReferencedContainer = "container:Stack.xcodeproj">
+               ReferencedContainer = "container:Cairn.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,7 +55,7 @@
             BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
             BuildableName = "Cairn.app"
             BlueprintName = "Cairn"
-            ReferencedContainer = "container:Stack.xcodeproj">
+            ReferencedContainer = "container:Cairn.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -76,7 +76,7 @@
             BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
             BuildableName = "Cairn.app"
             BlueprintName = "Cairn"
-            ReferencedContainer = "container:Stack.xcodeproj">
+            ReferencedContainer = "container:Cairn.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -93,7 +93,7 @@
             BlueprintIdentifier = "4F5D5E82D574A1B8AF545671"
             BuildableName = "Cairn.app"
             BlueprintName = "Cairn"
-            ReferencedContainer = "container:Stack.xcodeproj">
+            ReferencedContainer = "container:Cairn.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

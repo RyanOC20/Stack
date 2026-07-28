@@ -14,8 +14,8 @@
 This script installs Homebrew dependencies (if missing), copies example config files, and reminds you to supply Supabase credentials. It will create `Config/Environment.plist` and `supabase/config/supabase.env` from their `.example` templates if missing—fill them with your Supabase URL/anon key, or export `SUPABASE_URL`/`SUPABASE_ANON_KEY` in your shell instead. The real config files are gitignored; avoid committing secrets.
 
 ## Running the App
-1. Open `Stack.xcodeproj` in Xcode.
-2. Select the "Stack" scheme.
+1. Open `Cairn.xcodeproj` in Xcode.
+2. Select the "Cairn" scheme.
 3. Build & run on "My Mac".
 
 ## Local Supabase
@@ -40,18 +40,18 @@ This script installs Homebrew dependencies (if missing), copies example config f
 
 ## Testing
 ```
-xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' test
+xcodebuild -project Cairn.xcodeproj -scheme Cairn -destination 'platform=macOS' test
 ```
-Unit tests live under `Tests/StackTests`. UI coverage starts in `Tests/StackUITests`.
+Unit tests live under `Tests/CairnTests`. UI coverage starts in `Tests/CairnUITests`.
 
 ## CI
 - GitHub Actions runs SwiftFormat in lint mode, SwiftLint (`--strict`), and `xcodebuild test` with code signing disabled on macOS runners.
 - To mirror CI locally:
   ```
   brew install swiftformat swiftlint
-  swiftformat --lint Stack Tests
+  swiftformat --lint Cairn Tests
   swiftlint --strict
-  xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" test
+  xcodebuild -project Cairn.xcodeproj -scheme Cairn -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" test
   ```
 
 ## Commit Process

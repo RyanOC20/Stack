@@ -1,6 +1,6 @@
-# Stack
+# Cairn
 
-Stack is a macOS SwiftUI app for fast, keyboard-driven assignment tracking backed by Supabase/Postgres. The project is structured as a monorepo that contains the Swift client, Supabase schema/migrations, and tooling required for local development.
+Cairn is a macOS SwiftUI app for fast, keyboard-driven assignment tracking backed by Supabase/Postgres. The project is structured as a monorepo that contains the Swift client, Supabase schema/migrations, and tooling required for local development.
 
 ## Features
 - Dark-mode only UI modeled after native macOS productivity apps
@@ -12,8 +12,8 @@ Stack is a macOS SwiftUI app for fast, keyboard-driven assignment tracking backe
 See the inline comments in the specification or browse the directory tree for a tour of the modules:
 
 ```
-Stack/
-├── Stack/                # SwiftUI source
+Cairn/
+├── Cairn/                # SwiftUI source
 ├── supabase/             # Database schema and config
 ├── scripts/              # Tooling for bootstrapping and formatting
 ├── docs/                 # Architecture and user-facing documentation
@@ -24,7 +24,7 @@ Stack/
 1. Install Xcode 15 or newer plus the Swift toolchain.
 2. Install the Supabase CLI (`brew install supabase/tap/supabase`).
 3. Run `scripts/bootstrap.sh` from the repo root to install dependencies and copy config templates (`Config/Environment.plist` and `supabase/config/supabase.env`). Populate those with your Supabase URL/anon key, or export `SUPABASE_URL`/`SUPABASE_ANON_KEY` in your shell instead.
-4. Open `Stack.xcodeproj` in Xcode and select the "Stack" scheme to build and run.
+4. Open `Cairn.xcodeproj` in Xcode and select the "Cairn" scheme to build and run.
 5. Follow `docs/SUPABASE_SETUP.md` to start a local Supabase instance and run migrations.
 
 ## Contributing
@@ -35,9 +35,9 @@ Please read the docs in the `docs/` folder for architecture details, coding conv
 - Match CI locally with:
   ```
   brew install swiftformat swiftlint
-  swiftformat --lint Stack Tests
+  swiftformat --lint Cairn Tests
   swiftlint --strict
-  xcodebuild -project Stack.xcodeproj -scheme Stack -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" test
+  xcodebuild -project Cairn.xcodeproj -scheme Cairn -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" test
   ```
 
 ## License

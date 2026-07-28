@@ -1,6 +1,6 @@
-# Stack User Guide
+# Cairn User Guide
 
-Stack is a dark, keyboard-first macOS assignments tracker. This guide highlights the essential workflows.
+Cairn is a dark, keyboard-first macOS assignments tracker. This guide highlights the essential workflows.
 
 ## Core Concepts
 - **Single view**: All assignments appear in one scrolling table with columns for status, name, course, type, and due date.

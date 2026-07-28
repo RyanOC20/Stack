@@ -35,14 +35,14 @@
 		9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */; };
 		9D93F0483FC14829AF263831 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBE506AA3E24373A8A21E2B /* TestHelpers.swift */; };
 		9FF6E8CD1E1F6A24D4B58D31 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CFF906E419B04C973F3306 /* SupabaseClient.swift */; };
-		A486DA8225714E65BA67F5D3 /* Stack.app in Frameworks */ = {isa = PBXBuildFile; fileRef = D2FB4F64F4D82732270D8959 /* Stack.app */; };
+		A486DA8225714E65BA67F5D3 /* Cairn.app in Frameworks */ = {isa = PBXBuildFile; fileRef = D2FB4F64F4D82732270D8959 /* Cairn.app */; };
 		A43A0FACEC1AB7C4D0EDFD6E /* FontRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D85A77C2EAB42E2A13352F5 /* FontRegistrar.swift */; };
 		A54FF8029BF14428B69818F5 /* AssignmentDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */; };
 		AD049CCDF7EAE27B99BB8A2B /* AssignmentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B856224F5435B7EF83D26B3 /* AssignmentRowView.swift */; };
 		AD8B93CD0FE962810BE7F51A /* AssignmentsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA57EBA06C75DFF5725A60 /* AssignmentsListViewModelTests.swift */; };
 		AE16403C91651AAAB5E556BD /* KeyboardShortcutsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */; };
 		B5CD62DC2FA22698CBEFE1F7 /* QuickAddRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6714B7930291EBD5AB1D0D21 /* QuickAddRowView.swift */; };
-		B89E1289E0655343B5494714 /* StackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1540AC8B701538FA15DACEC8 /* StackApp.swift */; };
+		B89E1289E0655343B5494714 /* CairnApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1540AC8B701538FA15DACEC8 /* CairnApp.swift */; };
 		B8E0A7CF9AF35B879E1A7B55 /* WindowAppearanceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071890ABCDEF /* WindowAppearanceConfigurator.swift */; };
 		B8EBC951628168C51E0F48FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379F2C39108BDA1ADDE64CDB /* Assets.xcassets */; };
 		B997D52942115B55717FA9F0 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40847A01C84A892D4A9700E0 /* Assignment.swift */; };
@@ -52,7 +52,7 @@
 		CF813F9B4B3104E439A1B94D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479AD0FD0B127476E185D112 /* AppState.swift */; };
 		C3501466C96044458BE39254 /* LocalCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E642FC73B23E47F58559777F /* LocalCacheTests.swift */; };
 		D25D52A8CC279B1317F712CC /* TypeDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */; };
-		D9251D924951686B634FE62B /* StackUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* StackUITests.swift */; };
+		D9251D924951686B634FE62B /* CairnUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* CairnUITests.swift */; };
 		D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */; };
 		F0E1D2C3B4A5968778695A5C /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */; };
 		F1CE15FD16C54DD3B3D3C986 /* RowBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */; };
@@ -91,7 +91,7 @@
 		0033B616B71849CD8CF0F8AA /* CourseRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRepositoryTests.swift; sourceTree = "<group>"; };
 		11236ED3F36BF6F74088FD53 /* AssignmentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentStatus.swift; sourceTree = "<group>"; };
 		1283A116A1AB73E3E49ED982 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
-		1540AC8B701538FA15DACEC8 /* StackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CairnApp.swift; sourceTree = "<group>"; };
+		1540AC8B701538FA15DACEC8 /* CairnApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CairnApp.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071890ABCDEF /* WindowAppearanceConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAppearanceConfigurator.swift; sourceTree = "<group>"; };
 		1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeDropdown.swift; sourceTree = "<group>"; };
 		264A6DC1D0C358840544F960 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
@@ -109,10 +109,10 @@
 		535DC0A7B21B87B785AC142E /* RowBackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowBackgroundModifier.swift; sourceTree = "<group>"; };
 		560A5D0CF9A424CC8D00BE51 /* DateInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateInputField.swift; sourceTree = "<group>"; };
 		5E9EE3481DC5242905962930 /* CourseRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRepository.swift; sourceTree = "<group>"; };
-		66DB2F6967F2814C2D4EE588 /* StackUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CairnUITests.swift; sourceTree = "<group>"; };
+		66DB2F6967F2814C2D4EE588 /* CairnUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CairnUITests.swift; sourceTree = "<group>"; };
 		6714B7930291EBD5AB1D0D21 /* QuickAddRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddRowView.swift; sourceTree = "<group>"; };
 		688CCB6BD60FDF5FB2BB773C /* AssignmentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentsListView.swift; sourceTree = "<group>"; };
-		6AFD0D382B3ADF00A7E9CE39 /* StackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CairnTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AFD0D382B3ADF00A7E9CE39 /* CairnTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CairnTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B856224F5435B7EF83D26B3 /* AssignmentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRowView.swift; sourceTree = "<group>"; };
 		6C7FA9B1C0B64C9C8EAF1D01 /* Environment.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Environment.plist; sourceTree = "<group>"; };
 		6DBB92A831EA479D15A88A99 /* AssignmentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentType.swift; sourceTree = "<group>"; };
@@ -128,12 +128,12 @@
 		989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientTests.swift; sourceTree = "<group>"; };
 		B07177A0B94059F2FBB12AC1 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentDTOTests.swift; sourceTree = "<group>"; };
-		BCCF077D719F99BD5335EC30 /* StackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CairnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCCF077D719F99BD5335EC30 /* CairnUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CairnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E33F0C503B4D2F8F1DED00 /* SupabaseAssignmentRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAssignmentRepositoryTests.swift; sourceTree = "<group>"; };
 		BE47E6CE3B5178D9E8ACB30D /* SupabaseAssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAssignmentRepository.swift; sourceTree = "<group>"; };
 		C0CFF906E419B04C973F3306 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		CC026283C2052304FAFFA757 /* AssignmentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentRepository.swift; sourceTree = "<group>"; };
-		D2FB4F64F4D82732270D8959 /* Stack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cairn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2FB4F64F4D82732270D8959 /* Cairn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cairn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4C3B2A1908F7E6D5C4B3A29 /* JetBrainsMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Regular.ttf"; sourceTree = "<group>"; };
 		D7512564847D811191FCA966 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		DDA7C1F1B07A88D9E8F6810B /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A486DA8225714E65BA67F5D3 /* Stack.app in Frameworks */,
+				A486DA8225714E65BA67F5D3 /* Cairn.app in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,9 +199,9 @@
 		1D7B6B30E2B20C1F9C4BC6C5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2FB4F64F4D82732270D8959 /* Stack.app */,
-				6AFD0D382B3ADF00A7E9CE39 /* StackTests.xctest */,
-				BCCF077D719F99BD5335EC30 /* StackUITests.xctest */,
+				D2FB4F64F4D82732270D8959 /* Cairn.app */,
+				6AFD0D382B3ADF00A7E9CE39 /* CairnTests.xctest */,
+				BCCF077D719F99BD5335EC30 /* CairnUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -229,7 +229,7 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		3DAECE55A621F18875E127D4 /* StackTests */ = {
+		3DAECE55A621F18875E127D4 /* CairnTests */ = {
 			isa = PBXGroup;
 			children = (
 				7FBE506AA3E24373A8A21E2B /* TestHelpers.swift */,
@@ -244,7 +244,7 @@
 				71D772E68BEF43328F9BE4E9 /* SupabaseAuthServiceTests.swift */,
 				A11100000000000000000010 /* ImportModelsTests.swift */,
 			);
-			path = StackTests;
+			path = CairnTests;
 			sourceTree = "<group>";
 		};
 		4C6A50E5266993818C62C48C /* Supabase */ = {
@@ -285,8 +285,8 @@
 		6BA0875C304FB448396B7C4F /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				3DAECE55A621F18875E127D4 /* StackTests */,
-				BFBF21EE274566AE26545823 /* StackUITests */,
+				3DAECE55A621F18875E127D4 /* CairnTests */,
+				BFBF21EE274566AE26545823 /* CairnUITests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -329,12 +329,12 @@
 			path = Authentication;
 			sourceTree = "<group>";
 		};
-		BFBF21EE274566AE26545823 /* StackUITests */ = {
+		BFBF21EE274566AE26545823 /* CairnUITests */ = {
 			isa = PBXGroup;
 			children = (
-				66DB2F6967F2814C2D4EE588 /* StackUITests.swift */,
+				66DB2F6967F2814C2D4EE588 /* CairnUITests.swift */,
 			);
-			path = StackUITests;
+			path = CairnUITests;
 			sourceTree = "<group>";
 		};
 		C2427CF89B35673D9F338328 /* Services */ = {
@@ -369,7 +369,7 @@
 				D7512564847D811191FCA966 /* AppEnvironment.swift */,
 				479AD0FD0B127476E185D112 /* AppState.swift */,
 				F776DAB2647C4C73B2B53F4D /* EnvironmentConfiguration.swift */,
-				1540AC8B701538FA15DACEC8 /* StackApp.swift */,
+				1540AC8B701538FA15DACEC8 /* CairnApp.swift */,
 				A1B2C3D4E5F6071890ABCDEF /* WindowAppearanceConfigurator.swift */,
 			);
 			path = App;
@@ -388,13 +388,13 @@
 			isa = PBXGroup;
 			children = (
 				13AF2A0D2EDD73780099143D /* Config */,
-				FE8A1662E02CF71ECCC58A33 /* Stack */,
+				FE8A1662E02CF71ECCC58A33 /* Cairn */,
 				6BA0875C304FB448396B7C4F /* Tests */,
 				1D7B6B30E2B20C1F9C4BC6C5 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		FE8A1662E02CF71ECCC58A33 /* Stack */ = {
+		FE8A1662E02CF71ECCC58A33 /* Cairn */ = {
 			isa = PBXGroup;
 			children = (
 				EE1665B71C6378B3FCBF0965 /* App */,
@@ -405,7 +405,7 @@
 				345CF4CD764C3483B024F8B8 /* Styling */,
 				BEDA48776DF6A90D662A2AD3 /* Supporting */,
 			);
-			path = Stack;
+			path = Cairn;
 			sourceTree = "<group>";
 		};
 		FF443576919C131BB18D46C0 /* Resources */ = {
@@ -430,9 +430,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4525E01243DA02F795CE209F /* StackUITests */ = {
+		4525E01243DA02F795CE209F /* CairnUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 55AB34FBA4BF08A0D51A95DE /* Build configuration list for PBXNativeTarget "StackUITests" */;
+			buildConfigurationList = 55AB34FBA4BF08A0D51A95DE /* Build configuration list for PBXNativeTarget "CairnUITests" */;
 			buildPhases = (
 				BA2FB6F08ABAE3CED9E7EAB1 /* Sources */,
 				5B17E7D692A1E4AA810E9440 /* Frameworks */,
@@ -445,12 +445,12 @@
 			);
 			name = CairnUITests;
 			productName = CairnUITests;
-			productReference = BCCF077D719F99BD5335EC30 /* StackUITests.xctest */;
+			productReference = BCCF077D719F99BD5335EC30 /* CairnUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		4F5D5E82D574A1B8AF545671 /* Stack */ = {
+		4F5D5E82D574A1B8AF545671 /* Cairn */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4A1E38BD8FF2C2F05F5D3B7F /* Build configuration list for PBXNativeTarget "Stack" */;
+			buildConfigurationList = 4A1E38BD8FF2C2F05F5D3B7F /* Build configuration list for PBXNativeTarget "Cairn" */;
 			buildPhases = (
 				E9ABA9C88138120C4D6BE3DB /* Sources */,
 				AFE52CA0448E45106AF96476 /* Frameworks */,
@@ -462,12 +462,12 @@
 			);
 			name = Cairn;
 			productName = Cairn;
-			productReference = D2FB4F64F4D82732270D8959 /* Stack.app */;
+			productReference = D2FB4F64F4D82732270D8959 /* Cairn.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B06689AF5E1FCD4B8F62CCD4 /* StackTests */ = {
+		B06689AF5E1FCD4B8F62CCD4 /* CairnTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2B644B3DF3B6D48B7C014FCC /* Build configuration list for PBXNativeTarget "StackTests" */;
+			buildConfigurationList = 2B644B3DF3B6D48B7C014FCC /* Build configuration list for PBXNativeTarget "CairnTests" */;
 			buildPhases = (
 				76B033C96BF901CDE61243A9 /* Sources */,
 				2C5E2C70326A8E7C46D20593 /* Frameworks */,
@@ -480,7 +480,7 @@
 			);
 			name = CairnTests;
 			productName = CairnTests;
-			productReference = 6AFD0D382B3ADF00A7E9CE39 /* StackTests.xctest */;
+			productReference = 6AFD0D382B3ADF00A7E9CE39 /* CairnTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -506,7 +506,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 841A38E5F7A8F6706B5D4669 /* Build configuration list for PBXProject "Stack" */;
+			buildConfigurationList = 841A38E5F7A8F6706B5D4669 /* Build configuration list for PBXProject "Cairn" */;
 			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -518,9 +518,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4F5D5E82D574A1B8AF545671 /* Stack */,
-				B06689AF5E1FCD4B8F62CCD4 /* StackTests */,
-				4525E01243DA02F795CE209F /* StackUITests */,
+				4F5D5E82D574A1B8AF545671 /* Cairn */,
+				B06689AF5E1FCD4B8F62CCD4 /* CairnTests */,
+				4525E01243DA02F795CE209F /* CairnUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -577,7 +577,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9251D924951686B634FE62B /* StackUITests.swift in Sources */,
+				D9251D924951686B634FE62B /* CairnUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,7 +588,7 @@
 				098D78D185F747D8B464FBB05 /* AppEnvironment.swift in Sources */,
 				4B3E0238EAE22C33D8C2A6AC /* EnvironmentConfiguration.swift in Sources */,
 				CF813F9B4B3104E439A1B94D /* AppState.swift in Sources */,
-				B89E1289E0655343B5494714 /* StackApp.swift in Sources */,
+				B89E1289E0655343B5494714 /* CairnApp.swift in Sources */,
 				B8E0A7CF9AF35B879E1A7B55 /* WindowAppearanceConfigurator.swift in Sources */,
 				B9E75CF7936AAF877CEDFC46 /* AssignmentsListView.swift in Sources */,
 				0AF1C38F1B53A3C6C6D71505 /* AssignmentsListViewModel.swift in Sources */,
@@ -633,12 +633,12 @@
 /* Begin PBXTargetDependency section */
 		DC02C95EA24941D7854836C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4F5D5E82D574A1B8AF545671 /* Stack */;
+			target = 4F5D5E82D574A1B8AF545671 /* Cairn */;
 			targetProxy = FB8F57164D6D62DE66F83091 /* PBXContainerItemProxy */;
 		};
 		F0879E41EC8FE7C2F8DEBB9E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4F5D5E82D574A1B8AF545671 /* Stack */;
+			target = 4F5D5E82D574A1B8AF545671 /* Cairn */;
 			targetProxy = F5804A7B1B7C8E28831EE3A9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -690,11 +690,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Stack/Supporting/Entitlements.plist;
+				CODE_SIGN_ENTITLEMENTS = Cairn/Supporting/Entitlements.plist;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Stack/Supporting/Info.plist;
+				INFOPLIST_FILE = Cairn/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -794,11 +794,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Stack/Supporting/Entitlements.plist;
+				CODE_SIGN_ENTITLEMENTS = Cairn/Supporting/Entitlements.plist;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Stack/Supporting/Info.plist;
+				INFOPLIST_FILE = Cairn/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -889,7 +889,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2B644B3DF3B6D48B7C014FCC /* Build configuration list for PBXNativeTarget "StackTests" */ = {
+		2B644B3DF3B6D48B7C014FCC /* Build configuration list for PBXNativeTarget "CairnTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CC4B4BCF20D9857B5ABAC06D /* Debug */,
@@ -898,7 +898,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		4A1E38BD8FF2C2F05F5D3B7F /* Build configuration list for PBXNativeTarget "Stack" */ = {
+		4A1E38BD8FF2C2F05F5D3B7F /* Build configuration list for PBXNativeTarget "Cairn" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C646EA9C4E33269046E49678 /* Debug */,
@@ -907,7 +907,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		55AB34FBA4BF08A0D51A95DE /* Build configuration list for PBXNativeTarget "StackUITests" */ = {
+		55AB34FBA4BF08A0D51A95DE /* Build configuration list for PBXNativeTarget "CairnUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2A24F7CA0AD2741BDF90B98D /* Debug */,
@@ -916,7 +916,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		841A38E5F7A8F6706B5D4669 /* Build configuration list for PBXProject "Stack" */ = {
+		841A38E5F7A8F6706B5D4669 /* Build configuration list for PBXProject "Cairn" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AF8544CF9B83E3C09BB6510F /* Debug */,

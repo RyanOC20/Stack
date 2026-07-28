@@ -1,12 +1,12 @@
 # Architecture
 
-Stack follows a lightweight MVVM approach with SwiftUI views, observable view models, and a thin data layer that talks to Supabase.
+Cairn follows a lightweight MVVM approach with SwiftUI views, observable view models, and a thin data layer that talks to Supabase.
 
 ## Layers
-1. **UI (SwiftUI Views)** – Located in `Stack/Features`. Views are stateless except for transient editing state; they bind to view models for data mutations.
+1. **UI (SwiftUI Views)** – Located in `Cairn/Features`. Views are stateless except for transient editing state; they bind to view models for data mutations.
 2. **View Models** – `AssignmentsListViewModel` orchestrates loading assignments, handling inline edits, deletions, quick-add, and undo operations.
 3. **Services** – `Services/Supabase` hosts network-bound repositories. For now the Supabase repository is a stub that returns mock data, but the structure matches production usage.
-4. **Models** – Domain models live under `Stack/Models`, keeping UI and data representations consistent and Codable.
+4. **Models** – Domain models live under `Cairn/Models`, keeping UI and data representations consistent and Codable.
 5. **Styling** – Centralized typography, colors, and spacing ensure the dark, minimal appearance is consistent.
 
 ## Data Flow
