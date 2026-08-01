@@ -76,12 +76,15 @@ final class AssignmentsListViewModel: ObservableObject {
         } catch {
             let mappedError = SupabaseErrorMapper.map(error)
             logger.error("Failed to load assignments: \(mappedError.message)")
-            errorMessage = mappedError.message
 
             if let supabaseError = error as? SupabaseErrorResponse,
                let status = supabaseError.status,
                status == 401 || status == 403 {
+                // Session expired: log out silently instead of flashing an error banner.
+                errorMessage = nil
                 onSessionExpired?()
+            } else {
+                errorMessage = mappedError.message
             }
         }
     }
@@ -108,6 +111,16 @@ final class AssignmentsListViewModel: ObservableObject {
 
     func moveSelection(_ direction: MoveCommandDirection) {
         guard !assignments.isEmpty else { return }
+
+        guard let currentID = selectedAssignmentID,
+              let currentIndex = assignments.firstIndex(where: { $0.id == currentID })
+        else {
+            // Nothing selected yet — engage the top-left field.
+            selectedAssignmentID = assignments.first?.id
+            selectedField = .status
+            return
+        }
+
         let offset: Int
         switch direction {
         case .up:
@@ -118,19 +131,21 @@ final class AssignmentsListViewModel: ObservableObject {
             return
         }
 
-        guard let currentID = selectedAssignmentID,
-              let currentIndex = assignments.firstIndex(where: { $0.id == currentID })
-        else {
-            selectedAssignmentID = assignments.first?.id
-            return
-        }
-
         let targetIndex = max(0, min(assignments.count - 1, currentIndex + offset))
         selectedAssignmentID = assignments[targetIndex].id
     }
 
     func moveFieldSelection(_ direction: MoveCommandDirection) {
         guard editingContext == nil else { return }
+        guard !assignments.isEmpty else { return }
+
+        guard selectedAssignmentID != nil else {
+            // Nothing selected yet — engage the top-left field.
+            selectedAssignmentID = assignments.first?.id
+            selectedField = .status
+            return
+        }
+
         guard let currentIndex = Self.orderedFields.firstIndex(of: selectedField) else {
             selectedField = .status
             return

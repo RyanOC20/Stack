@@ -3,6 +3,7 @@ import SwiftUI
 struct AssignmentRowView: View {
     let assignment: Assignment
     let isSelected: Bool
+    let selectedField: AssignmentsListViewModel.EditingContext.Field?
     let availableCourses: [String]
     let editingContext: AssignmentsListViewModel.EditingContext?
 
@@ -49,23 +50,42 @@ struct AssignmentRowView: View {
         editingContext?.assignmentID == assignment.id && editingContext?.field == .type
     }
 
+    private var isEditingThisRow: Bool {
+        editingContext?.assignmentID == assignment.id
+    }
+
+    // Subtle highlight on the keyboard-selected field of the selected row, so
+    // Left/Right (and h/l) visibly move between columns. Hidden while editing.
+    @ViewBuilder
+    private func fieldHighlight(_ field: AssignmentsListViewModel.EditingContext.Field) -> some View {
+        if isSelected, !isEditingThisRow, selectedField == field {
+            Rectangle()
+                .fill(ColorPalette.dueSoon.opacity(0.35))
+        }
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: Spacing.columnSpacing) {
             statusField
+                .background(fieldHighlight(.status))
                 .frame(width: AssignmentsListLayout.statusColumnWidth, alignment: .leading)
 
             nameField
+                .background(fieldHighlight(.name))
                 .frame(minWidth: AssignmentsListLayout.nameMinWidth,
                        maxWidth: .infinity,
                        alignment: .leading)
 
             courseField
+                .background(fieldHighlight(.course))
                 .frame(width: AssignmentsListLayout.courseColumnWidth, alignment: .leading)
 
             typeField
+                .background(fieldHighlight(.type))
                 .frame(width: AssignmentsListLayout.typeColumnWidth, alignment: .leading)
 
             dueDateField
+                .background(fieldHighlight(.dueDate))
                 .frame(width: AssignmentsListLayout.dueDateColumnWidth, alignment: .leading)
         }
         .padding(.vertical, 4)

@@ -44,13 +44,10 @@ struct AuthFlowView: View {
         VStack(spacing: 28) {
             Spacer()
 
-            VStack(spacing: 16) {
-                appIcon
-                    .resizable()
-                    .environment(\.displayScale, 2)
-                    .scaledToFit()
-                    .frame(width: 400, height: 400)
-            }
+            Text("cairn")
+                .font(.custom("JetBrainsMono-Regular", size: 52))
+                .tracking(2)
+                .foregroundColor(ColorPalette.textPrimary)
 
             VStack(spacing: 12) {
                 primaryButton(title: "Create Account") {
@@ -260,9 +257,5 @@ struct AuthFlowView: View {
 
     private func resetErrors() {
         errorMessage = nil
-    }
-
-    private var appIcon: Image {
-        Image("Large")
     }
 }

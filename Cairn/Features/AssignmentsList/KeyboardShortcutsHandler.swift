@@ -28,12 +28,23 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
     }
 
     final class KeyCaptureView: NSView {
-        var handlers: Handlers?
+        var handlers: Handlers? {
+            didSet { grabFocusIfEnteringNavigation() }
+        }
         private var monitor: Any?
+        private var wasNavigating = false
+
+        override var acceptsFirstResponder: Bool { true }
 
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()
+            guard window != nil else {
+                stopMonitoring()
+                return
+            }
             startMonitoring()
+            wasNavigating = false
+            grabFocusIfEnteringNavigation()
         }
 
         override func removeFromSuperview() {
@@ -43,6 +54,29 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
 
         deinit {
             stopMonitoring()
+        }
+
+        /// When the app enters navigation mode (not editing a field, quick-add, or the
+        /// shortcuts overlay), take first responder so the keyboard works immediately —
+        /// without a click — displacing any stray text-field focus left behind by login
+        /// or a just-finished edit.
+        private func grabFocusIfEnteringNavigation() {
+            guard let handlers else { return }
+            let navigating = handlers.shouldCaptureArrows()
+            defer { wasNavigating = navigating }
+            guard navigating, !wasNavigating else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, let window = self.window, window.isKeyWindow else { return }
+                let responder = window.firstResponder
+                if responder == nil || responder === window || responder is NSTextView {
+                    window.makeFirstResponder(self)
+                }
+            }
+        }
+
+        override func keyDown(with event: NSEvent) {
+            // Navigation keys are consumed by the local monitor before dispatch reaches
+            // here; swallow the rest so navigation mode doesn't beep on stray keys.
         }
 
         private func startMonitoring() {
@@ -90,6 +124,29 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
                 }
             }
 
+            // Vim-style navigation: h/j/k/l mirror the arrow keys, but only when
+            // we're navigating (not editing) so they don't swallow normal typing.
+            if flags.isEmpty,
+               handlers.shouldCaptureArrows(),
+               let character = event.charactersIgnoringModifiers?.lowercased() {
+                switch character {
+                case "k":
+                    handlers.onMoveRow(.up)
+                    return true
+                case "j":
+                    handlers.onMoveRow(.down)
+                    return true
+                case "h":
+                    handlers.onMoveField(.left)
+                    return true
+                case "l":
+                    handlers.onMoveField(.right)
+                    return true
+                default:
+                    break
+                }
+            }
+
             switch event.specialKey {
             case .delete, .deleteForward:
                 return handlers.onDelete()
@@ -125,6 +182,15 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
         }
 
         private func shouldAllowEventToProceed(_ event: NSEvent) -> Bool {
+            // In navigation mode nothing is being edited, so a lingering text-field
+            // first responder (left over from a just-finished edit, a new-assignment
+            // name entry, or login) must not swallow navigation keys. Capture
+            // everything here so h/j/k/l and the arrows re-engage field selection
+            // immediately — without first clicking a field.
+            if handlers?.shouldCaptureArrows() == true {
+                return false
+            }
+
             guard let responder = window?.firstResponder else { return false }
             let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
 

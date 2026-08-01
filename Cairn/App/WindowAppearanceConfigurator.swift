@@ -23,9 +23,9 @@ struct WindowAppearanceConfigurator: NSViewRepresentable {
         window.styleMask.insert(.fullSizeContentView)
         window.isOpaque = false
         window.backgroundColor = NSColor(
-            srgbRed: 30.0 / 255.0,
-            green: 30.0 / 255.0,
-            blue: 30.0 / 255.0,
+            srgbRed: 28.0 / 255.0,
+            green: 27.0 / 255.0,
+            blue: 25.0 / 255.0,
             alpha: 1
         )
     }

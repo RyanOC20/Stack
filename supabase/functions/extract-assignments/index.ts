@@ -5,7 +5,7 @@
 // Extraction only — it never writes to the database. Confirmed assignments are
 // inserted by the Swift client through the normal RLS-scoped PostgREST path.
 //
-// Uses Gemini 2.5 Flash (free tier). Model is overridable via GEMINI_MODEL.
+// Uses the current free-tier Flash model (gemini-flash-latest). Overridable via GEMINI_MODEL.
 //
 // Deploy:  supabase functions deploy extract-assignments
 // Secret:  supabase secrets set GEMINI_API_KEY=AIza...
@@ -16,7 +16,9 @@ import { GoogleGenAI, type Part, Type } from "npm:@google/genai@^1.0.0";
 import { createClient } from "npm:@supabase/supabase-js@^2.48.0";
 import { encodeBase64 } from "jsr:@std/encoding/base64";
 
-const DEFAULT_MODEL = "gemini-2.5-flash";
+// Rolling alias for the current free-tier Flash model, so a Google model
+// retirement doesn't break us. Override with the GEMINI_MODEL secret if desired.
+const DEFAULT_MODEL = "gemini-flash-latest";
 
 const ASSIGNMENT_TYPES = [
   "Homework",

@@ -5,7 +5,6 @@ struct AssignmentsListView: View {
     var onLogout: () -> Void = {}
     @State private var isQuickAddVisible = false
     @State private var isShortcutHelpVisible = false
-    @State private var headerHeight: CGFloat = 0
     private let dropdownCommitNotification = Notification.Name("CairnDropdownCommit")
     private let showQuickAddNotification = Notification.Name("CairnShowQuickAddRow")
     private let showShortcutHelpNotification = Notification.Name("CairnShowShortcutHelp")
@@ -16,13 +15,6 @@ struct AssignmentsListView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                HStack {
-                    Spacer()
-                }
-                .frame(height: max(headerHeight - Spacing.contentPadding, 0))
-                .padding(.horizontal, Spacing.contentPadding)
-                .padding(.top, Spacing.contentPadding)
-
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: Spacing.rowSpacing) {
                         if isQuickAddVisible {
@@ -45,6 +37,7 @@ struct AssignmentsListView: View {
                             AssignmentRowView(
                                 assignment: assignment,
                                 isSelected: viewModel.selectedAssignmentID == assignment.id,
+                                selectedField: viewModel.selectedAssignmentID == assignment.id ? viewModel.selectedField : nil,
                                 availableCourses: viewModel.availableCourses,
                                 editingContext: viewModel.editingContext,
                                 onSelect: {
@@ -77,27 +70,11 @@ struct AssignmentsListView: View {
                                     viewModel.clearEditingContext()
                                 }
                             )
-                            .background(
-                                Group {
-                                    if assignment.id == viewModel.assignments.first?.id {
-                                        GeometryReader { proxy in
-                                            Color.clear.preference(
-                                                key: AssignmentRowHeightPreferenceKey.self,
-                                                value: proxy.size.height
-                                            )
-                                        }
-                                    }
-                                }
-                            )
                         }
                     }
                     .padding(.horizontal, Spacing.contentPadding)
+                    .padding(.top, 28)
                     .padding(.bottom, Spacing.contentPadding)
-                    .onPreferenceChange(AssignmentRowHeightPreferenceKey.self) { value in
-                        if value > 0, headerHeight == 0 {
-                            headerHeight = value
-                        }
-                    }
                 }
             }
 
@@ -114,7 +91,7 @@ struct AssignmentsListView: View {
             }
         }
         .background(ColorPalette.background)
-        .overlay(
+        .background(
             KeyboardShortcutsHandler(
                 handlers: .init(
                     onNew: { showQuickAddRow() },
@@ -129,7 +106,6 @@ struct AssignmentsListView: View {
                     shouldCaptureArrows: { shouldCaptureArrowKeys() }
                 )
             )
-            .allowsHitTesting(false)
         )
         .onExitCommand {
             handleEscapeKey()
@@ -160,26 +136,32 @@ struct AssignmentsListView: View {
                     .font(Typography.body.weight(.semibold))
                     .foregroundColor(.white)
 
-                shortcutRow("Up / Down", "Move selection between assignments while keeping the current column.")
-                shortcutRow("Left / Right", "Move across fields in the selected row. Wraps at both ends.")
+                shortcutRow("↑ / ↓ · K / J", "Move selection between assignments while keeping the current column.")
+                shortcutRow("← / → · H / L", "Move across fields in the selected row. Wraps at both ends.")
                 shortcutRow("Enter", "Start editing selected field, or save changes and exit edit mode.")
                 shortcutRow("Esc", "Exit edit mode without saving changes.")
                 shortcutRow("Delete", "Delete the selected assignment when not in edit mode.")
                 shortcutRow("Cmd + N", "Create a new assignment.")
+                shortcutRow("Cmd + I", "Import assignments from a screenshot, photo, URL, or text.")
                 shortcutRow("Cmd + Z", "Undo the last action.")
                 shortcutRow("Cmd + Y", "Redo the last undone action.")
                 shortcutRow("Cmd + ,", "Open this shortcuts help dialog.")
 
-                HStack {
-                    Spacer()
-                    Button("Close") {
-                        isShortcutHelpVisible = false
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(ColorPalette.rowSelection)
+                Rectangle()
+                    .fill(Color.white.opacity(0.12))
+                    .frame(height: 1)
+                    .padding(.vertical, 4)
+
+                Button("Log Out") {
+                    isShortcutHelpVisible = false
+                    onLogout()
                 }
+                .buttonStyle(.plain)
+                .font(Typography.secondary)
+                .foregroundColor(ColorPalette.dueSoon)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(ColorPalette.rowSelection)
             }
             .frame(width: 520)
             .padding(16)
@@ -262,17 +244,5 @@ struct AssignmentsListView: View {
             return false
         }
         return viewModel.editingContext == nil
-    }
-}
-
-private struct AssignmentRowHeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        guard value == 0 else { return }
-        let next = nextValue()
-        if next > 0 {
-            value = next
-        }
     }
 }

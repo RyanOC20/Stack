@@ -50,6 +50,7 @@ struct CairnApp: App {
                 }
             }
         }
+        .windowStyle(.hiddenTitleBar)
         .commands {
             if isAuthenticated {
                 CommandGroup(replacing: .newItem) {

@@ -15,6 +15,9 @@ xcuserdata/
 # Config
 Config/Environment.plist
 
+# Local agent instructions
+CLAUDE.md
+
 # Supabase
 supabase/.temp/
 supabase/config/supabase.env
