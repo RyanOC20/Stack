@@ -19,7 +19,8 @@ struct ExtractedAssignment: Identifiable, Hashable {
          dueAt: Date,
          status: AssignmentStatus,
          confidence: Double,
-         isIncluded: Bool = true) {
+         isIncluded: Bool = true)
+    {
         self.id = id
         self.name = name
         self.course = course
@@ -56,7 +57,8 @@ struct ExtractedAssignmentDTO: Decodable {
     /// Returns `nil` when the due date can't be parsed, so the candidate is dropped.
     func toModel() -> ExtractedAssignment? {
         guard let dueDate = Self.isoWithFractional.date(from: dueAt)
-            ?? Self.isoWithoutFractional.date(from: dueAt) else {
+            ?? Self.isoWithoutFractional.date(from: dueAt)
+        else {
             return nil
         }
         return ExtractedAssignment(

@@ -17,7 +17,7 @@ struct RowBackgroundModifier: ViewModifier {
             }
     }
 
-    // Extend the highlight beyond the list's horizontal padding so it reaches the screen edges.
+    /// Extend the highlight beyond the list's horizontal padding so it reaches the screen edges.
     private var fullWidthBackground: some View {
         GeometryReader { proxy in
             Rectangle()

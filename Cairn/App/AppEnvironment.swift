@@ -13,7 +13,8 @@ struct AppEnvironment {
          courseRepository: CourseRepositoryProviding? = nil,
          logger: Logger = Logger(),
          supabaseClient: SupabaseClient? = nil,
-         authService: SupabaseAuthService? = nil) {
+         authService: SupabaseAuthService? = nil)
+    {
         self.logger = logger
 
         if let assignmentRepository {
@@ -35,7 +36,10 @@ struct AppEnvironment {
 
     private static func makeSupabaseClient(logger: Logger) -> SupabaseClient? {
         guard let config = EnvironmentConfiguration.load(logger: logger) else {
-            logger.info("Supabase environment not found; set Config/Environment.plist or SUPABASE_URL/SUPABASE_ANON_KEY. Falling back to in-memory store.")
+            logger.info(
+                "Supabase environment not found; set Config/Environment.plist or " +
+                    "SUPABASE_URL/SUPABASE_ANON_KEY. Falling back to in-memory store."
+            )
             return nil
         }
         return SupabaseClient(configuration: .init(url: config.supabaseURL, anonKey: config.supabaseAnonKey))

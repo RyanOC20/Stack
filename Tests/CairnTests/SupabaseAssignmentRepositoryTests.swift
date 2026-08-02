@@ -1,5 +1,5 @@
-import XCTest
 @testable import Cairn
+import XCTest
 
 final class SupabaseAssignmentRepositoryTests: XCTestCase {
     private var client: SupabaseClient!
@@ -40,45 +40,11 @@ final class SupabaseAssignmentRepositoryTests: XCTestCase {
             handled.fulfill()
             XCTAssertEqual(request.httpMethod, "GET")
             XCTAssertEqual(request.url?.path, "/rest/v1/assignments")
-            let queryItems = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems
+            let queryItems = URLComponents(url: request.testURL, resolvingAgainstBaseURL: false)?.queryItems
             XCTAssertTrue(queryItems?.contains(where: { $0.name == "order" && $0.value == "due_at" }) == true)
 
-            let body = """
-            [
-              {
-                "id": "\(middleID.uuidString)",
-                "status": "In Progress",
-                "name": "Beta",
-                "course": "CS",
-                "type": "Quiz",
-                "due_at": "2024-05-02T10:00:00.123Z",
-                "created_at": "2024-05-01T10:00:00Z",
-                "updated_at": "2024-05-01T10:00:00Z"
-              },
-              {
-                "id": "\(earliestID.uuidString)",
-                "status": "Completed",
-                "name": "Alpha",
-                "course": "History",
-                "type": "Exam",
-                "due_at": "2024-05-01T09:00:00Z",
-                "created_at": "2024-04-30T10:00:00Z",
-                "updated_at": "2024-04-30T10:00:00Z"
-              },
-              {
-                "id": "\(latestID.uuidString)",
-                "status": "Not Started",
-                "name": "Gamma",
-                "course": "Math",
-                "type": "Homework",
-                "due_at": "2024-05-03T10:00:00+00:00",
-                "created_at": "2024-05-01T11:00:00Z",
-                "updated_at": "2024-05-01T11:00:00Z"
-              }
-            ]
-            """.data(using: .utf8)!
-
-            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            let body = Self.assignmentsPayload(earliestID: earliestID, middleID: middleID, latestID: latestID)
+            let response = makeHTTPResponse(for: request, statusCode: 200)
             return (response, body)
         }
 
@@ -106,15 +72,14 @@ final class SupabaseAssignmentRepositoryTests: XCTestCase {
             handled.fulfill()
             XCTAssertEqual(request.httpMethod, "POST")
             XCTAssertEqual(request.url?.path, "/rest/v1/assignments")
-            let queryItems = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems
+            let queryItems = URLComponents(url: request.testURL, resolvingAgainstBaseURL: false)?.queryItems
             XCTAssertTrue(queryItems?.contains(where: { $0.name == "on_conflict" && $0.value == "id" }) == true)
             XCTAssertEqual(request.value(forHTTPHeaderField: "Prefer"), "return=representation,resolution=merge-duplicates")
             XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer access-token")
 
             guard let data = httpBodyData(from: request) else {
                 XCTFail("Missing request body")
-                let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-                return (response, Data("[]".utf8))
+                return (makeHTTPResponse(for: request, statusCode: 200), Data("[]".utf8))
             }
 
             let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
@@ -126,8 +91,7 @@ final class SupabaseAssignmentRepositoryTests: XCTestCase {
             let dueAtString = try XCTUnwrap(payload["due_at"] as? String)
             XCTAssertTrue(dueAtString.contains("."), "Expected fractional seconds in \(dueAtString)")
 
-            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-            return (response, Data("[]".utf8))
+            return (makeHTTPResponse(for: request, statusCode: 200), Data("[]".utf8))
         }
 
         try await repository.upsertAssignment(assignment)
@@ -143,10 +107,10 @@ final class SupabaseAssignmentRepositoryTests: XCTestCase {
             handled.fulfill()
             XCTAssertEqual(request.httpMethod, "DELETE")
             XCTAssertEqual(request.url?.path, "/rest/v1/assignments")
-            let queryItems = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems
+            let queryItems = URLComponents(url: request.testURL, resolvingAgainstBaseURL: false)?.queryItems
             XCTAssertTrue(queryItems?.contains(where: { $0.name == "id" && $0.value == "eq.\(targetID.uuidString)" }) == true)
 
-            let response = HTTPURLResponse(url: request.url!, statusCode: 204, httpVersion: nil, headerFields: nil)!
+            let response = makeHTTPResponse(for: request, statusCode: 204)
             return (response, Data())
         }
 
@@ -156,5 +120,42 @@ final class SupabaseAssignmentRepositoryTests: XCTestCase {
 
     private func makeRepository() -> SupabaseAssignmentRepository {
         SupabaseAssignmentRepository(client: client, logger: logger)
+    }
+
+    private static func assignmentsPayload(earliestID: UUID, middleID: UUID, latestID: UUID) -> Data {
+        Data("""
+        [
+          {
+            "id": "\(middleID.uuidString)",
+            "status": "In Progress",
+            "name": "Beta",
+            "course": "CS",
+            "type": "Quiz",
+            "due_at": "2024-05-02T10:00:00.123Z",
+            "created_at": "2024-05-01T10:00:00Z",
+            "updated_at": "2024-05-01T10:00:00Z"
+          },
+          {
+            "id": "\(earliestID.uuidString)",
+            "status": "Completed",
+            "name": "Alpha",
+            "course": "History",
+            "type": "Exam",
+            "due_at": "2024-05-01T09:00:00Z",
+            "created_at": "2024-04-30T10:00:00Z",
+            "updated_at": "2024-04-30T10:00:00Z"
+          },
+          {
+            "id": "\(latestID.uuidString)",
+            "status": "Not Started",
+            "name": "Gamma",
+            "course": "Math",
+            "type": "Homework",
+            "due_at": "2024-05-03T10:00:00+00:00",
+            "created_at": "2024-05-01T11:00:00Z",
+            "updated_at": "2024-05-01T11:00:00Z"
+          }
+        ]
+        """.utf8)
     }
 }

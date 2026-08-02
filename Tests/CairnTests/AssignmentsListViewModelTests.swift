@@ -1,5 +1,5 @@
-import XCTest
 @testable import Cairn
+import XCTest
 
 @MainActor
 final class AssignmentsListViewModelTests: XCTestCase {
@@ -29,7 +29,7 @@ final class AssignmentsListViewModelTests: XCTestCase {
         XCTAssertEqual(storedCount, 1)
     }
 
-    func testDeleteAndUndo() async throws {
+    func testDeleteAndUndo() async {
         let assignment = Assignment(status: .notStarted, name: "Delete", course: "ART 100", type: .essay, dueAt: Date())
         let repository = MockAssignmentRepository(assignments: [assignment])
         let viewModel = AssignmentsListViewModel(

@@ -54,8 +54,8 @@ struct AssignmentRowView: View {
         editingContext?.assignmentID == assignment.id
     }
 
-    // Subtle highlight on the keyboard-selected field of the selected row, so
-    // Left/Right (and h/l) visibly move between columns. Hidden while editing.
+    /// Subtle highlight on the keyboard-selected field of the selected row, so
+    /// Left/Right (and h/l) visibly move between columns. Hidden while editing.
     @ViewBuilder
     private func fieldHighlight(_ field: AssignmentsListViewModel.EditingContext.Field) -> some View {
         if isSelected, !isEditingThisRow, selectedField == field {
@@ -144,63 +144,61 @@ struct AssignmentRowView: View {
         }
     }
 
+    @ViewBuilder
     private var nameField: some View {
-        Group {
-            if isEditingName {
-                TextField("Assignment name", text: $nameDraft)
-                    .font(Typography.assignmentName)
-                    .textFieldStyle(.plain)
-                    .foregroundColor(.white)
-                    .focused($focusedField, equals: .name)
-                    .onSubmit {
-                        onNameCommit(nameDraft)
-                        focusedField = nil
-                    }
-                    .onExitCommand {
-                        nameDraft = assignment.name
-                        focusedField = nil
-                        onCancelEditing()
-                    }
-            } else {
-                Text(assignment.name)
-                    .font(Typography.assignmentName)
-                    .foregroundColor(.white)
-                    .onTapGesture {
-                        onSelect()
-                        onBeginEditing(.name)
-                    }
-            }
+        if isEditingName {
+            TextField("Assignment name", text: $nameDraft)
+                .font(Typography.assignmentName)
+                .textFieldStyle(.plain)
+                .foregroundColor(.white)
+                .focused($focusedField, equals: .name)
+                .onSubmit {
+                    onNameCommit(nameDraft)
+                    focusedField = nil
+                }
+                .onExitCommand {
+                    nameDraft = assignment.name
+                    focusedField = nil
+                    onCancelEditing()
+                }
+        } else {
+            Text(assignment.name)
+                .font(Typography.assignmentName)
+                .foregroundColor(.white)
+                .onTapGesture {
+                    onSelect()
+                    onBeginEditing(.name)
+                }
         }
     }
 
+    @ViewBuilder
     private var courseField: some View {
-        Group {
-            if isEditingCourse {
-                CourseTextField(
-                    text: $courseDraft,
-                    suggestions: availableCourses,
-                    placeholder: "Course…",
-                    shouldFocus: isEditingCourse,
-                    onCommit: { value in
-                        onCourseCommit(value)
-                        focusedField = nil
-                    },
-                    onCancel: {
-                        courseDraft = assignment.course
-                        focusedField = nil
-                        onCancelEditing()
-                    }
-                )
-                .focused($focusedField, equals: .course)
-            } else {
-                Text(assignment.course.isEmpty ? "Course…" : assignment.course)
-                    .font(Typography.body)
-                    .foregroundColor(assignment.course.isEmpty ? Color.white.opacity(0.7) : .white)
-                    .onTapGesture {
-                        onSelect()
-                        onBeginEditing(.course)
-                    }
-            }
+        if isEditingCourse {
+            CourseTextField(
+                text: $courseDraft,
+                suggestions: availableCourses,
+                placeholder: "Course…",
+                shouldFocus: isEditingCourse,
+                onCommit: { value in
+                    onCourseCommit(value)
+                    focusedField = nil
+                },
+                onCancel: {
+                    courseDraft = assignment.course
+                    focusedField = nil
+                    onCancelEditing()
+                }
+            )
+            .focused($focusedField, equals: .course)
+        } else {
+            Text(assignment.course.isEmpty ? "Course…" : assignment.course)
+                .font(Typography.body)
+                .foregroundColor(assignment.course.isEmpty ? Color.white.opacity(0.7) : .white)
+                .onTapGesture {
+                    onSelect()
+                    onBeginEditing(.course)
+                }
         }
     }
 
@@ -225,73 +223,71 @@ struct AssignmentRowView: View {
         }
     }
 
+    @ViewBuilder
     private var statusField: some View {
-        Group {
-            if isEditingStatus {
-                OptionDropdownTextField(
-                    text: $statusDraft,
-                    options: AssignmentStatus.allCases.map { $0.displayName },
-                    placeholder: "Status…",
-                    shouldFocus: isEditingStatus,
-                    isReadOnly: true,
-                    showAllOptions: true,
-                    onCommit: { value in
-                        if let status = AssignmentStatus.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
-                            onStatusChange(status)
-                            focusedField = nil
-                        }
-                    },
-                    onCancel: {
-                        statusDraft = assignment.status.displayName
+        if isEditingStatus {
+            OptionDropdownTextField(
+                text: $statusDraft,
+                options: AssignmentStatus.allCases.map { $0.displayName },
+                placeholder: "Status…",
+                shouldFocus: isEditingStatus,
+                isReadOnly: true,
+                showAllOptions: true,
+                onCommit: { value in
+                    if let status = AssignmentStatus(displayName: value) {
+                        onStatusChange(status)
                         focusedField = nil
-                        onCancelEditing()
                     }
-                )
-                .focused($focusedField, equals: .status)
-            } else {
-                Text(assignment.status.displayName)
-                    .font(Typography.body)
-                    .foregroundColor(.white)
-                    .onTapGesture {
-                        onSelect()
-                        onBeginEditing(.status)
-                    }
-            }
+                },
+                onCancel: {
+                    statusDraft = assignment.status.displayName
+                    focusedField = nil
+                    onCancelEditing()
+                }
+            )
+            .focused($focusedField, equals: .status)
+        } else {
+            Text(assignment.status.displayName)
+                .font(Typography.body)
+                .foregroundColor(.white)
+                .onTapGesture {
+                    onSelect()
+                    onBeginEditing(.status)
+                }
         }
     }
 
+    @ViewBuilder
     private var typeField: some View {
-        Group {
-            if isEditingType {
-                OptionDropdownTextField(
-                    text: $typeDraft,
-                    options: AssignmentType.allCases.map { $0.displayName },
-                    placeholder: "Type…",
-                    shouldFocus: isEditingType,
-                    isReadOnly: true,
-                    showAllOptions: true,
-                    onCommit: { value in
-                        if let type = AssignmentType.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
-                            onTypeChange(type)
-                            focusedField = nil
-                        }
-                    },
-                    onCancel: {
-                        typeDraft = assignment.type.displayName
+        if isEditingType {
+            OptionDropdownTextField(
+                text: $typeDraft,
+                options: AssignmentType.allCases.map { $0.displayName },
+                placeholder: "Type…",
+                shouldFocus: isEditingType,
+                isReadOnly: true,
+                showAllOptions: true,
+                onCommit: { value in
+                    if let type = AssignmentType(displayName: value) {
+                        onTypeChange(type)
                         focusedField = nil
-                        onCancelEditing()
                     }
-                )
-                .focused($focusedField, equals: .type)
-            } else {
-                Text(assignment.type.displayName)
-                    .font(Typography.body)
-                    .foregroundColor(.white)
-                    .onTapGesture {
-                        onSelect()
-                        onBeginEditing(.type)
-                    }
-            }
+                },
+                onCancel: {
+                    typeDraft = assignment.type.displayName
+                    focusedField = nil
+                    onCancelEditing()
+                }
+            )
+            .focused($focusedField, equals: .type)
+        } else {
+            Text(assignment.type.displayName)
+                .font(Typography.body)
+                .foregroundColor(.white)
+                .onTapGesture {
+                    onSelect()
+                    onBeginEditing(.type)
+                }
         }
     }
 }

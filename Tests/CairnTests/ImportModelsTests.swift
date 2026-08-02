@@ -1,5 +1,5 @@
-import XCTest
 @testable import Cairn
+import XCTest
 
 final class ImportModelsTests: XCTestCase {
     private func decode(_ json: String) throws -> ExtractionResponseDTO {

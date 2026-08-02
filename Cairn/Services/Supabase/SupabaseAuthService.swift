@@ -7,7 +7,8 @@ final class SupabaseAuthService {
 
     init(client: SupabaseClient,
          encoder: JSONEncoder = JSONEncoder(),
-         decoder: JSONDecoder = JSONDecoder()) {
+         decoder: JSONDecoder = JSONDecoder())
+    {
         self.client = client
         self.encoder = encoder
         self.decoder = decoder

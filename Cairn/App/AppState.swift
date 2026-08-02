@@ -22,7 +22,7 @@ final class AppState: ObservableObject {
         }
 
         self.environment = environment
-        self.hasSupabaseSession = hasExistingSupabaseSession
+        hasSupabaseSession = hasExistingSupabaseSession
         assignmentsListViewModel = AssignmentsListViewModel(
             assignmentRepository: environment.assignmentRepository,
             courseRepository: environment.courseRepository,

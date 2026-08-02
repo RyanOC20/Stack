@@ -118,9 +118,12 @@ private struct CaptureView: View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Import assignments")
                 .font(Typography.assignmentName)
-            Text("Drop a screenshot, paste an image or text, or point at a class page. Cairn reads it and pulls out the assignments for you to review.")
-                .font(Typography.secondary)
-                .foregroundColor(ColorPalette.textSecondary)
+            Text(
+                "Drop a screenshot, paste an image or text, or point at a class page. " +
+                    "Cairn reads it and pulls out the assignments for you to review."
+            )
+            .font(Typography.secondary)
+            .foregroundColor(ColorPalette.textSecondary)
 
             dropZone
 
@@ -213,7 +216,11 @@ private struct CaptureView: View {
 
     private func loadImage(from url: URL) {
         let didAccess = url.startAccessingSecurityScopedResource()
-        defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+        defer {
+            if didAccess {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
         guard let data = try? Data(contentsOf: url) else {
             viewModel.errorMessage = "Could not read that file."
             return
@@ -236,7 +243,8 @@ private struct CaptureView: View {
             viewModel.extractImage(data: data, mediaType: "image/png")
         } else if let tiff = pasteboard.data(forType: .tiff),
                   let rep = NSBitmapImageRep(data: tiff),
-                  let png = rep.representation(using: .png, properties: [:]) {
+                  let png = rep.representation(using: .png, properties: [:])
+        {
             viewModel.extractImage(data: png, mediaType: "image/png")
         } else if let string = pasteboard.string(forType: .string) {
             viewModel.pastedText = string

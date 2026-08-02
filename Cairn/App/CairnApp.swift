@@ -28,7 +28,7 @@ struct CairnApp: App {
                             hasCompletedAuth = false
                         }
                     )
-                        .frame(minWidth: 720, minHeight: 480)
+                    .frame(minWidth: 720, minHeight: 480)
                 } else {
                     AuthFlowView(
                         isAuthenticated: $hasCompletedAuth,

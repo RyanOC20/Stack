@@ -1,5 +1,5 @@
-import SwiftUI
 import AppKit
+import SwiftUI
 
 struct KeyboardShortcutsHandler: NSViewRepresentable {
     struct Handlers {
@@ -17,13 +17,13 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
 
     let handlers: Handlers
 
-    func makeNSView(context: Context) -> KeyCaptureView {
+    func makeNSView(context _: Context) -> KeyCaptureView {
         let view = KeyCaptureView()
         view.handlers = handlers
         return view
     }
 
-    func updateNSView(_ nsView: KeyCaptureView, context: Context) {
+    func updateNSView(_ nsView: KeyCaptureView, context _: Context) {
         nsView.handlers = handlers
     }
 
@@ -31,10 +31,13 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
         var handlers: Handlers? {
             didSet { grabFocusIfEnteringNavigation() }
         }
+
         private var monitor: Any?
         private var wasNavigating = false
 
-        override var acceptsFirstResponder: Bool { true }
+        override var acceptsFirstResponder: Bool {
+            true
+        }
 
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()
@@ -74,7 +77,7 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
             }
         }
 
-        override func keyDown(with event: NSEvent) {
+        override func keyDown(with _: NSEvent) {
             // Navigation keys are consumed by the local monitor before dispatch reaches
             // here; swallow the rest so navigation mode doesn't beep on stray keys.
         }
@@ -104,81 +107,87 @@ struct KeyboardShortcutsHandler: NSViewRepresentable {
                 return false
             }
 
+            if handleCharacterKey(event, handlers: handlers) {
+                return true
+            }
+
+            if handleSpecialKey(event, handlers: handlers) {
+                return true
+            }
+
+            if event.keyCode == 53 { // Escape
+                return handlers.onEscape?() == true
+            }
+
+            return false
+        }
+
+        /// ⌘-shortcuts and vim-style h/j/k/l navigation, keyed off the typed character.
+        private func handleCharacterKey(_ event: NSEvent, handlers: Handlers) -> Bool {
             let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            if flags == .command, let character = event.charactersIgnoringModifiers?.lowercased() {
-                switch character {
-                case "n":
-                    handlers.onNew()
-                    return true
-                case "z":
-                    handlers.onUndo()
-                    return true
-                case "y":
-                    handlers.onRedo()
-                    return true
-                case ",":
-                    handlers.onShowShortcuts()
-                    return true
-                default:
-                    break
-                }
+            guard let character = event.charactersIgnoringModifiers?.lowercased() else { return false }
+
+            if flags == .command {
+                return handleCommandKey(character, handlers: handlers)
             }
 
             // Vim-style navigation: h/j/k/l mirror the arrow keys, but only when
             // we're navigating (not editing) so they don't swallow normal typing.
-            if flags.isEmpty,
-               handlers.shouldCaptureArrows(),
-               let character = event.charactersIgnoringModifiers?.lowercased() {
-                switch character {
-                case "k":
-                    handlers.onMoveRow(.up)
-                    return true
-                case "j":
-                    handlers.onMoveRow(.down)
-                    return true
-                case "h":
-                    handlers.onMoveField(.left)
-                    return true
-                case "l":
-                    handlers.onMoveField(.right)
-                    return true
-                default:
-                    break
-                }
+            if flags.isEmpty, handlers.shouldCaptureArrows() {
+                return handleVimNavigationKey(character, handlers: handlers)
             }
 
+            return false
+        }
+
+        private func handleCommandKey(_ character: String, handlers: Handlers) -> Bool {
+            switch character {
+            case "n": handlers.onNew()
+            case "z": handlers.onUndo()
+            case "y": handlers.onRedo()
+            case ",": handlers.onShowShortcuts()
+            default: return false
+            }
+            return true
+        }
+
+        private func handleVimNavigationKey(_ character: String, handlers: Handlers) -> Bool {
+            switch character {
+            case "k": handlers.onMoveRow(.up)
+            case "j": handlers.onMoveRow(.down)
+            case "h": handlers.onMoveField(.left)
+            case "l": handlers.onMoveField(.right)
+            default: return false
+            }
+            return true
+        }
+
+        /// Keys exposed through `specialKey`. Returns `false` when the event isn't one of them
+        /// (or isn't consumed), so the caller can keep looking (e.g. for Escape by key code).
+        private func handleSpecialKey(_ event: NSEvent, handlers: Handlers) -> Bool {
             switch event.specialKey {
             case .delete, .deleteForward:
                 return handlers.onDelete()
             case .upArrow:
-                guard handlers.shouldCaptureArrows() else { return false }
-                handlers.onMoveRow(.up)
-                return true
+                return handleArrow(handlers: handlers) { $0.onMoveRow(.up) }
             case .downArrow:
-                guard handlers.shouldCaptureArrows() else { return false }
-                handlers.onMoveRow(.down)
-                return true
+                return handleArrow(handlers: handlers) { $0.onMoveRow(.down) }
             case .leftArrow:
-                guard handlers.shouldCaptureArrows() else { return false }
-                handlers.onMoveField(.left)
-                return true
+                return handleArrow(handlers: handlers) { $0.onMoveField(.left) }
             case .rightArrow:
-                guard handlers.shouldCaptureArrows() else { return false }
-                handlers.onMoveField(.right)
-                return true
+                return handleArrow(handlers: handlers) { $0.onMoveField(.right) }
             case .carriageReturn, .enter:
                 return handlers.onReturn()
             default:
-                break
-            }
-
-            // Handle keys that aren't exposed via specialKey (or to avoid availability issues).
-            switch event.keyCode {
-            case 53: // Escape
-                return handlers.onEscape?() == true
-            default:
                 return false
             }
+        }
+
+        /// Arrow keys only drive navigation when we're not editing a field.
+        private func handleArrow(handlers: Handlers, _ action: (Handlers) -> Void) -> Bool {
+            guard handlers.shouldCaptureArrows() else { return false }
+            action(handlers)
+            return true
         }
 
         private func shouldAllowEventToProceed(_ event: NSEvent) -> Bool {

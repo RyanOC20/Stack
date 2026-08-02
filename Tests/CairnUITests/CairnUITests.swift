@@ -1,7 +1,7 @@
 import XCTest
 
 final class CairnUITests: XCTestCase {
-    func testLaunch() throws {
+    func testLaunch() {
         let app = XCUIApplication()
         app.launch()
         XCTAssertTrue(app.windows.firstMatch.exists)

@@ -1,5 +1,5 @@
-import XCTest
 @testable import Cairn
+import XCTest
 
 final class SupabaseClientTests: XCTestCase {
     private var sessionStore: InMemorySessionStore!
@@ -47,7 +47,7 @@ final class SupabaseClientTests: XCTestCase {
         XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json")
         XCTAssertEqual(request.value(forHTTPHeaderField: "Prefer"), "return=representation")
 
-        let components = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)
+        let components = try URLComponents(url: XCTUnwrap(request.url), resolvingAgainstBaseURL: false)
         XCTAssertEqual(components?.path, "/rest/v1/assignments")
         XCTAssertTrue(components?.queryItems?.contains(where: { $0.name == "order" && $0.value == "due_at" }) == true)
     }
@@ -64,7 +64,7 @@ final class SupabaseClientTests: XCTestCase {
     func testPerformDecodesSuccessfulResponse() async throws {
         let client = makeClient()
         MockURLProtocol.requestHandler = { request in
-            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            let response = makeHTTPResponse(for: request, statusCode: 200)
             let body = try JSONEncoder().encode(Payload(value: "ok"))
             return (response, body)
         }
@@ -77,10 +77,10 @@ final class SupabaseClientTests: XCTestCase {
     func testPerformMapsSupabaseErrorResponse() async {
         let client = makeClient()
         MockURLProtocol.requestHandler = { request in
-            let response = HTTPURLResponse(url: request.url!, statusCode: 401, httpVersion: nil, headerFields: nil)!
-            let body = """
+            let response = makeHTTPResponse(for: request, statusCode: 401)
+            let body = Data("""
             {"message":"bad","status":401}
-            """.data(using: .utf8)!
+            """.utf8)
             return (response, body)
         }
 
@@ -101,7 +101,11 @@ final class SupabaseClientTests: XCTestCase {
     }
 
     private func makeSession() -> SupabaseSession {
-        SupabaseSession(accessToken: "access-token", refreshToken: "refresh-token", user: SupabaseUser(id: UUID(), email: "user@example.com"))
+        SupabaseSession(
+            accessToken: "access-token",
+            refreshToken: "refresh-token",
+            user: SupabaseUser(id: UUID(), email: "user@example.com")
+        )
     }
 }
 

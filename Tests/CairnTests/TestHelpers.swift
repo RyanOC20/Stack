@@ -1,11 +1,18 @@
-import Foundation
 @testable import Cairn
+import Foundation
 
 final class MockURLProtocol: URLProtocol {
     static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
 
-    override class func canInit(with request: URLRequest) -> Bool { true }
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    // swiftlint:disable:next static_over_final_class
+    override class func canInit(with _: URLRequest) -> Bool {
+        true
+    }
+
+    // swiftlint:disable:next static_over_final_class
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+        request
+    }
 
     override func startLoading() {
         guard let handler = MockURLProtocol.requestHandler else {
@@ -55,6 +62,32 @@ func makeMockURLSession() -> URLSession {
     return URLSession(configuration: configuration)
 }
 
+extension URLRequest {
+    /// The request URL, which mock handlers always populate. Falls back to a
+    /// throwaway URL so tests never force-unwrap.
+    var testURL: URL {
+        url ?? URL(fileURLWithPath: NSTemporaryDirectory())
+    }
+}
+
+/// Builds an `HTTPURLResponse` for mock request handlers without force-unwrapping.
+/// Inputs are always valid in tests, so a nil result is a programmer error.
+func makeHTTPResponse(
+    for request: URLRequest,
+    statusCode: Int,
+    headerFields: [String: String]? = nil
+) -> HTTPURLResponse {
+    guard let response = HTTPURLResponse(
+        url: request.testURL,
+        statusCode: statusCode,
+        httpVersion: nil,
+        headerFields: headerFields
+    ) else {
+        fatalError("Failed to construct HTTPURLResponse for test")
+    }
+    return response
+}
+
 func httpBodyData(from request: URLRequest) -> Data? {
     if let data = request.httpBody {
         return data
@@ -70,7 +103,9 @@ func httpBodyData(from request: URLRequest) -> Data? {
 
     while stream.hasBytesAvailable {
         let read = stream.read(&buffer, maxLength: bufferSize)
-        if read <= 0 { break }
+        if read <= 0 {
+            break
+        }
         data.append(buffer, count: read)
     }
 

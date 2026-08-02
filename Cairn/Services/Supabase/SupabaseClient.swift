@@ -67,13 +67,14 @@ final class SupabaseClient {
 
     init(configuration: Configuration,
          urlSession: URLSession = .shared,
-         sessionStore: SupabaseSessionStore? = nil) {
+         sessionStore: SupabaseSessionStore? = nil)
+    {
         self.configuration = configuration
         self.urlSession = urlSession
         self.sessionStore = sessionStore ?? UserDefaultsSupabaseSessionStore(
             storageKey: Self.makeSessionStorageKey(for: configuration.url.absoluteString)
         )
-        self.session = self.sessionStore.loadSession()
+        session = self.sessionStore.loadSession()
     }
 
     var currentUserID: UUID? {
@@ -95,7 +96,8 @@ final class SupabaseClient {
                      queryItems: [URLQueryItem] = [],
                      body: Data? = nil,
                      preferHeader: String? = nil,
-                     requiresAuth: Bool = true) throws -> URLRequest {
+                     requiresAuth: Bool = true) throws -> URLRequest
+    {
         guard var components = URLComponents(url: configuration.url, resolvingAgainstBaseURL: false) else {
             throw ClientError.invalidResponse
         }
@@ -134,7 +136,7 @@ final class SupabaseClient {
             throw ClientError.invalidResponse
         }
 
-        guard (200..<300).contains(httpResponse.statusCode) else {
+        guard (200 ..< 300).contains(httpResponse.statusCode) else {
             let bodyString = String(data: data, encoding: .utf8)
             if let mappedError = try? decoder.decode(SupabaseErrorResponse.self, from: data) {
                 throw SupabaseErrorResponse(
@@ -163,7 +165,7 @@ final class SupabaseClient {
             throw ClientError.invalidResponse
         }
 
-        guard (200..<300).contains(httpResponse.statusCode) else {
+        guard (200 ..< 300).contains(httpResponse.statusCode) else {
             if let mappedError = try? JSONDecoder().decode(SupabaseErrorResponse.self, from: data) {
                 throw mappedError
             }
@@ -191,7 +193,8 @@ struct UserDefaultsSupabaseSessionStore: SupabaseSessionStore {
     init(defaults: UserDefaults = .standard,
          storageKey: String,
          encoder: JSONEncoder = JSONEncoder(),
-         decoder: JSONDecoder = JSONDecoder()) {
+         decoder: JSONDecoder = JSONDecoder())
+    {
         self.defaults = defaults
         self.storageKey = storageKey
         self.encoder = encoder

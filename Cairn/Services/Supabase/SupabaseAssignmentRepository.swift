@@ -10,11 +10,13 @@ final class SupabaseAssignmentRepository: AssignmentRepositoryProtocol {
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return formatter
     }()
+
     private static let isoWithoutFractional: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
         return formatter
     }()
+
     private static let fallbackRFC3339: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -40,7 +42,8 @@ final class SupabaseAssignmentRepository: AssignmentRepositoryProtocol {
             let string = try container.decode(String.self)
             if let date = SupabaseAssignmentRepository.isoWithFractional.date(from: string)
                 ?? SupabaseAssignmentRepository.isoWithoutFractional.date(from: string)
-                ?? SupabaseAssignmentRepository.fallbackRFC3339.date(from: string) {
+                ?? SupabaseAssignmentRepository.fallbackRFC3339.date(from: string)
+            {
                 return date
             }
             throw DecodingError.dataCorrupted(
@@ -58,7 +61,7 @@ final class SupabaseAssignmentRepository: AssignmentRepositoryProtocol {
             path: "/rest/v1/assignments",
             queryItems: [
                 URLQueryItem(name: "select", value: "*"),
-                URLQueryItem(name: "order", value: "due_at")
+                URLQueryItem(name: "order", value: "due_at"),
             ]
         )
         let dtos: [AssignmentDTO] = try await client.perform(request, decoder: decoder)

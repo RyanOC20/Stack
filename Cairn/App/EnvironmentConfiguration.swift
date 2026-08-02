@@ -20,7 +20,10 @@ struct EnvironmentConfiguration: Decodable {
             ?? container.decodeIfPresent(String.self, forKey: .supabaseAnonKeyUnderscore)
 
         guard let urlString, let supabaseAnonKey = anon else {
-            throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Missing SupabaseURL/SupabaseAnonKey"))
+            throw DecodingError.dataCorrupted(.init(
+                codingPath: decoder.codingPath,
+                debugDescription: "Missing SupabaseURL/SupabaseAnonKey"
+            ))
         }
         guard let supabaseURL = URL(string: urlString) else {
             throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Invalid SupabaseURL"))
@@ -39,7 +42,8 @@ struct EnvironmentConfiguration: Decodable {
         let env = ProcessInfo.processInfo.environment
         if let urlString = env["SUPABASE_URL"],
            let anonKey = env["SUPABASE_ANON_KEY"],
-           let url = URL(string: urlString) {
+           let url = URL(string: urlString)
+        {
             logger?.info("Loaded Supabase config from environment variables.")
             return EnvironmentConfiguration(supabaseURL: url, supabaseAnonKey: anonKey)
         }

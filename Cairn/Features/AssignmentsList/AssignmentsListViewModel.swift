@@ -52,7 +52,8 @@ final class AssignmentsListViewModel: ObservableObject {
     init(assignmentRepository: AssignmentRepositoryProtocol,
          courseRepository: CourseRepositoryProviding,
          logger: Logger,
-         autoLoad: Bool = true) {
+         autoLoad: Bool = true)
+    {
         self.assignmentRepository = assignmentRepository
         self.courseRepository = courseRepository
         self.logger = logger
@@ -79,7 +80,8 @@ final class AssignmentsListViewModel: ObservableObject {
 
             if let supabaseError = error as? SupabaseErrorResponse,
                let status = supabaseError.status,
-               status == 401 || status == 403 {
+               status == 401 || status == 403
+            {
                 // Session expired: log out silently instead of flashing an error banner.
                 errorMessage = nil
                 onSessionExpired?()
@@ -292,7 +294,8 @@ final class AssignmentsListViewModel: ObservableObject {
                        course: String,
                        type: AssignmentType,
                        dueAt: Date,
-                       status: AssignmentStatus = .notStarted) {
+                       status: AssignmentStatus = .notStarted)
+    {
         var cleanedCourse = course
         if cleanedCourse.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             cleanedCourse = ""
@@ -373,7 +376,8 @@ final class AssignmentsListViewModel: ObservableObject {
     private func applySnapshot(_ snapshot: HistorySnapshot) {
         assignments = snapshot.assignments
         if let selectedID = snapshot.selectedAssignmentID,
-           assignments.contains(where: { $0.id == selectedID }) {
+           assignments.contains(where: { $0.id == selectedID })
+        {
             selectedAssignmentID = selectedID
         } else {
             selectedAssignmentID = assignments.first?.id

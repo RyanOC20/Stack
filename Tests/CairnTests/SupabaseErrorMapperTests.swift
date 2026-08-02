@@ -1,5 +1,5 @@
-import XCTest
 @testable import Cairn
+import XCTest
 
 final class SupabaseErrorMapperTests: XCTestCase {
     func testMapsSupabaseErrorResponseWithStatus() {

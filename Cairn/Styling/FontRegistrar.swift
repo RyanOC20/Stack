@@ -4,7 +4,7 @@ import Foundation
 enum FontRegistrar {
     static func registerFonts() {
         let fontFiles = [
-            "JetBrainsMono-Regular"
+            "JetBrainsMono-Regular",
         ]
 
         for fontFile in fontFiles {
@@ -17,7 +17,8 @@ enum FontRegistrar {
 
             var error: Unmanaged<CFError>?
             if !CTFontManagerRegisterFontsForURL(url as CFURL, .process, &error),
-               let error {
+               let error
+            {
                 let description = (error.takeRetainedValue() as Error).localizedDescription
                 print("Failed to register font \(fontFile): \(description)")
             }

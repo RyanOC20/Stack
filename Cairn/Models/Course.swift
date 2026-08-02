@@ -5,7 +5,7 @@ struct Course: Identifiable, Hashable, Codable {
     var title: String
 
     init(title: String) {
-        self.id = UUID()
+        id = UUID()
         self.title = title
     }
 }

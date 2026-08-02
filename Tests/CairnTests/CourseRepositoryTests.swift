@@ -1,5 +1,5 @@
-import XCTest
 @testable import Cairn
+import XCTest
 
 final class CourseRepositoryTests: XCTestCase {
     private let repository = CourseRepository()
@@ -9,7 +9,7 @@ final class CourseRepositoryTests: XCTestCase {
             Assignment(status: .notStarted, name: "One", course: "Math 101", type: .homework, dueAt: Date()),
             Assignment(status: .notStarted, name: "Two", course: "math 101", type: .essay, dueAt: Date()),
             Assignment(status: .notStarted, name: "Three", course: "  ", type: .exam, dueAt: Date()),
-            Assignment(status: .notStarted, name: "Four", course: "Anthro 202", type: .quiz, dueAt: Date())
+            Assignment(status: .notStarted, name: "Four", course: "Anthro 202", type: .quiz, dueAt: Date()),
         ]
 
         let courses = repository.availableCourses(from: assignments)

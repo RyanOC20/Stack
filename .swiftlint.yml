@@ -2,14 +2,36 @@ opt_in_rules:
   - empty_count
   - closure_spacing
   - discouraged_optional_boolean
-  - explicit_acl
   - force_cast
   - force_unwrapping
+
+disabled_rules:
+  # Owned by SwiftFormat instead: it wraps the opening brace of a multiline
+  # condition onto its own line (wrapMultilineStatementBraces) and adds trailing
+  # commas to multiline collections (trailingCommas). Leaving these SwiftLint
+  # rules on would make the two tools fight over the same lines.
+  - opening_brace
+  - trailing_comma
 
 line_length:
   warning: 140
   error: 180
 
+# SwiftUI view/view-model bodies legitimately run long; keep a ceiling that
+# catches real bloat without forcing cosmetic splits of cohesive types.
+type_body_length:
+  warning: 400
+  error: 500
+
+file_length:
+  warning: 500
+  error: 700
+
+# Nested enums inside a namespacing type (e.g. EditingContext.Field) are idiomatic.
+nesting:
+  type_level: 2
+
 excluded:
   - supabase
   - scripts
+  - build # Xcode-generated sources (e.g. GeneratedAssetSymbols); never checked in.

@@ -1,5 +1,5 @@
-import XCTest
 @testable import Cairn
+import XCTest
 
 final class SupabaseAuthServiceTests: XCTestCase {
     private var client: SupabaseClient!
@@ -38,19 +38,17 @@ final class SupabaseAuthServiceTests: XCTestCase {
 
             guard let body = httpBodyData(from: request) else {
                 XCTFail("Missing sign up body")
-                let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-                let responseBody = Data("{}".utf8)
-                return (response, responseBody)
+                return (makeHTTPResponse(for: request, statusCode: 200), Data("{}".utf8))
             }
 
             let json = try JSONSerialization.jsonObject(with: body) as? [String: String]
             XCTAssertEqual(json?["email"], "user@example.com")
             XCTAssertEqual(json?["password"], "password")
 
-            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-            let responseBody = """
+            let response = makeHTTPResponse(for: request, statusCode: 200)
+            let responseBody = Data("""
             {"access_token":"token","refresh_token":"refresh","user":{"id":"\(userID.uuidString)","email":"user@example.com"}}
-            """.data(using: .utf8)!
+            """.utf8)
             return (response, responseBody)
         }
 
@@ -64,7 +62,7 @@ final class SupabaseAuthServiceTests: XCTestCase {
 
     func testSignInRequiresTokens() async {
         MockURLProtocol.requestHandler = { request in
-            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            let response = makeHTTPResponse(for: request, statusCode: 200)
             let responseBody = Data("{}".utf8)
             return (response, responseBody)
         }
@@ -84,13 +82,13 @@ final class SupabaseAuthServiceTests: XCTestCase {
         let userID = UUID()
         MockURLProtocol.requestHandler = { request in
             handled.fulfill()
-            let components = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)
+            let components = URLComponents(url: request.testURL, resolvingAgainstBaseURL: false)
             XCTAssertTrue(components?.queryItems?.contains(where: { $0.name == "grant_type" && $0.value == "password" }) == true)
 
-            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-            let responseBody = """
+            let response = makeHTTPResponse(for: request, statusCode: 200)
+            let responseBody = Data("""
             {"access_token":"access","refresh_token":"refresh","user":{"id":"\(userID.uuidString)","email":null}}
-            """.data(using: .utf8)!
+            """.utf8)
             return (response, responseBody)
         }
 

@@ -16,7 +16,7 @@ final class ImportService {
 
         var errorDescription: String? {
             switch self {
-            case .functionFailed(let message):
+            case let .functionFailed(message):
                 return message
             }
         }
@@ -36,14 +36,15 @@ final class ImportService {
     /// for images, uploads the bytes to Storage for provenance (both best effort).
     func extract(from source: Source,
                  now: Date = Date(),
-                 timeZone: TimeZone = .current) async throws -> [ExtractedAssignment] {
+                 timeZone: TimeZone = .current) async throws -> [ExtractedAssignment]
+    {
         let sourceType: String
         var sourceRef: String?
 
         switch source {
         case .image:
             sourceType = "screenshot"
-        case .pageURL(let url):
+        case let .pageURL(url):
             sourceType = "url"
             sourceRef = url
         case .text:
@@ -81,8 +82,13 @@ final class ImportService {
     // MARK: - Provenance (best effort)
 
     private struct ImportInsert: Encodable {
-        let source_type: String
-        let source_ref: String?
+        let sourceType: String
+        let sourceRef: String?
+
+        enum CodingKeys: String, CodingKey {
+            case sourceType = "source_type"
+            case sourceRef = "source_ref"
+        }
     }
 
     private struct ImportRecordDTO: Decodable {
@@ -91,7 +97,7 @@ final class ImportService {
 
     private func recordImport(sourceType: String, sourceRef: String?) async -> UUID? {
         do {
-            let body = try encoder.encode([ImportInsert(source_type: sourceType, source_ref: sourceRef)])
+            let body = try encoder.encode([ImportInsert(sourceType: sourceType, sourceRef: sourceRef)])
             let request = try client.makeRequest(
                 path: "/rest/v1/imports",
                 method: "POST",

@@ -32,10 +32,13 @@ actor AssignmentRepository: AssignmentRepositoryProtocol {
 
     private static func makeSeedAssignments() -> [Assignment] {
         let now = Date()
+        func dueInDays(_ days: Int) -> Date {
+            Calendar.current.date(byAdding: .day, value: days, to: now) ?? now
+        }
         return [
-            Assignment(status: .inProgress, name: "Database Systems Essay", course: "CSE 344", type: .essay, dueAt: Calendar.current.date(byAdding: .day, value: 2, to: now) ?? now),
-            Assignment(status: .notStarted, name: "Linear Algebra Quiz", course: "MATH 308", type: .quiz, dueAt: Calendar.current.date(byAdding: .day, value: 1, to: now) ?? now),
-            Assignment(status: .completed, name: "Poetry Presentation", course: "ENG 215", type: .presentation, dueAt: Calendar.current.date(byAdding: .day, value: -1, to: now) ?? now)
+            Assignment(status: .inProgress, name: "Database Systems Essay", course: "CSE 344", type: .essay, dueAt: dueInDays(2)),
+            Assignment(status: .notStarted, name: "Linear Algebra Quiz", course: "MATH 308", type: .quiz, dueAt: dueInDays(1)),
+            Assignment(status: .completed, name: "Poetry Presentation", course: "ENG 215", type: .presentation, dueAt: dueInDays(-1)),
         ]
     }
 }

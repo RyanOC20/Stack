@@ -1,5 +1,5 @@
-import SwiftUI
 import AppKit
+import SwiftUI
 
 struct OptionDropdownTextField: View {
     @Binding var text: String
@@ -286,12 +286,11 @@ private struct ArrowKeyCaptureView: NSViewRepresentable {
     @Binding var isActive: Bool
     let onMove: (MoveCommandDirection) -> Void
 
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        return view
+    func makeNSView(context _: Context) -> NSView {
+        return NSView()
     }
 
-    func updateNSView(_ nsView: NSView, context: Context) {
+    func updateNSView(_: NSView, context: Context) {
         context.coordinator.update(isActive: isActive)
     }
 

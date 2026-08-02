@@ -17,7 +17,8 @@ struct Assignment: Identifiable, Hashable, Codable {
          type: AssignmentType,
          dueAt: Date,
          createdAt: Date = Date(),
-         updatedAt: Date = Date()) {
+         updatedAt: Date = Date())
+    {
         self.id = id
         self.status = status
         self.name = name

@@ -31,7 +31,7 @@ struct QuickAddRowView: View {
                 isReadOnly: true,
                 showAllOptions: true,
                 onCommit: { value in
-                    if let resolved = AssignmentStatus.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
+                    if let resolved = AssignmentStatus(displayName: value) {
                         status = resolved
                         statusText = resolved.displayName
                     }
@@ -78,7 +78,7 @@ struct QuickAddRowView: View {
                 isReadOnly: true,
                 showAllOptions: true,
                 onCommit: { value in
-                    if let resolved = AssignmentType.allCases.first(where: { $0.displayName.caseInsensitiveCompare(value) == .orderedSame }) {
+                    if let resolved = AssignmentType(displayName: value) {
                         type = resolved
                         typeText = resolved.displayName
                     }
