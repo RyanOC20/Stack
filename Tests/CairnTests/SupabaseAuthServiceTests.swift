@@ -96,4 +96,25 @@ final class SupabaseAuthServiceTests: XCTestCase {
         await fulfillment(of: [handled], timeout: 1)
         XCTAssertEqual(client.currentUserID, userID)
     }
+
+    func testSignOutRevokesTokenAndClearsSession() async {
+        client.setSession(SupabaseSession(
+            accessToken: "access-token",
+            refreshToken: "refresh-token",
+            user: SupabaseUser(id: UUID(), email: "user@example.com")
+        ))
+        let handled = expectation(description: "handled logout")
+
+        MockURLProtocol.requestHandler = { request in
+            XCTAssertEqual(request.httpMethod, "POST")
+            XCTAssertEqual(request.url?.path, "/auth/v1/logout")
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer access-token")
+            handled.fulfill()
+            return (makeHTTPResponse(for: request, statusCode: 204), Data())
+        }
+
+        await service.signOut()
+        await fulfillment(of: [handled], timeout: 1)
+        XCTAssertNil(client.currentUserID)
+    }
 }

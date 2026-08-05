@@ -96,6 +96,61 @@ final class SupabaseClientTests: XCTestCase {
         }
     }
 
+    func testPerformRefreshesExpiredAccessTokenAndRetries() async throws {
+        let client = makeClient()
+        client.setSession(makeSession())
+        let refreshedUserID = UUID()
+
+        MockURLProtocol.requestHandler = { request in
+            let authorization = request.value(forHTTPHeaderField: "Authorization")
+            if request.url?.path == "/auth/v1/token" {
+                let body = Data("""
+                {
+                  "access_token": "new-access",
+                  "refresh_token": "new-refresh",
+                  "user": { "id": "\(refreshedUserID.uuidString)", "email": "user@example.com" }
+                }
+                """.utf8)
+                return (makeHTTPResponse(for: request, statusCode: 200), body)
+            }
+            if authorization == "Bearer new-access" {
+                let body = try JSONEncoder().encode(Payload(value: "ok"))
+                return (makeHTTPResponse(for: request, statusCode: 200), body)
+            }
+            // Stale access token.
+            return (makeHTTPResponse(for: request, statusCode: 401), Data(#"{"message":"expired","status":401}"#.utf8))
+        }
+
+        let request = try client.makeRequest(path: "/rest/v1/assignments")
+        let payload: Payload = try await client.perform(request, decoder: JSONDecoder())
+
+        XCTAssertEqual(payload.value, "ok")
+        // The refreshed session (new user + rotated tokens) is now the active one.
+        XCTAssertEqual(client.currentUserID, refreshedUserID)
+    }
+
+    func testPerformSurfacesOriginalErrorWhenRefreshFails() async throws {
+        let client = makeClient()
+        client.setSession(makeSession())
+
+        MockURLProtocol.requestHandler = { request in
+            if request.url?.path == "/auth/v1/token" {
+                return (makeHTTPResponse(for: request, statusCode: 401), Data(#"{"message":"invalid refresh token"}"#.utf8))
+            }
+            return (makeHTTPResponse(for: request, statusCode: 401), Data(#"{"message":"expired","status":401}"#.utf8))
+        }
+
+        let request = try client.makeRequest(path: "/rest/v1/assignments")
+        do {
+            let _: Payload = try await client.perform(request, decoder: JSONDecoder())
+            XCTFail("Expected SupabaseErrorResponse")
+        } catch let error as SupabaseErrorResponse {
+            XCTAssertEqual(error.status, 401)
+        } catch {
+            XCTFail("Unexpected error \(error)")
+        }
+    }
+
     private func makeClient() -> SupabaseClient {
         SupabaseClient(configuration: configuration, urlSession: urlSession, sessionStore: sessionStore)
     }

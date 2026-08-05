@@ -63,7 +63,10 @@ final class SupabaseClient {
     let configuration: Configuration
     private let urlSession: URLSession
     private let sessionStore: SupabaseSessionStore
+    private let lock = NSLock()
     private var session: SupabaseSession?
+    /// Coalesces concurrent 401s into a single in-flight token refresh.
+    private var refreshTask: Task<SupabaseSession, Error>?
 
     init(configuration: Configuration,
          urlSession: URLSession = .shared,
@@ -78,16 +81,28 @@ final class SupabaseClient {
     }
 
     var currentUserID: UUID? {
-        session?.user.id
+        currentSession()?.user.id
+    }
+
+    private func currentSession() -> SupabaseSession? {
+        lock.lock()
+        defer { lock.unlock() }
+        return session
     }
 
     func setSession(_ session: SupabaseSession) {
+        lock.lock()
         self.session = session
+        lock.unlock()
         sessionStore.save(session)
     }
 
     func clearSession() {
+        lock.lock()
         session = nil
+        refreshTask?.cancel()
+        refreshTask = nil
+        lock.unlock()
         sessionStore.clear()
     }
 
@@ -119,7 +134,7 @@ final class SupabaseClient {
         }
 
         if requiresAuth {
-            guard let accessToken = session?.accessToken else {
+            guard let accessToken = currentSession()?.accessToken else {
                 throw ClientError.missingSession
             }
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
@@ -131,10 +146,7 @@ final class SupabaseClient {
     }
 
     func perform<T: Decodable>(_ request: URLRequest, decoder: JSONDecoder) async throws -> T {
-        let (data, response) = try await urlSession.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw ClientError.invalidResponse
-        }
+        let (data, httpResponse) = try await sendWithRefresh(request)
 
         guard (200 ..< 300).contains(httpResponse.statusCode) else {
             let bodyString = String(data: data, encoding: .utf8)
@@ -160,10 +172,7 @@ final class SupabaseClient {
     }
 
     func performVoid(_ request: URLRequest) async throws {
-        let (data, response) = try await urlSession.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw ClientError.invalidResponse
-        }
+        let (data, httpResponse) = try await sendWithRefresh(request)
 
         guard (200 ..< 300).contains(httpResponse.statusCode) else {
             if let mappedError = try? JSONDecoder().decode(SupabaseErrorResponse.self, from: data) {
@@ -173,8 +182,122 @@ final class SupabaseClient {
         }
     }
 
+    /// Revokes the current session server-side (best effort). Callers still clear locally.
+    func revokeSession() async throws {
+        let request = try makeRequest(path: "/auth/v1/logout", method: "POST")
+        try await performVoid(request)
+    }
+
+    /// Sends a request and, on a 401 for a session-authenticated request, refreshes the
+    /// access token once and replays the request. Non-auth (anon) requests are never refreshed,
+    /// which also prevents the refresh call itself from recursing.
+    private func sendWithRefresh(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let (data, httpResponse) = try await send(request)
+        guard httpResponse.statusCode == 401, canRefresh(for: request) else {
+            return (data, httpResponse)
+        }
+
+        let refreshed: SupabaseSession
+        do {
+            refreshed = try await coalescedRefresh()
+        } catch {
+            // Refresh failed (e.g. refresh token revoked); surface the original 401.
+            return (data, httpResponse)
+        }
+
+        var retried = request
+        retried.setValue("Bearer \(refreshed.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await send(retried)
+    }
+
+    private func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let (data, response) = try await urlSession.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw ClientError.invalidResponse
+        }
+        return (data, httpResponse)
+    }
+
+    private func canRefresh(for request: URLRequest) -> Bool {
+        guard let session = currentSession(), !session.refreshToken.isEmpty else { return false }
+        return request.value(forHTTPHeaderField: "Authorization") == "Bearer \(session.accessToken)"
+    }
+
+    private func coalescedRefresh() async throws -> SupabaseSession {
+        try await refreshTaskHandle().value
+    }
+
+    /// Synchronous so the `NSLock` isn't touched from an async context (Swift 6 requirement).
+    private func refreshTaskHandle() -> Task<SupabaseSession, Error> {
+        lock.lock()
+        defer { lock.unlock() }
+        if let existing = refreshTask {
+            return existing
+        }
+        let newTask = Task { [weak self] () throws -> SupabaseSession in
+            guard let self else { throw ClientError.missingSession }
+            defer { self.clearRefreshTask() }
+            return try await self.performRefresh()
+        }
+        refreshTask = newTask
+        return newTask
+    }
+
+    private func clearRefreshTask() {
+        lock.lock()
+        refreshTask = nil
+        lock.unlock()
+    }
+
+    private func performRefresh() async throws -> SupabaseSession {
+        guard let refreshToken = currentSession()?.refreshToken, !refreshToken.isEmpty else {
+            throw ClientError.missingSession
+        }
+
+        let body = try JSONEncoder().encode(["refresh_token": refreshToken])
+        let request = try makeRequest(
+            path: "/auth/v1/token",
+            method: "POST",
+            queryItems: [URLQueryItem(name: "grant_type", value: "refresh_token")],
+            body: body,
+            requiresAuth: false
+        )
+
+        let (data, httpResponse) = try await send(request)
+        guard (200 ..< 300).contains(httpResponse.statusCode) else {
+            let bodyString = String(data: data, encoding: .utf8)
+            throw SupabaseErrorResponse(message: nil, error: bodyString, status: httpResponse.statusCode, rawBody: bodyString)
+        }
+
+        let decoded = try JSONDecoder().decode(RefreshResponse.self, from: data)
+        // GoTrue may omit the user on a refresh grant; retain the existing one when it does.
+        let user = decoded.user ?? currentSession()?.user
+        guard let accessToken = decoded.accessToken,
+              let newRefreshToken = decoded.refreshToken,
+              let user
+        else {
+            throw ClientError.missingSession
+        }
+
+        let refreshed = SupabaseSession(accessToken: accessToken, refreshToken: newRefreshToken, user: user)
+        setSession(refreshed)
+        return refreshed
+    }
+
     private static func makeSessionStorageKey(for urlString: String) -> String {
         "SupabaseSession-\(urlString)"
+    }
+
+    private struct RefreshResponse: Decodable {
+        let accessToken: String?
+        let refreshToken: String?
+        let user: SupabaseUser?
+
+        private enum CodingKeys: String, CodingKey {
+            case accessToken = "access_token"
+            case refreshToken = "refresh_token"
+            case user
+        }
     }
 }
 

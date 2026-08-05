@@ -42,6 +42,13 @@ final class SupabaseAuthService {
         client.setSession(session)
         return session
     }
+
+    /// Revokes the refresh token server-side (best effort) and clears the local session.
+    /// The local session is always cleared, even if the network call fails.
+    func signOut() async {
+        try? await client.revokeSession()
+        client.clearSession()
+    }
 }
 
 private struct AuthPayload: Encodable {

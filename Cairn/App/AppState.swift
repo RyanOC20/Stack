@@ -62,7 +62,12 @@ final class AppState: ObservableObject {
     }
 
     func handleLogout() {
-        environment.supabaseClient?.clearSession()
         hasSupabaseSession = false
+        if let authService = environment.authService {
+            // Revoke server-side (best effort); clearSession() runs inside signOut().
+            Task { await authService.signOut() }
+        } else {
+            environment.supabaseClient?.clearSession()
+        }
     }
 }
