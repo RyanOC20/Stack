@@ -429,6 +429,25 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0AA1BB2CC3DD4EE5FF601234 /* Seed Environment.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Config/Environment.plist.example",
+			);
+			name = "Seed Environment.plist";
+			outputPaths = (
+				"$(SRCROOT)/Config/Environment.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Config/Environment.plist holds per-dev Supabase secrets and is gitignored, but\n# it is a bundled resource, so a fresh checkout (CI, new clone) would fail to build\n# without it. Keep the developer's real file when present; otherwise seed placeholder\n# values from the committed example so the build always succeeds.\nPLIST=\"${SRCROOT}/Config/Environment.plist\"\nif [ ! -f \"$PLIST\" ]; then\n  echo \"Config/Environment.plist missing; seeding from Environment.plist.example\"\n  cp \"${SRCROOT}/Config/Environment.plist.example\" \"$PLIST\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		4525E01243DA02F795CE209F /* CairnUITests */ = {
 			isa = PBXNativeTarget;
@@ -454,6 +473,7 @@
 			buildPhases = (
 				E9ABA9C88138120C4D6BE3DB /* Sources */,
 				AFE52CA0448E45106AF96476 /* Frameworks */,
+				0AA1BB2CC3DD4EE5FF601234 /* Seed Environment.plist */,
 				8D24E3B82BB3CD7F64F2FBA1 /* Resources */,
 			);
 			buildRules = (
