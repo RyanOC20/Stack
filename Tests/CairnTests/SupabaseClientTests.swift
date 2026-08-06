@@ -151,6 +151,44 @@ final class SupabaseClientTests: XCTestCase {
         }
     }
 
+    func testPerformRetriesOnceOnServerErrorThenSucceeds() async throws {
+        let client = makeClient()
+        let attempts = AttemptCounter()
+
+        MockURLProtocol.requestHandler = { request in
+            if attempts.increment() == 1 {
+                return (makeHTTPResponse(for: request, statusCode: 503), Data())
+            }
+            let body = try JSONEncoder().encode(Payload(value: "ok"))
+            return (makeHTTPResponse(for: request, statusCode: 200), body)
+        }
+
+        let request = try client.makeRequest(path: "/rest/v1/assignments", requiresAuth: false)
+        let payload: Payload = try await client.perform(request, decoder: JSONDecoder())
+
+        XCTAssertEqual(payload.value, "ok")
+        XCTAssertEqual(attempts.count, 2, "The server error should be retried exactly once")
+    }
+
+    func testPerformRetriesOnceOnTransientNetworkErrorThenSucceeds() async throws {
+        let client = makeClient()
+        let attempts = AttemptCounter()
+
+        MockURLProtocol.requestHandler = { request in
+            if attempts.increment() == 1 {
+                throw URLError(.networkConnectionLost)
+            }
+            let body = try JSONEncoder().encode(Payload(value: "ok"))
+            return (makeHTTPResponse(for: request, statusCode: 200), body)
+        }
+
+        let request = try client.makeRequest(path: "/rest/v1/assignments", requiresAuth: false)
+        let payload: Payload = try await client.perform(request, decoder: JSONDecoder())
+
+        XCTAssertEqual(payload.value, "ok")
+        XCTAssertEqual(attempts.count, 2)
+    }
+
     private func makeClient() -> SupabaseClient {
         SupabaseClient(configuration: configuration, urlSession: urlSession, sessionStore: sessionStore)
     }
@@ -166,4 +204,24 @@ final class SupabaseClientTests: XCTestCase {
 
 private struct Payload: Codable {
     let value: String
+}
+
+/// Thread-safe attempt counter for asserting retry behavior from the mock request handler.
+private final class AttemptCounter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = 0
+
+    var count: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return value
+    }
+
+    @discardableResult
+    func increment() -> Int {
+        lock.lock()
+        defer { lock.unlock() }
+        value += 1
+        return value
+    }
 }

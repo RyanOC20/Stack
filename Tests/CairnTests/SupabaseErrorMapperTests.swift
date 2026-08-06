@@ -26,4 +26,10 @@ final class SupabaseErrorMapperTests: XCTestCase {
         let mapped = SupabaseErrorMapper.map(Sample())
         XCTAssertEqual(mapped.message, Sample().localizedDescription)
     }
+
+    func testMapsOfflineURLErrorToFriendlyMessage() {
+        let mapped = SupabaseErrorMapper.map(URLError(.notConnectedToInternet))
+        XCTAssertTrue(mapped.message.localizedCaseInsensitiveContains("offline"))
+        XCTAssertEqual(mapped.kind, .network)
+    }
 }

@@ -195,13 +195,77 @@ final class AssignmentsListViewModelTests: XCTestCase {
             XCTFail("Expected a newly created assignment at the top of the list.")
         }
     }
+
+    func testFailedUpdateRollsBackOptimisticChange() async throws {
+        let assignment = Assignment(status: .inProgress, name: "Original", course: "BIO", type: .exam, dueAt: Date())
+        let repository = MockAssignmentRepository(assignments: [assignment], writeError: SupabaseClient.ClientError.invalidResponse)
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
+
+        await viewModel.loadAssignments()
+        viewModel.updateName("Updated", for: assignment)
+        XCTAssertEqual(viewModel.assignments.first?.name, "Updated", "Change should apply optimistically first")
+
+        try await Task.sleep(nanoseconds: 20_000_000)
+
+        XCTAssertEqual(viewModel.assignments.first?.name, "Original", "Failed save should roll back")
+        XCTAssertEqual(viewModel.errorMessage, "Save failed.")
+        XCTAssertFalse(viewModel.canUndo, "The failed mutation's undo snapshot should be dropped")
+    }
+
+    func testFailedAddRollsBackInsertion() async throws {
+        let repository = MockAssignmentRepository(assignments: [], writeError: SupabaseClient.ClientError.invalidResponse)
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
+
+        await viewModel.loadAssignments()
+        viewModel.addAssignment(name: "Temp", course: "CS", type: .homework, dueAt: Date())
+        XCTAssertEqual(viewModel.assignments.count, 1)
+
+        try await Task.sleep(nanoseconds: 20_000_000)
+
+        XCTAssertEqual(viewModel.assignments.count, 0, "Failed add should roll back")
+        XCTAssertEqual(viewModel.errorMessage, "Saving assignment failed.")
+    }
+
+    func testMutationSessionExpiryTriggersLogout() async {
+        let assignment = Assignment(status: .inProgress, name: "Original", course: "BIO", type: .exam, dueAt: Date())
+        let expired = SupabaseErrorResponse(message: "JWT expired", error: nil, status: 401, rawBody: nil)
+        let repository = MockAssignmentRepository(assignments: [assignment], writeError: expired)
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
+
+        await viewModel.loadAssignments()
+        let loggedOut = expectation(description: "session expired triggers logout")
+        viewModel.onSessionExpired = { loggedOut.fulfill() }
+
+        viewModel.updateName("Updated", for: assignment)
+        await fulfillment(of: [loggedOut], timeout: 1)
+
+        XCTAssertNil(viewModel.errorMessage, "Session expiry logs out silently rather than showing a banner")
+        XCTAssertEqual(viewModel.assignments.first?.name, "Original", "The optimistic change should still roll back")
+    }
 }
 
 actor MockAssignmentRepository: AssignmentRepositoryProtocol {
     private var storage: [UUID: Assignment]
+    private let writeError: Error?
 
-    init(assignments: [Assignment]) {
+    init(assignments: [Assignment], writeError: Error? = nil) {
         storage = Dictionary(uniqueKeysWithValues: assignments.map { ($0.id, $0) })
+        self.writeError = writeError
     }
 
     var assignmentCount: Int {
@@ -213,10 +277,16 @@ actor MockAssignmentRepository: AssignmentRepositoryProtocol {
     }
 
     func upsertAssignment(_ assignment: Assignment) async throws {
+        if let writeError {
+            throw writeError
+        }
         storage[assignment.id] = assignment
     }
 
     func deleteAssignment(id: UUID) async throws {
+        if let writeError {
+            throw writeError
+        }
         storage[id] = nil
     }
 }

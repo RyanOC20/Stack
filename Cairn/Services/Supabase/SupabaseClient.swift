@@ -1,4 +1,5 @@
 import Foundation
+import Security
 
 struct SupabaseUser: Codable {
     let id: UUID
@@ -74,9 +75,7 @@ final class SupabaseClient {
     {
         self.configuration = configuration
         self.urlSession = urlSession
-        self.sessionStore = sessionStore ?? UserDefaultsSupabaseSessionStore(
-            storageKey: Self.makeSessionStorageKey(for: configuration.url.absoluteString)
-        )
+        self.sessionStore = sessionStore ?? Self.makeDefaultSessionStore(for: configuration.url.absoluteString)
         session = self.sessionStore.loadSession()
     }
 
@@ -211,11 +210,39 @@ final class SupabaseClient {
     }
 
     private func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        let (data, response) = try await urlSession.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw ClientError.invalidResponse
+        try await send(request, attemptsRemaining: Self.maxRetries)
+    }
+
+    /// One bounded retry with a short backoff on transient network failures and 5xx responses.
+    /// All requests here are idempotent (GET / upsert-on-conflict / delete-by-id / auth grants),
+    /// so replaying a request that may have partially applied is safe.
+    private func send(_ request: URLRequest, attemptsRemaining: Int) async throws -> (Data, HTTPURLResponse) {
+        do {
+            let (data, response) = try await urlSession.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw ClientError.invalidResponse
+            }
+            if httpResponse.statusCode >= 500, attemptsRemaining > 0 {
+                try await Task.sleep(nanoseconds: Self.retryBackoffNanoseconds)
+                return try await send(request, attemptsRemaining: attemptsRemaining - 1)
+            }
+            return (data, httpResponse)
+        } catch let error as URLError where attemptsRemaining > 0 && Self.isTransient(error) {
+            try await Task.sleep(nanoseconds: Self.retryBackoffNanoseconds)
+            return try await send(request, attemptsRemaining: attemptsRemaining - 1)
         }
-        return (data, httpResponse)
+    }
+
+    private static let maxRetries = 1
+    private static let retryBackoffNanoseconds: UInt64 = 300_000_000
+
+    private static func isTransient(_ error: URLError) -> Bool {
+        switch error.code {
+        case .timedOut, .networkConnectionLost, .cannotConnectToHost, .cannotFindHost, .dnsLookupFailed:
+            true
+        default:
+            false
+        }
     }
 
     private func canRefresh(for request: URLRequest) -> Bool {
@@ -288,6 +315,15 @@ final class SupabaseClient {
         "SupabaseSession-\(urlString)"
     }
 
+    private static func makeDefaultSessionStore(for urlString: String) -> SupabaseSessionStore {
+        let key = makeSessionStorageKey(for: urlString)
+        // Migrate any pre-existing plaintext UserDefaults session into the Keychain on first load.
+        return KeychainSupabaseSessionStore(
+            account: key,
+            legacyStore: UserDefaultsSupabaseSessionStore(storageKey: key)
+        )
+    }
+
     private struct RefreshResponse: Decodable {
         let accessToken: String?
         let refreshToken: String?
@@ -336,5 +372,102 @@ struct UserDefaultsSupabaseSessionStore: SupabaseSessionStore {
 
     func clear() {
         defaults.removeObject(forKey: storageKey)
+    }
+}
+
+/// Low-level Keychain access, isolated behind a protocol so the session store's logic
+/// (encode/decode + migration) is testable without touching the real Keychain.
+protocol KeychainBackend {
+    func read(service: String, account: String) -> Data?
+    func write(_ data: Data, service: String, account: String)
+    func delete(service: String, account: String)
+}
+
+/// Keychain-backed session store. Access/refresh tokens are secrets, so they live in the
+/// Keychain (device-only, after-first-unlock) rather than plaintext UserDefaults. On first
+/// load it migrates any session left behind by a previous UserDefaults-backed build.
+struct KeychainSupabaseSessionStore: SupabaseSessionStore {
+    private let service: String
+    private let account: String
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
+    private let backend: KeychainBackend
+    private let legacyStore: SupabaseSessionStore?
+
+    init(service: String = "com.cairn.app.supabase-session",
+         account: String,
+         encoder: JSONEncoder = JSONEncoder(),
+         decoder: JSONDecoder = JSONDecoder(),
+         backend: KeychainBackend = SystemKeychainBackend(),
+         legacyStore: SupabaseSessionStore? = nil)
+    {
+        self.service = service
+        self.account = account
+        self.encoder = encoder
+        self.decoder = decoder
+        self.backend = backend
+        self.legacyStore = legacyStore
+    }
+
+    func loadSession() -> SupabaseSession? {
+        if let data = backend.read(service: service, account: account),
+           let session = try? decoder.decode(SupabaseSession.self, from: data)
+        {
+            return session
+        }
+        // One-time migration from a legacy plaintext store.
+        if let legacyStore, let migrated = legacyStore.loadSession() {
+            save(migrated)
+            legacyStore.clear()
+            return migrated
+        }
+        return nil
+    }
+
+    func save(_ session: SupabaseSession) {
+        guard let data = try? encoder.encode(session) else { return }
+        backend.write(data, service: service, account: account)
+    }
+
+    func clear() {
+        backend.delete(service: service, account: account)
+    }
+}
+
+/// Real Keychain implementation using `Security`'s generic-password items.
+struct SystemKeychainBackend: KeychainBackend {
+    func read(service: String, account: String) -> Data? {
+        var query = baseQuery(service: service, account: account)
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var item: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess else { return nil }
+        return item as? Data
+    }
+
+    func write(_ data: Data, service: String, account: String) {
+        let query = baseQuery(service: service, account: account)
+        let attributes: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+        ]
+        let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+        if status == errSecItemNotFound {
+            var addQuery = query
+            addQuery.merge(attributes) { _, new in new }
+            SecItemAdd(addQuery as CFDictionary, nil)
+        }
+    }
+
+    func delete(service: String, account: String) {
+        SecItemDelete(baseQuery(service: service, account: account) as CFDictionary)
+    }
+
+    private func baseQuery(service: String, account: String) -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
+        ]
     }
 }

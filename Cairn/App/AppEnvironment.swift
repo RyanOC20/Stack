@@ -42,6 +42,18 @@ struct AppEnvironment {
             )
             return nil
         }
-        return SupabaseClient(configuration: .init(url: config.supabaseURL, anonKey: config.supabaseAnonKey))
+        return SupabaseClient(
+            configuration: .init(url: config.supabaseURL, anonKey: config.supabaseAnonKey),
+            urlSession: makeURLSession()
+        )
+    }
+
+    private static func makeURLSession() -> URLSession {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 20
+        configuration.timeoutIntervalForResource = 30
+        // Queue a request when briefly offline instead of failing immediately.
+        configuration.waitsForConnectivity = true
+        return URLSession(configuration: configuration)
     }
 }

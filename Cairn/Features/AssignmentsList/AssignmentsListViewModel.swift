@@ -78,10 +78,7 @@ final class AssignmentsListViewModel: ObservableObject {
             let mappedError = SupabaseErrorMapper.map(error)
             logger.error("Failed to load assignments: \(mappedError.message)")
 
-            if let supabaseError = error as? SupabaseErrorResponse,
-               let status = supabaseError.status,
-               status == 401 || status == 403
-            {
+            if isSessionExpired(error) {
                 // Session expired: log out silently instead of flashing an error banner.
                 errorMessage = nil
                 onSessionExpired?()
@@ -237,9 +234,7 @@ final class AssignmentsListViewModel: ObservableObject {
             do {
                 try await assignmentRepository.deleteAssignment(id: removed.id)
             } catch {
-                _ = undoStack.popLast()
-                applySnapshot(previous)
-                errorMessage = "Delete failed."
+                rollBack(to: previous, error: error, failureMessage: "Delete failed.")
             }
         }
     }
@@ -275,6 +270,7 @@ final class AssignmentsListViewModel: ObservableObject {
             dueAt: Self.defaultDueDate()
         )
 
+        let previous = currentSnapshot()
         recordUndoSnapshot()
         assignments.insert(newAssignment, at: 0)
         selectedAssignmentID = newAssignment.id
@@ -285,7 +281,7 @@ final class AssignmentsListViewModel: ObservableObject {
             do {
                 try await assignmentRepository.upsertAssignment(newAssignment)
             } catch {
-                errorMessage = "Saving assignment failed."
+                rollBack(to: previous, error: error, failureMessage: "Saving assignment failed.")
             }
         }
     }
@@ -309,6 +305,7 @@ final class AssignmentsListViewModel: ObservableObject {
             dueAt: dueAt
         )
 
+        let previous = currentSnapshot()
         recordUndoSnapshot()
         insertAssignment(newAssignment)
 
@@ -316,7 +313,7 @@ final class AssignmentsListViewModel: ObservableObject {
             do {
                 try await assignmentRepository.upsertAssignment(newAssignment)
             } catch {
-                errorMessage = "Saving assignment failed."
+                rollBack(to: previous, error: error, failureMessage: "Saving assignment failed.")
             }
         }
     }
@@ -329,6 +326,7 @@ final class AssignmentsListViewModel: ObservableObject {
         guard let index = assignments.firstIndex(where: { $0.id == assignment.id }) else { return }
         guard assignments[index] != assignment else { return }
 
+        let previous = currentSnapshot()
         recordUndoSnapshot()
         assignments[index] = assignment
         selectedAssignmentID = assignment.id
@@ -338,7 +336,7 @@ final class AssignmentsListViewModel: ObservableObject {
             do {
                 try await assignmentRepository.upsertAssignment(assignment)
             } catch {
-                errorMessage = "Save failed."
+                rollBack(to: previous, error: error, failureMessage: "Save failed.")
             }
         }
     }
@@ -363,6 +361,27 @@ final class AssignmentsListViewModel: ObservableObject {
     private func recordUndoSnapshot() {
         undoStack.append(currentSnapshot())
         redoStack.removeAll()
+    }
+
+    /// Reverts an optimistic mutation whose repository write failed: drops the undo snapshot the
+    /// mutation pushed and restores `previous`. A session-expiry error logs out instead of
+    /// showing a banner, matching the fetch path.
+    private func rollBack(to previous: HistorySnapshot, error: Error, failureMessage: String) {
+        _ = undoStack.popLast()
+        applySnapshot(previous)
+        if isSessionExpired(error) {
+            errorMessage = nil
+            onSessionExpired?()
+        } else {
+            errorMessage = failureMessage
+        }
+    }
+
+    private func isSessionExpired(_ error: Error) -> Bool {
+        guard let supabaseError = error as? SupabaseErrorResponse, let status = supabaseError.status else {
+            return false
+        }
+        return status == 401 || status == 403
     }
 
     private func currentSnapshot() -> HistorySnapshot {
