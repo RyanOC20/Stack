@@ -176,8 +176,9 @@ final class ImportService {
 
         switch source {
         case let .image(data, mediaType):
-            request.imageBase64 = data.base64EncodedString()
-            request.mediaType = mediaType
+            let prepared = ImageDownscaler.prepare(data: data, mediaType: mediaType)
+            request.imageBase64 = prepared.data.base64EncodedString()
+            request.mediaType = prepared.mediaType
         case let .pageURL(url):
             request.pageUrl = url
         case let .text(text):

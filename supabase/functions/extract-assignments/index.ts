@@ -15,6 +15,14 @@
 import { GoogleGenAI, type Part, Type } from "npm:@google/genai@^1.0.0";
 import { createClient } from "npm:@supabase/supabase-js@^2.48.0";
 import { encodeBase64 } from "jsr:@std/encoding/base64";
+import {
+  assertOwnStorageUrl,
+  assertPublicHttpUrl,
+  decodedBase64Size,
+  isAllowedImageMediaType,
+  MAX_FETCH_BYTES,
+  MAX_IMAGE_BYTES,
+} from "./security.ts";
 
 // Rolling alias for the current free-tier Flash model, so a Google model
 // retirement doesn't break us. Override with the GEMINI_MODEL secret if desired.
@@ -110,24 +118,60 @@ function htmlToText(html: string): string {
     .slice(0, 60_000);
 }
 
+const FETCH_TIMEOUT_MS = 10_000;
+const MAX_REDIRECTS = 3;
+
+// Fetches a user-supplied URL with an SSRF guard on every hop (redirects are
+// followed manually and re-validated), a request timeout, and a size cap read
+// by the caller. `validate` rejects private/reserved hosts (and, for images,
+// restricts to this project's Storage).
+async function safeFetch(rawUrl: string, validate: (u: string) => URL): Promise<Response> {
+  let current = validate(rawUrl).toString();
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const res = await fetch(current, {
+      redirect: "manual",
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      headers: { "User-Agent": "Cairn-Import/1.0" },
+    });
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get("location");
+      if (!location) return res;
+      current = validate(new URL(location, current).toString()).toString();
+      continue;
+    }
+    return res;
+  }
+  throw new Error("too many redirects");
+}
+
+async function readCappedBytes(res: Response, maxBytes: number): Promise<Uint8Array> {
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  if (bytes.byteLength > maxBytes) throw new Error("response too large");
+  return bytes;
+}
+
 async function buildParts(req: ExtractRequest): Promise<Part[]> {
   const instruction: Part = { text: "Extract the assignments from the following source." };
 
   if (req.imageBase64) {
     if (!req.mediaType) throw new Error("mediaType is required with imageBase64");
+    if (!isAllowedImageMediaType(req.mediaType)) throw new Error("unsupported image type");
+    if (decodedBase64Size(req.imageBase64) > MAX_IMAGE_BYTES) throw new Error("image too large");
     return [instruction, { inlineData: { mimeType: req.mediaType, data: req.imageBase64 } }];
   }
   if (req.imageUrl) {
-    const res = await fetch(req.imageUrl);
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const res = await safeFetch(req.imageUrl, (u) => assertOwnStorageUrl(u, supabaseUrl));
     if (!res.ok) throw new Error(`could not fetch imageUrl (${res.status})`);
+    const bytes = await readCappedBytes(res, MAX_IMAGE_BYTES);
     const mimeType = req.mediaType ?? res.headers.get("content-type") ?? "image/png";
-    const data = encodeBase64(new Uint8Array(await res.arrayBuffer()));
-    return [instruction, { inlineData: { mimeType, data } }];
+    return [instruction, { inlineData: { mimeType, data: encodeBase64(bytes) } }];
   }
   if (req.pageUrl) {
-    const res = await fetch(req.pageUrl, { redirect: "follow" });
+    const res = await safeFetch(req.pageUrl, assertPublicHttpUrl);
     if (!res.ok) throw new Error(`could not fetch pageUrl (${res.status})`);
-    const text = htmlToText(await res.text());
+    const bytes = await readCappedBytes(res, MAX_FETCH_BYTES);
+    const text = htmlToText(new TextDecoder().decode(bytes));
     return [{ text: `Class page content:\n\n${text}` }];
   }
   if (req.text) {
@@ -154,6 +198,18 @@ Deno.serve(async (request: Request) => {
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   if (userErr || !userData?.user) {
     return json({ error: "unauthorized" }, 401);
+  }
+
+  // Per-user daily quota, enforced atomically in Postgres so the paid model key
+  // can't be burned by runaway use. Fail open on a transient RPC error rather
+  // than blocking a legitimate user.
+  const dailyLimit = Number(Deno.env.get("EXTRACTION_DAILY_LIMIT") ?? "50");
+  const { data: usageCount, error: usageErr } = await supabase.rpc(
+    "increment_extraction_usage",
+    { daily_limit: dailyLimit },
+  );
+  if (!usageErr && typeof usageCount === "number" && usageCount < 0) {
+    return json({ error: "daily extraction limit reached; try again tomorrow" }, 429);
   }
 
   const apiKey = Deno.env.get("GEMINI_API_KEY");

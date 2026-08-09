@@ -5,3 +5,9 @@ port = 54321
 schemas = ["public"]
 
 db_version = "15"
+
+# Require a valid Supabase JWT before the function runs. The function additionally
+# resolves the caller (supabase.auth.getUser) so anonymous requests can't reach the
+# paid model. Pinned here so a platform default change can't silently disable it.
+[functions.extract-assignments]
+verify_jwt = true
