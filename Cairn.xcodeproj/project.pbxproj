@@ -31,6 +31,7 @@
 		6E0EB889B4B8F20C9C9D0B59 /* OptionDropdownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2F7F5CF4B3C6D2BA9F12B5 /* OptionDropdownTextField.swift */; };
 		7742B2D88AFD74E740E9F892 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74EE02E7587243BB30028A65 /* Colors.xcassets */; };
 		81FCA144DC1B5F3F86E5B1A3 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE76BBBB101132036979E292 /* Logger.swift */; };
+		BF1100000000000000000001 /* ReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1100000000000000000002 /* ReminderScheduler.swift */; };
 		862B98E703354D931D6F5A82 /* StatusDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039A5E05053B4791D96300A5 /* StatusDropdown.swift */; };
 		9D1DAA6DF9E5904CC7476FDE /* AssignmentRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563352303A856D5A6BF33CB /* AssignmentRepositoryTests.swift */; };
 		9D93F0483FC14829AF263831 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBE506AA3E24373A8A21E2B /* TestHelpers.swift */; };
@@ -53,6 +54,7 @@
 		C3501466C96044458BE39254 /* LocalCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E642FC73B23E47F58559777F /* LocalCacheTests.swift */; };
 		C1A2B3C4D5E6F70819202122 /* KeychainSupabaseSessionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2F3A4B5C6D7E809101112 /* KeychainSupabaseSessionStoreTests.swift */; };
 		F2A2B3C4D5E6F70819203355 /* ImageDownscalerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70819203344 /* ImageDownscalerTests.swift */; };
+		BF1100000000000000000003 /* ReminderPlannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1100000000000000000004 /* ReminderPlannerTests.swift */; };
 		D25D52A8CC279B1317F712CC /* TypeDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */; };
 		D9251D924951686B634FE62B /* CairnUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* CairnUITests.swift */; };
 		D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */; };
@@ -144,10 +146,12 @@
 		E642FC73B23E47F58559777F /* LocalCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCacheTests.swift; sourceTree = "<group>"; };
 		D1E2F3A4B5C6D7E809101112 /* KeychainSupabaseSessionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainSupabaseSessionStoreTests.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70819203344 /* ImageDownscalerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownscalerTests.swift; sourceTree = "<group>"; };
+		BF1100000000000000000004 /* ReminderPlannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPlannerTests.swift; sourceTree = "<group>"; };
 		E9D0F4F1F54974280C96DC24 /* UserDefaultsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStore.swift; sourceTree = "<group>"; };
 		EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsHandler.swift; sourceTree = "<group>"; };
 		F776DAB2647C4C73B2B53F4D /* EnvironmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentConfiguration.swift; sourceTree = "<group>"; };
 		FE76BBBB101132036979E292 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		BF1100000000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminders/ReminderScheduler.swift; sourceTree = "<group>"; };
 		A11100000000000000000001 /* ImportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportModels.swift; sourceTree = "<group>"; };
 		A11100000000000000000002 /* ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportService.swift; sourceTree = "<group>"; };
 		A11100000000000000000003 /* ImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportView.swift; sourceTree = "<group>"; };
@@ -245,6 +249,7 @@
 				E642FC73B23E47F58559777F /* LocalCacheTests.swift */,
 				D1E2F3A4B5C6D7E809101112 /* KeychainSupabaseSessionStoreTests.swift */,
 				F1A2B3C4D5E6F70819203344 /* ImageDownscalerTests.swift */,
+				BF1100000000000000000004 /* ReminderPlannerTests.swift */,
 				A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */,
 				73ECE7BA995B42CE808BE4DC /* SupabaseErrorMapperTests.swift */,
 				989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */,
@@ -352,6 +357,7 @@
 				4C6A50E5266993818C62C48C /* Supabase */,
 				F7A5CC97631FB98B7AD57C1F /* Persistence */,
 				E317772211F75628D34120E9 /* Logging */,
+				BF1100000000000000000002 /* ReminderScheduler.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -593,6 +599,7 @@
 				C3501466C96044458BE39254 /* LocalCacheTests.swift in Sources */,
 				C1A2B3C4D5E6F70819202122 /* KeychainSupabaseSessionStoreTests.swift in Sources */,
 				F2A2B3C4D5E6F70819203355 /* ImageDownscalerTests.swift in Sources */,
+				BF1100000000000000000003 /* ReminderPlannerTests.swift in Sources */,
 				A54FF8029BF14428B69818F5 /* AssignmentDTOTests.swift in Sources */,
 				FA0C8FBC33DD49438618623B /* SupabaseErrorMapperTests.swift in Sources */,
 				D6A9A8B0590541D6991F9DE3 /* SupabaseClientTests.swift in Sources */,
@@ -648,6 +655,7 @@
 				49169A1C04DB37E05A370979 /* LocalCache.swift in Sources */,
 				2A461DB0EAA3A35EAAAD3D28 /* UserDefaultsStore.swift in Sources */,
 				81FCA144DC1B5F3F86E5B1A3 /* Logger.swift in Sources */,
+				BF1100000000000000000001 /* ReminderScheduler.swift in Sources */,
 				12D8F94B9D9B4BBF9A461C61 /* AuthFlowView.swift in Sources */,
 				4EB5E30C3233C4053486949A /* Typography.swift in Sources */,
 				A43A0FACEC1AB7C4D0EDFD6E /* FontRegistrar.swift in Sources */,

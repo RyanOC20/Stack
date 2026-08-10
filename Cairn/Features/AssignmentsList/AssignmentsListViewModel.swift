@@ -16,16 +16,38 @@ final class AssignmentsListViewModel: ObservableObject {
         let field: Field
     }
 
-    @Published private(set) var assignments: [Assignment] = []
+    @Published private(set) var assignments: [Assignment] = [] {
+        didSet { reminderScheduler?.sync(assignments) }
+    }
+
     @Published var selectedAssignmentID: UUID?
     @Published var selectedField: EditingContext.Field = .status
     @Published var editingContext: EditingContext?
     @Published var quickAddFocusTrigger = UUID()
     @Published var errorMessage: String?
+    @Published var searchQuery: String = "" {
+        didSet { reconcileSelectionWithSearch() }
+    }
+
     var onSessionExpired: (() -> Void)?
 
     var availableCourses: [String] {
         courseRepository.availableCourses(from: assignments)
+    }
+
+    /// The assignments currently visible: the full list, or those matching `searchQuery`
+    /// (by name or course). Keyboard navigation and selection operate over this set.
+    var displayedAssignments: [Assignment] {
+        let query = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return assignments }
+        return assignments.filter {
+            $0.name.localizedCaseInsensitiveContains(query)
+                || $0.course.localizedCaseInsensitiveContains(query)
+        }
+    }
+
+    var hasActiveSearch: Bool {
+        !searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var canUndo: Bool {
@@ -45,6 +67,7 @@ final class AssignmentsListViewModel: ObservableObject {
     private let assignmentRepository: AssignmentRepositoryProtocol
     private let courseRepository: CourseRepositoryProviding
     private let logger: Logger
+    private let reminderScheduler: ReminderScheduling?
     private var undoStack: [HistorySnapshot] = []
     private var redoStack: [HistorySnapshot] = []
     private static let orderedFields: [EditingContext.Field] = [.status, .name, .course, .type, .dueDate]
@@ -52,11 +75,13 @@ final class AssignmentsListViewModel: ObservableObject {
     init(assignmentRepository: AssignmentRepositoryProtocol,
          courseRepository: CourseRepositoryProviding,
          logger: Logger,
+         reminderScheduler: ReminderScheduling? = nil,
          autoLoad: Bool = true)
     {
         self.assignmentRepository = assignmentRepository
         self.courseRepository = courseRepository
         self.logger = logger
+        self.reminderScheduler = reminderScheduler
 
         if autoLoad {
             Task {
@@ -96,7 +121,7 @@ final class AssignmentsListViewModel: ObservableObject {
     }
 
     func selectFirstAssignment() {
-        selectedAssignmentID = assignments.first?.id
+        selectedAssignmentID = displayedAssignments.first?.id
     }
 
     func deselect() {
@@ -109,13 +134,14 @@ final class AssignmentsListViewModel: ObservableObject {
     }
 
     func moveSelection(_ direction: MoveCommandDirection) {
-        guard !assignments.isEmpty else { return }
+        let displayed = displayedAssignments
+        guard !displayed.isEmpty else { return }
 
         guard let currentID = selectedAssignmentID,
-              let currentIndex = assignments.firstIndex(where: { $0.id == currentID })
+              let currentIndex = displayed.firstIndex(where: { $0.id == currentID })
         else {
             // Nothing selected yet — engage the top-left field.
-            selectedAssignmentID = assignments.first?.id
+            selectedAssignmentID = displayed.first?.id
             selectedField = .status
             return
         }
@@ -130,17 +156,18 @@ final class AssignmentsListViewModel: ObservableObject {
             return
         }
 
-        let targetIndex = max(0, min(assignments.count - 1, currentIndex + offset))
-        selectedAssignmentID = assignments[targetIndex].id
+        let targetIndex = max(0, min(displayed.count - 1, currentIndex + offset))
+        selectedAssignmentID = displayed[targetIndex].id
     }
 
     func moveFieldSelection(_ direction: MoveCommandDirection) {
         guard editingContext == nil else { return }
-        guard !assignments.isEmpty else { return }
+        let displayed = displayedAssignments
+        guard !displayed.isEmpty else { return }
 
         guard selectedAssignmentID != nil else {
             // Nothing selected yet — engage the top-left field.
-            selectedAssignmentID = assignments.first?.id
+            selectedAssignmentID = displayed.first?.id
             selectedField = .status
             return
         }
@@ -219,15 +246,20 @@ final class AssignmentsListViewModel: ObservableObject {
               let index = assignments.firstIndex(where: { $0.id == currentID })
         else { return }
 
+        // Reselect within the visible (possibly filtered) list after removal.
+        let displayedIndex = displayedAssignments.firstIndex(where: { $0.id == currentID })
+
         let previous = currentSnapshot()
         recordUndoSnapshot()
         let removed = assignments.remove(at: index)
         editingContext = nil
-        let nextIndex = min(index, assignments.count - 1)
-        if nextIndex >= 0, assignments.indices.contains(nextIndex) {
-            selectedAssignmentID = assignments[nextIndex].id
+
+        let displayedAfter = displayedAssignments
+        if let displayedIndex, !displayedAfter.isEmpty {
+            let nextIndex = min(displayedIndex, displayedAfter.count - 1)
+            selectedAssignmentID = displayedAfter[nextIndex].id
         } else {
-            selectedAssignmentID = nil
+            selectedAssignmentID = displayedAfter.first?.id
         }
 
         Task {
@@ -375,6 +407,16 @@ final class AssignmentsListViewModel: ObservableObject {
         } else {
             errorMessage = failureMessage
         }
+    }
+
+    /// Keeps the selection valid when the search filter changes: if the selected assignment is
+    /// no longer visible, move selection to the first visible one (or clear it).
+    private func reconcileSelectionWithSearch() {
+        let displayed = displayedAssignments
+        if let id = selectedAssignmentID, displayed.contains(where: { $0.id == id }) {
+            return
+        }
+        selectedAssignmentID = displayed.first?.id
     }
 
     private func isSessionExpired(_ error: Error) -> Bool {

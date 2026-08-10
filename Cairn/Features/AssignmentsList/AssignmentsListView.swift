@@ -5,9 +5,11 @@ struct AssignmentsListView: View {
     var onLogout: () -> Void = {}
     @State private var isQuickAddVisible = false
     @State private var isShortcutHelpVisible = false
+    @FocusState private var isSearchFocused: Bool
     private let dropdownCommitNotification = Notification.Name("CairnDropdownCommit")
     private let showQuickAddNotification = Notification.Name("CairnShowQuickAddRow")
     private let showShortcutHelpNotification = Notification.Name("CairnShowShortcutHelp")
+    private let focusSearchNotification = Notification.Name("CairnFocusSearch")
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -15,6 +17,9 @@ struct AssignmentsListView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
+                if !viewModel.assignments.isEmpty {
+                    searchField
+                }
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: Spacing.rowSpacing) {
                         if isQuickAddVisible {
@@ -33,7 +38,7 @@ struct AssignmentsListView: View {
                             }
                         }
 
-                        ForEach(viewModel.assignments) { assignment in
+                        ForEach(viewModel.displayedAssignments) { assignment in
                             AssignmentRowView(
                                 assignment: assignment,
                                 isSelected: viewModel.selectedAssignmentID == assignment.id,
@@ -78,6 +83,14 @@ struct AssignmentsListView: View {
                 }
             }
 
+            if !isQuickAddVisible {
+                if viewModel.assignments.isEmpty {
+                    emptyStateView
+                } else if viewModel.displayedAssignments.isEmpty {
+                    noResultsView
+                }
+            }
+
             if let message = viewModel.errorMessage {
                 ErrorBannerView(message: message)
                     .padding(.top, 12)
@@ -116,11 +129,80 @@ struct AssignmentsListView: View {
         .onReceive(NotificationCenter.default.publisher(for: showShortcutHelpNotification)) { _ in
             isShortcutHelpVisible = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: focusSearchNotification)) { _ in
+            guard !viewModel.assignments.isEmpty else { return }
+            isSearchFocused = true
+        }
     }
 
     private func showQuickAddRow() {
         isQuickAddVisible = false
         viewModel.createAssignmentAndBeginEditingName()
+    }
+
+    private var searchField: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(ColorPalette.textSecondary)
+            TextField("Search assignments", text: $viewModel.searchQuery)
+                .textFieldStyle(.plain)
+                .foregroundColor(.white)
+                .focused($isSearchFocused)
+                .onExitCommand {
+                    viewModel.searchQuery = ""
+                    isSearchFocused = false
+                }
+            if viewModel.hasActiveSearch {
+                Button {
+                    viewModel.searchQuery = ""
+                    isSearchFocused = false
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(ColorPalette.textSecondary)
+                }
+                .buttonStyle(.plain)
+                .help("Clear search")
+            }
+        }
+        .font(Typography.body)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(ColorPalette.rowSelection)
+        .cornerRadius(8)
+        .padding(.horizontal, Spacing.contentPadding)
+        .padding(.top, 12)
+    }
+
+    private var noResultsView: some View {
+        VStack(spacing: 10) {
+            Text("No matches")
+                .font(Typography.assignmentName)
+                .foregroundColor(.white)
+            Text("No assignments match “\(viewModel.searchQuery)”.")
+                .font(Typography.secondary)
+                .foregroundColor(ColorPalette.textSecondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 360)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(40)
+        .allowsHitTesting(false)
+    }
+
+    private var emptyStateView: some View {
+        VStack(spacing: 10) {
+            Text("No assignments yet")
+                .font(Typography.assignmentName)
+                .foregroundColor(.white)
+            Text("Press ⌘N to add one, or ⌘I to import from a screenshot, photo, URL, or text.")
+                .font(Typography.secondary)
+                .foregroundColor(ColorPalette.textSecondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 360)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(40)
+        .allowsHitTesting(false)
     }
 
     private var shortcutHelpOverlay: some View {
@@ -197,6 +279,12 @@ struct AssignmentsListView: View {
             return true
         }
 
+        if isSearchFocused {
+            viewModel.searchQuery = ""
+            isSearchFocused = false
+            return true
+        }
+
         if viewModel.editingContext != nil {
             viewModel.clearEditingContext()
             return true
@@ -240,7 +328,7 @@ struct AssignmentsListView: View {
     }
 
     private func shouldCaptureArrowKeys() -> Bool {
-        if isShortcutHelpVisible || isQuickAddVisible {
+        if isShortcutHelpVisible || isQuickAddVisible || isSearchFocused {
             return false
         }
         return viewModel.editingContext == nil

@@ -5,6 +5,12 @@ struct CairnApp: App {
     @AppStorage("hasCompletedAuth") private var hasCompletedAuth = false
     @StateObject private var appState = AppState()
     @State private var showImport = false
+    @State private var accountAlert: AccountAlert?
+
+    private struct AccountAlert: Identifiable {
+        let id = UUID()
+        let message: String
+    }
 
     private var isAuthenticated: Bool {
         if appState.authService != nil {
@@ -49,6 +55,9 @@ struct CairnApp: App {
                         .onAppear { importViewModel.reset() }
                 }
             }
+            .alert(item: $accountAlert) { alert in
+                Alert(title: Text(alert.message))
+            }
         }
         .windowStyle(.hiddenTitleBar)
         .commands {
@@ -64,6 +73,11 @@ struct CairnApp: App {
                     }
                     .keyboardShortcut("i", modifiers: .command)
                     .disabled(appState.importViewModel == nil)
+
+                    Button("Find") {
+                        NotificationCenter.default.post(name: Notification.Name("CairnFocusSearch"), object: nil)
+                    }
+                    .keyboardShortcut("f", modifiers: .command)
                 }
 
                 CommandGroup(after: .undoRedo) {
@@ -85,6 +99,29 @@ struct CairnApp: App {
                         NotificationCenter.default.post(name: Notification.Name("CairnShowShortcutHelp"), object: nil)
                     }
                     .keyboardShortcut(",", modifiers: .command)
+                }
+
+                CommandMenu("Account") {
+                    if let email = appState.currentUserEmail {
+                        Text("Signed in as \(email)")
+                        Divider()
+                    }
+                    Button("Reset Password…") {
+                        Task {
+                            let sent = await appState.resetPassword()
+                            accountAlert = AccountAlert(
+                                message: sent
+                                    ? "Password reset email sent. Check your inbox."
+                                    : "Couldn't send a reset email right now."
+                            )
+                        }
+                    }
+                    .disabled(appState.currentUserEmail == nil)
+
+                    Button("Log Out") {
+                        appState.handleLogout()
+                        hasCompletedAuth = false
+                    }
                 }
             }
         }

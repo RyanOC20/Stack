@@ -49,6 +49,18 @@ final class SupabaseAuthService {
         try? await client.revokeSession()
         client.clearSession()
     }
+
+    /// Sends a password-reset email via GoTrue's recover endpoint.
+    func resetPassword(email: String) async throws {
+        let body = try encoder.encode(["email": email])
+        let request = try client.makeRequest(
+            path: "/auth/v1/recover",
+            method: "POST",
+            body: body,
+            requiresAuth: false
+        )
+        try await client.performVoid(request)
+    }
 }
 
 private struct AuthPayload: Encodable {

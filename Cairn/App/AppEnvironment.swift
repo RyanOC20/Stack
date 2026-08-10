@@ -6,6 +6,7 @@ struct AppEnvironment {
     let logger: Logger
     let supabaseClient: SupabaseClient?
     let authService: SupabaseAuthService?
+    let reminderScheduler: ReminderScheduling
 
     static let shared = AppEnvironment()
 
@@ -13,9 +14,11 @@ struct AppEnvironment {
          courseRepository: CourseRepositoryProviding? = nil,
          logger: Logger = Logger(),
          supabaseClient: SupabaseClient? = nil,
-         authService: SupabaseAuthService? = nil)
+         authService: SupabaseAuthService? = nil,
+         reminderScheduler: ReminderScheduling = UserNotificationScheduler())
     {
         self.logger = logger
+        self.reminderScheduler = reminderScheduler
 
         if let assignmentRepository {
             self.assignmentRepository = assignmentRepository

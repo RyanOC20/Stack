@@ -236,6 +236,57 @@ final class AssignmentsListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorMessage, "Saving assignment failed.")
     }
 
+    private func makeSearchViewModel() async -> (AssignmentsListViewModel, [Assignment]) {
+        let now = Date()
+        let essay = Assignment(status: .notStarted, name: "Essay on Rome", course: "History", type: .essay, dueAt: now)
+        let calc = Assignment(status: .notStarted, name: "Calc set", course: "Math", type: .homework, dueAt: now.addingTimeInterval(100))
+        let quiz = Assignment(status: .notStarted, name: "History quiz", course: "History", type: .quiz, dueAt: now.addingTimeInterval(200))
+        let repository = MockAssignmentRepository(assignments: [essay, calc, quiz])
+        let viewModel = AssignmentsListViewModel(
+            assignmentRepository: repository,
+            courseRepository: CourseRepository(),
+            logger: Logger(),
+            autoLoad: false
+        )
+        await viewModel.loadAssignments()
+        return (viewModel, [essay, calc, quiz])
+    }
+
+    func testSearchFiltersByNameAndCourse() async {
+        let (viewModel, _) = await makeSearchViewModel()
+
+        viewModel.searchQuery = "history"
+        // Matches "Essay on Rome" (course History) and "History quiz" (name + course).
+        XCTAssertEqual(viewModel.displayedAssignments.map(\.name), ["Essay on Rome", "History quiz"])
+
+        viewModel.searchQuery = "calc"
+        XCTAssertEqual(viewModel.displayedAssignments.map(\.name), ["Calc set"])
+
+        viewModel.searchQuery = "   "
+        XCTAssertEqual(viewModel.displayedAssignments.count, 3, "Blank query shows everything")
+    }
+
+    func testSearchReconcilesSelectionToFirstVisible() async {
+        let (viewModel, items) = await makeSearchViewModel()
+        // Select the Calculus assignment, then filter to History-only.
+        viewModel.select(items[1].id)
+
+        viewModel.searchQuery = "history"
+
+        XCTAssertEqual(viewModel.selectedAssignmentID, items[0].id, "Hidden selection jumps to first visible")
+    }
+
+    func testNavigationStaysWithinFilteredResults() async {
+        let (viewModel, items) = await makeSearchViewModel()
+        viewModel.searchQuery = "history" // [Essay on Rome, History quiz]
+
+        XCTAssertEqual(viewModel.selectedAssignmentID, items[0].id)
+        viewModel.moveSelection(.down)
+        XCTAssertEqual(viewModel.selectedAssignmentID, items[2].id, "Skips the filtered-out Calculus row")
+        viewModel.moveSelection(.down)
+        XCTAssertEqual(viewModel.selectedAssignmentID, items[2].id, "Clamps at the last visible row")
+    }
+
     func testMutationSessionExpiryTriggersLogout() async {
         let assignment = Assignment(status: .inProgress, name: "Original", course: "BIO", type: .exam, dueAt: Date())
         let expired = SupabaseErrorResponse(message: "JWT expired", error: nil, status: 401, rawBody: nil)

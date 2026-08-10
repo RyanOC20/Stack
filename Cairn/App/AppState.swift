@@ -12,6 +12,24 @@ final class AppState: ObservableObject {
         environment.authService
     }
 
+    var currentUserEmail: String? {
+        environment.supabaseClient?.currentUserEmail
+    }
+
+    /// Sends a password-reset email to the signed-in user. Returns false when there's
+    /// no auth service or known email, or the request fails.
+    func resetPassword() async -> Bool {
+        guard let authService = environment.authService, let email = currentUserEmail else {
+            return false
+        }
+        do {
+            try await authService.resetPassword(email: email)
+            return true
+        } catch {
+            return false
+        }
+    }
+
     init(environment: AppEnvironment = .shared) {
         let hasExistingSupabaseSession = environment.supabaseClient?.currentUserID != nil
         let shouldAutoLoad: Bool
@@ -27,6 +45,7 @@ final class AppState: ObservableObject {
             assignmentRepository: environment.assignmentRepository,
             courseRepository: environment.courseRepository,
             logger: environment.logger,
+            reminderScheduler: environment.reminderScheduler,
             autoLoad: shouldAutoLoad
         )
 
@@ -49,6 +68,9 @@ final class AppState: ObservableObject {
         assignmentsListViewModel.onSessionExpired = { [weak self] in
             self?.handleLogout()
         }
+
+        // Ask once for permission to post due-date reminders (no-op if already decided).
+        environment.reminderScheduler.requestAuthorization()
     }
 
     func handleAuthentication(session: SupabaseSession?) {

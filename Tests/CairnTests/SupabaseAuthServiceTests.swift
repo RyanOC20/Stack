@@ -97,6 +97,22 @@ final class SupabaseAuthServiceTests: XCTestCase {
         XCTAssertEqual(client.currentUserID, userID)
     }
 
+    func testResetPasswordPostsToRecover() async throws {
+        let handled = expectation(description: "handled recover")
+
+        MockURLProtocol.requestHandler = { request in
+            XCTAssertEqual(request.httpMethod, "POST")
+            XCTAssertEqual(request.url?.path, "/auth/v1/recover")
+            let body = try JSONSerialization.jsonObject(with: httpBodyData(from: request) ?? Data()) as? [String: String]
+            XCTAssertEqual(body?["email"], "user@example.com")
+            handled.fulfill()
+            return (makeHTTPResponse(for: request, statusCode: 200), Data("{}".utf8))
+        }
+
+        try await service.resetPassword(email: "user@example.com")
+        await fulfillment(of: [handled], timeout: 1)
+    }
+
     func testSignOutRevokesTokenAndClearsSession() async {
         client.setSession(SupabaseSession(
             accessToken: "access-token",

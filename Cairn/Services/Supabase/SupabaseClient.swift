@@ -83,6 +83,10 @@ final class SupabaseClient {
         currentSession()?.user.id
     }
 
+    var currentUserEmail: String? {
+        currentSession()?.user.email
+    }
+
     private func currentSession() -> SupabaseSession? {
         lock.lock()
         defer { lock.unlock() }
