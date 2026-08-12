@@ -148,6 +148,8 @@ struct AssignmentsListView: View {
                 .textFieldStyle(.plain)
                 .foregroundColor(.white)
                 .focused($isSearchFocused)
+                .accessibilityIdentifier("assignments.search")
+                .accessibilityLabel("Search assignments")
                 .onExitCommand {
                     viewModel.searchQuery = ""
                     isSearchFocused = false
@@ -187,6 +189,8 @@ struct AssignmentsListView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(40)
         .allowsHitTesting(false)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("assignments.noResults")
     }
 
     private var emptyStateView: some View {
@@ -203,6 +207,8 @@ struct AssignmentsListView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(40)
         .allowsHitTesting(false)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("assignments.emptyState")
     }
 
     private var shortcutHelpOverlay: some View {

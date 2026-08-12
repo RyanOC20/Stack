@@ -159,6 +159,7 @@ struct AuthFlowView: View {
         .buttonStyle(.plain)
         .frame(width: 260)
         .contentShape(Rectangle())
+        .accessibilityIdentifier("auth.\(Self.identifierSlug(title))")
     }
 
     private func secondaryButton(title: String, action: @escaping () -> Void) -> some View {
@@ -177,6 +178,11 @@ struct AuthFlowView: View {
         .buttonStyle(.plain)
         .frame(width: 260)
         .contentShape(Rectangle())
+        .accessibilityIdentifier("auth.\(Self.identifierSlug(title))")
+    }
+
+    private static func identifierSlug(_ title: String) -> String {
+        title.lowercased().replacingOccurrences(of: " ", with: "-")
     }
 
     private func submitCreateAccount() {

@@ -55,6 +55,7 @@
 		C1A2B3C4D5E6F70819202122 /* KeychainSupabaseSessionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2F3A4B5C6D7E809101112 /* KeychainSupabaseSessionStoreTests.swift */; };
 		F2A2B3C4D5E6F70819203355 /* ImageDownscalerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70819203344 /* ImageDownscalerTests.swift */; };
 		BF1100000000000000000003 /* ReminderPlannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1100000000000000000004 /* ReminderPlannerTests.swift */; };
+		BF1200000000000000000001 /* ImportServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1200000000000000000002 /* ImportServiceTests.swift */; };
 		D25D52A8CC279B1317F712CC /* TypeDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A66C5FFCA22CE1D93EB989A /* TypeDropdown.swift */; };
 		D9251D924951686B634FE62B /* CairnUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DB2F6967F2814C2D4EE588 /* CairnUITests.swift */; };
 		D9FC3D8F2608F6DF0B3D7BD4 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764EE3674A3729FD1D2DA1A6 /* ColorPalette.swift */; };
@@ -147,6 +148,7 @@
 		D1E2F3A4B5C6D7E809101112 /* KeychainSupabaseSessionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainSupabaseSessionStoreTests.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70819203344 /* ImageDownscalerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownscalerTests.swift; sourceTree = "<group>"; };
 		BF1100000000000000000004 /* ReminderPlannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPlannerTests.swift; sourceTree = "<group>"; };
+		BF1200000000000000000002 /* ImportServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportServiceTests.swift; sourceTree = "<group>"; };
 		E9D0F4F1F54974280C96DC24 /* UserDefaultsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStore.swift; sourceTree = "<group>"; };
 		EE9E52AD3EC45B41E415F90C /* KeyboardShortcutsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsHandler.swift; sourceTree = "<group>"; };
 		F776DAB2647C4C73B2B53F4D /* EnvironmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentConfiguration.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 				D1E2F3A4B5C6D7E809101112 /* KeychainSupabaseSessionStoreTests.swift */,
 				F1A2B3C4D5E6F70819203344 /* ImageDownscalerTests.swift */,
 				BF1100000000000000000004 /* ReminderPlannerTests.swift */,
+				BF1200000000000000000002 /* ImportServiceTests.swift */,
 				A49D2FC1CC044E749C578ECE /* AssignmentDTOTests.swift */,
 				73ECE7BA995B42CE808BE4DC /* SupabaseErrorMapperTests.swift */,
 				989CEDCD8ECE4D279B007C91 /* SupabaseClientTests.swift */,
@@ -600,6 +603,7 @@
 				C1A2B3C4D5E6F70819202122 /* KeychainSupabaseSessionStoreTests.swift in Sources */,
 				F2A2B3C4D5E6F70819203355 /* ImageDownscalerTests.swift in Sources */,
 				BF1100000000000000000003 /* ReminderPlannerTests.swift in Sources */,
+				BF1200000000000000000001 /* ImportServiceTests.swift in Sources */,
 				A54FF8029BF14428B69818F5 /* AssignmentDTOTests.swift in Sources */,
 				FA0C8FBC33DD49438618623B /* SupabaseErrorMapperTests.swift in Sources */,
 				D6A9A8B0590541D6991F9DE3 /* SupabaseClientTests.swift in Sources */,
@@ -731,6 +735,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Cairn/Supporting/Entitlements.plist;
+				ENABLE_HARDENED_RUNTIME = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -835,6 +840,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Cairn/Supporting/Entitlements.plist;
+				ENABLE_HARDENED_RUNTIME = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";

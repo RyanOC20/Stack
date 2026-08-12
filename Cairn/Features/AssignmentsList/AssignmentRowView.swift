@@ -54,6 +54,11 @@ struct AssignmentRowView: View {
         editingContext?.assignmentID == assignment.id
     }
 
+    private var accessibilityRowSummary: String {
+        let course = assignment.course.isEmpty ? "no course" : assignment.course
+        return "\(assignment.name), \(course), \(assignment.type.displayName), \(assignment.status.displayName)"
+    }
+
     /// Subtle highlight on the keyboard-selected field of the selected row, so
     /// Left/Right (and h/l) visibly move between columns. Hidden while editing.
     @ViewBuilder
@@ -95,6 +100,9 @@ struct AssignmentRowView: View {
         .onTapGesture {
             onSelect()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("assignment.row")
+        .accessibilityLabel(Text(accessibilityRowSummary))
         .onDisappear {
             // Clear focus when the row goes away to prevent cross-window first responder warnings.
             focusedField = nil
